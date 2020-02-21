@@ -3,20 +3,35 @@
   <table class="calendar">
     <thead>
     <tr>
-      <td *ngFor="let label of header" [ngClass]="{'weekend': label.weekend}">
+      <th class="hour-label">
+        <span>00:00</span>
+      </th>
+      <th *ngFor="let label of header" [ngClass]="{'weekend': label.weekend}">
         <div class="large-label">
           {{label.weekDay}}
         </div>
         <div class="small-label">
           {{label.dayOfMonth}}
         </div>
-      </td>
+      </th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let row of body">
-      <td *ngFor="let key of keys(row)" [ngClass]="{'weekend': row[key].weekend}">{{row[key].value}}</td>
+    <tr *ngFor="let row of body; let i = index;">
+      <td class="hour-label">
+        <span>{{labels[i]}}</span>
+      </td>
+      <td
+        *ngFor="let day of row"
+        (click)="picked(day)"
+        [ngClass]="{'weekend': day.weekend}">{{day.value > 0 ? day.value : ''}}</td>
     </tr>
     </tbody>
+    <tfoot>
+      <tr>
+        <td>Day</td>
+        <td *ngFor="let total of totals">{{total}}</td>
+      </tr>
+    </tfoot>
   </table>
 </div>

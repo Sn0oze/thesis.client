@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { KeybordAnnotationComponent } from './keybord-annotation/keybord-annotation.component';
+import { KeyboardAnnotationComponent } from './keyboard-annotation/keyboard-annotation.component';
 import { StylusAnnotationComponent } from './stylus-annotation/stylus-annotation.component';
 
 
 
 @NgModule({
-  declarations: [KeybordAnnotationComponent, StylusAnnotationComponent],
+  declarations: [KeyboardAnnotationComponent, StylusAnnotationComponent],
+  exports: [
+    KeyboardAnnotationComponent
+  ],
   imports: [
     CommonModule
   ]

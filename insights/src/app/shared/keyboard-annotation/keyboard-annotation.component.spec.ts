@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KeybordAnnotationComponent } from './keybord-annotation.component';
+import { KeyboardAnnotationComponent } from './keyboard-annotation.component';
 
-describe('KeybordAnnotationComponent', () => {
-  let component: KeybordAnnotationComponent;
-  let fixture: ComponentFixture<KeybordAnnotationComponent>;
+describe('KeyboardAnnotationComponent', () => {
+  let component: KeyboardAnnotationComponent;
+  let fixture: ComponentFixture<KeyboardAnnotationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KeybordAnnotationComponent ]
+      declarations: [ KeyboardAnnotationComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KeybordAnnotationComponent);
+    fixture = TestBed.createComponent(KeyboardAnnotationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

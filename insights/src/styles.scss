@@ -31,5 +31,9 @@ $insights-theme: mat-light-theme($insights-primary, $insights-accent, $insights-
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/bootstrap-reboot";
 @import "~bootstrap/scss/bootstrap-grid";
+
+.fill-height{
+  height: 100%;
+}

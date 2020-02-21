@@ -1,0 +1,40 @@
+:host{
+  display: block;
+}
+
+$cell-width: 100% / 31;
+
+.calendar{
+  width: 100%;
+  user-select: none;
+  // table-layout: fixed;
+  td{
+    border: 2px solid white;
+    max-width: $cell-width;
+    text-align: center;
+    vertical-align: center;
+    padding: 0;
+  }
+  tbody td{
+    height: $cell-width;
+    overflow: hidden;
+    font-weight: 400;
+    font-size: .75rem;
+    background: #f0f0f0;
+  }
+  thead td{
+    // font-size: .95rem;
+  }
+}
+.large-label{
+  font-weight: 400;
+}
+.small-label{
+  font-weight: 200;
+  font-size: .75rem;
+}
+
+.weekend{
+  background: #7a7a7a !important;
+  color: white;
+}

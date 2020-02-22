@@ -22,6 +22,7 @@ export class CalendarViewComponent implements OnInit {
   readonly dayCount = 100;
   readonly min = 0;
   readonly max = this.dayCount - this.range;
+  panCounter = 0;
 
   constructor() { }
 
@@ -85,8 +86,10 @@ export class CalendarViewComponent implements OnInit {
   }
 
   delay(event, direction: 'left' | 'right'): void {
-    if (event.distance >= 50) {
-      direction === 'left' ? this.previous() : this.next();
+    if (this.panCounter >= 5) {
+        direction === 'left' ? this.previous() : this.next();
+        this.panCounter = 0;
     }
+    this.panCounter += 1;
   }
 }

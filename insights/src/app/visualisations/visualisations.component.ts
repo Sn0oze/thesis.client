@@ -11,9 +11,4 @@ export class VisualisationsComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  selected(day): void {
-    alert('Selected: ' + day.day);
-  }
-
 }

@@ -12,4 +12,8 @@ export class CalendarViewComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  selected(day): void {
+    alert('Selected: ' + day.day);
+  }
+
 }

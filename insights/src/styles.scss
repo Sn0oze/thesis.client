@@ -38,3 +38,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .fill-height{
   height: 100%;
 }
+
+button{
+  &:focus{
+    outline: none;
+  }
+}

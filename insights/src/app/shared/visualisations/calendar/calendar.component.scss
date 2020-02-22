@@ -2,7 +2,6 @@
   display: block;
 }
 
-$cell-width: 100% / 31;
 $hour-label-size: .5rem;
 $border-width: 2px;
 $background-color: white;
@@ -12,17 +11,15 @@ $border: $border-width solid $border-color;
 .calendar{
   width: 100%;
   user-select: none;
-  // table-layout: fixed;
+  table-layout: fixed;
   margin-bottom: $hour-label-size ;
   tbody td:not(.hour-label){
-    height: $cell-width;
     font-weight: 400;
     font-size: .75rem;
     background: #f0f0f0;
   }
   td, th{
     border: $border;
-    max-width: $cell-width;
     text-align: center;
     vertical-align: center;
     padding: 0;

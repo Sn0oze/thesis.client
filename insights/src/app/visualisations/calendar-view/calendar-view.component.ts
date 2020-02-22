@@ -16,4 +16,8 @@ export class CalendarViewComponent implements OnInit {
     alert('Selected: ' + day.day);
   }
 
+  next(): void {}
+
+  previous(): void {}
+
 }

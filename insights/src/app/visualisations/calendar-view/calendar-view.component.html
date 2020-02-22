@@ -1,5 +1,14 @@
 <div class="container">
   <div class="mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <button mat-icon-button (click)="previous()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <h1>Calendar</h1>
+      <button mat-icon-button (click)="next()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
     <app-calendar (selected)="selected($event)"></app-calendar>
   </div>
 </div>

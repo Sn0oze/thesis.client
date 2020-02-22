@@ -7,8 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'insights';
-
-  selected(day): void {
-    alert('Selected: ' + day.day);
-  }
 }

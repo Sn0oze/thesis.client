@@ -4,8 +4,6 @@ import { KeyboardAnnotationComponent } from './keyboard-annotation/keyboard-anno
 import { StylusAnnotationComponent } from './stylus-annotation/stylus-annotation.component';
 import {CalendarComponent} from './visualisations/calendar/calendar.component';
 
-
-
 @NgModule({
   declarations: [
     KeyboardAnnotationComponent,

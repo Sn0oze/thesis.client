@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {SharedModule} from './shared/shared.module';
 import {VisualisationsModule} from './visualisations/visualisations.module';
 
 @NgModule({
@@ -17,7 +16,6 @@ import {VisualisationsModule} from './visualisations/visualisations.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,
-    SharedModule,
     VisualisationsModule
   ],
   providers: [],

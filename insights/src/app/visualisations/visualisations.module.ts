@@ -6,11 +6,12 @@ import {VisualisationsRoutingModule} from './visualisations-routing.module';
 import {SharedModule} from '../shared/shared.module';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { AnnotationDialogComponent } from './calendar-view/annotation-dialog/annotation-dialog.component';
 
 
 
 @NgModule({
-    declarations: [CalendarViewComponent, VisualisationsComponent],
+    declarations: [CalendarViewComponent, VisualisationsComponent, AnnotationDialogComponent],
     exports: [
       SharedModule
     ],

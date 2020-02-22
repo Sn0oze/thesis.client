@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import {CalendarCell, CalendarHeader} from '../../shared/models';
 
 @Component({
   selector: 'app-calendar-view',
@@ -9,8 +10,8 @@ import * as moment from 'moment';
 export class CalendarViewComponent implements OnInit {
   hours: number[];
   days: number[];
-  header = [] as {weekDay: string, dayOfMonth: string, weekend: boolean}[];
-  body = [] as Array<{value: number, weekend: boolean, day: string}>[];
+  header = [] as CalendarHeader[];
+  body = [] as Array<CalendarCell>[];
   totals: number[];
   constructor() { }
 

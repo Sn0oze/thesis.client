@@ -1,3 +1,5 @@
 export interface CalendarCell {
-  key: string;
+  value: number;
+  weekend: boolean;
+  day: string;
 }

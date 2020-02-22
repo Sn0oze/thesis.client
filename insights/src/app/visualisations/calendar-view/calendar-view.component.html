@@ -9,6 +9,10 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
-    <app-calendar (selected)="selected($event)"></app-calendar>
+    <app-calendar
+      [header]="header"
+      [body]="body"
+      [totals]="totals"
+      (selected)="selected($event)"></app-calendar>
   </div>
 </div>

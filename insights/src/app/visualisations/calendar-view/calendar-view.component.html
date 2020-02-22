@@ -1,3 +1,4 @@
+<!--suppress AngularUndefinedBinding -->
 <div class="container">
   <div class="mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -13,6 +14,8 @@
       </button>
     </div>
     <app-calendar
+      (panLeft)="delay($event, 'left')"
+      (panRight)="delay($event, 'right')"
       [header]="headerRange"
       [body]="bodyRange"
       [totals]="totalsRange"

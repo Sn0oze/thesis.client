@@ -83,4 +83,10 @@ export class CalendarViewComponent implements OnInit {
     const day = date.day();
     return day === 6 || day === 0;
   }
+
+  delay(event, direction: 'left' | 'right'): void {
+    if (event.distance >= 50) {
+      direction === 'left' ? this.previous() : this.next();
+    }
+  }
 }

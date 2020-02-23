@@ -22,6 +22,8 @@ export class CalendarViewComponent implements OnInit {
   readonly dayCount = 100;
   readonly min = 0;
   readonly max = this.dayCount - this.range;
+  text: string;
+  includeAll = false;
 
   constructor() { }
 
@@ -82,5 +84,22 @@ export class CalendarViewComponent implements OnInit {
   isWeekend(date: moment.Moment): boolean {
     const day = date.day();
     return day === 6 || day === 0;
+  }
+
+  pan(event): void {
+    if (!this.includeAll) {
+      this.text = event.additionalEvent + ': ' + event.distance.toFixed(0);
+      event.additionalEvent === 'panleft' ? this.previous() : this.next();
+    }
+  }
+
+  toggle(): void {
+    if (this.includeAll) {
+      this.headerRange = this.header;
+      this.bodyRange = this.body;
+      this.totalsRange = this.totals;
+    } else {
+      this.selectSubset();
+    }
   }
 }

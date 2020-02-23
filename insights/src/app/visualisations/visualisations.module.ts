@@ -9,6 +9,8 @@ import {MatButtonModule} from '@angular/material/button';
 import { AnnotationDialogComponent } from './calendar-view/annotation-dialog/annotation-dialog.component';
 import { GesturesViewComponent } from './gestures-view/gestures-view.component';
 import {MatRippleModule} from '@angular/material/core';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {FormsModule} from '@angular/forms';
 
 
 
@@ -23,7 +25,9 @@ import {MatRippleModule} from '@angular/material/core';
     SharedModule,
     MatIconModule,
     MatButtonModule,
-    MatRippleModule
+    MatRippleModule,
+    MatSlideToggleModule,
+    FormsModule
   ]
 })
 export class VisualisationsModule { }

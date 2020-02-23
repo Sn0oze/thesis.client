@@ -40,3 +40,8 @@ button{
     outline: none;
   }
 }
+
+a[mat-button]:hover{
+  text-decoration: none;
+  color: inherit;
+}

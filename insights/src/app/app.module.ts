@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {VisualisationsModule} from './visualisations/visualisations.module';
 import * as hammer from 'hammerjs';
+import {MatButtonModule} from '@angular/material/button';
 
 class HammerConfig extends HammerGestureConfig {
   overrides = {
@@ -24,7 +25,8 @@ class HammerConfig extends HammerGestureConfig {
     BrowserAnimationsModule,
     MatToolbarModule,
     VisualisationsModule,
-    HammerModule
+    HammerModule,
+    MatButtonModule
   ],
   providers: [
     {

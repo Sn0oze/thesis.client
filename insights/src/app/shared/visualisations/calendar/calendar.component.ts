@@ -26,7 +26,9 @@ export class CalendarComponent implements OnInit {
     });
   }
 
-  picked(day): void {
-    this.selected.emit(day);
+  picked(day: CalendarCell): void {
+    if (day.value > 0) {
+      this.selected.emit(day);
+    }
   }
 }

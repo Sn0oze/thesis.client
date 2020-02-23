@@ -18,11 +18,10 @@ export class CalendarViewComponent implements OnInit {
   totalsRange: number[];
   title: string;
   current = 24;
-  readonly range = 31;
+  readonly range = window.innerWidth >= 1000 ? 31 : 10;
   readonly dayCount = 100;
   readonly min = 0;
   readonly max = this.dayCount - this.range;
-  panCounter = 0;
 
   constructor() { }
 
@@ -83,13 +82,5 @@ export class CalendarViewComponent implements OnInit {
   isWeekend(date: moment.Moment): boolean {
     const day = date.day();
     return day === 6 || day === 0;
-  }
-
-  delay(event, direction: 'left' | 'right'): void {
-    if (this.panCounter >= 5) {
-        direction === 'left' ? this.previous() : this.next();
-        this.panCounter = 0;
-    }
-    this.panCounter += 1;
   }
 }

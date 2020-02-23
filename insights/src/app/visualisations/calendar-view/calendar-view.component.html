@@ -14,8 +14,8 @@
       </button>
     </div>
     <app-calendar
-      (panLeft)="delay($event, 'left')"
-      (panRight)="delay($event, 'right')"
+      (panLeft)="previous()"
+      (panRight)="next()"
       [header]="headerRange"
       [body]="bodyRange"
       [totals]="totalsRange"

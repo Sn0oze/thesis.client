@@ -1,3 +1,7 @@
+@import '~bootstrap/scss/functions';
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
 :host{
   display: block;
 }
@@ -11,8 +15,7 @@ $border: $border-width solid $border-color;
 .calendar{
   width: 100%;
   user-select: none;
-  table-layout: fixed;
-  margin-bottom: $hour-label-size ;
+  margin-bottom: $hour-label-size;
   tbody td:not(.hour-label){
     font-weight: 400;
     font-size: .75rem;
@@ -20,6 +23,8 @@ $border: $border-width solid $border-color;
   }
   td, th{
     border: $border;
+    max-width: 37px;
+    min-width: 37px;
     text-align: center;
     vertical-align: center;
     padding: 0;
@@ -51,4 +56,10 @@ $border: $border-width solid $border-color;
 .weekend{
   background: #959595 !important;
   color: $background-color;
+}
+
+@include media-breakpoint-up(lg){
+  .calendar{
+    table-layout: fixed;
+  }
 }

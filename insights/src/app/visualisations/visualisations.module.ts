@@ -7,11 +7,12 @@ import {SharedModule} from '../shared/shared.module';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { AnnotationDialogComponent } from './calendar-view/annotation-dialog/annotation-dialog.component';
+import { GesturesViewComponent } from './gestures-view/gestures-view.component';
 
 
 
 @NgModule({
-    declarations: [CalendarViewComponent, VisualisationsComponent, AnnotationDialogComponent],
+    declarations: [CalendarViewComponent, VisualisationsComponent, AnnotationDialogComponent, GesturesViewComponent],
     exports: [
       SharedModule
     ],

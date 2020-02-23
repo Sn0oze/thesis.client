@@ -18,7 +18,7 @@ export class CalendarViewComponent implements OnInit {
   totalsRange: number[];
   title: string;
   current = 24;
-  readonly range = window.innerWidth >= 1000 ? 31 : 10;
+  readonly range = window.innerWidth >= 1000 ? 31 : 8;
   readonly dayCount = 100;
   readonly min = 0;
   readonly max = this.dayCount - this.range;

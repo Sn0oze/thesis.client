@@ -1,1 +1,25 @@
-<p>gestures-view works!</p>
+<!--suppress AngularUndefinedBinding -->
+
+<div class="container fill-body">
+  <div class="col h-75">
+    <p class="mt-3 text-center">{{event}}</p>
+    <div
+      matRipple
+      (pinchin)="handleGesture($event)"
+      (pinchout)="handleGesture($event)"
+      (panleft)="handleGesture($event)"
+      (panright)="handleGesture($event)"
+      (pandown)="handleGesture($event)"
+      (panup)="handleGesture($event)"
+      (swipeup)="handleGesture($event)"
+      (swipedown)="handleGesture($event)"
+      (swipeleft)="handleGesture($event)"
+      (swiperight)="handleGesture($event)"
+      (tap)="handleGesture($event)"
+      (press)="handleGesture($event)"
+      (pressup)="handleGesture($event)"
+      class="bg-info h-100 m-5 rounded d-flex align-items-center justify-content-center">
+      <h1>Gesture Element</h1>
+    </div>
+  </div>
+</div>

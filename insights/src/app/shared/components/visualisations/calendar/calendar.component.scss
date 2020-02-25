@@ -1,7 +1,3 @@
-@import '../../../../../../node_modules/bootstrap/scss/functions';
-@import "../../../../../../node_modules/bootstrap/scss/variables";
-@import "../../../../../../node_modules/bootstrap/scss/mixins";
-
 :host{
   display: block;
 }
@@ -56,10 +52,4 @@ $border: $border-width solid $border-color;
 .weekend{
   background: #959595 !important;
   color: $background-color;
-}
-
-@include media-breakpoint-up(lg){
-  .calendar.fixed-layout{
-    table-layout: fixed;
-  }
 }

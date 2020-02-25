@@ -12,7 +12,6 @@ export class CalendarComponent implements OnInit {
   @Input() header: CalendarHeader[];
   @Input() body: Array<CalendarCell>[];
   @Input() totals: number[];
-  @Input() fixedLayout: boolean;
   labels: string[];
 
   constructor() { }

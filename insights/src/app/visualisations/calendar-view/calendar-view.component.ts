@@ -14,7 +14,10 @@ export class CalendarViewComponent implements OnInit {
   body = [] as Array<CalendarCell>[];
   totals: number[];
   title: string;
+  lastTap: number;
   readonly dayCount = 365;
+  modes = ['navigate', 'draw'];
+  mode = this.modes[0];
 
   constructor() { }
 
@@ -48,7 +51,7 @@ export class CalendarViewComponent implements OnInit {
   }
 
   selected(day): void {
-    alert('Selected: ' + day.day);
+   console.log('Selected: ' + day.day);
   }
 
   isWeekend(date: moment.Moment): boolean {
@@ -56,7 +59,15 @@ export class CalendarViewComponent implements OnInit {
     return day === 6 || day === 0;
   }
 
-  log(): void {
-    console.log('dance');
+  changeMode(event): void {
+    const threshold = 500;
+    const currentTime = event.timeStamp;
+    // only values below the threshold are considered double taps
+    if (this.lastTap && currentTime - this.lastTap <= threshold) {
+      this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
+      event.stopImmediatePropagation();
+
+    }
+    this.lastTap = currentTime;
   }
 }

@@ -16,10 +16,11 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
+    <div class="mb-3 pb-3">Mode: {{mode}}</div>
     <div class="position-relative">
       <app-calendar
         #calendar
-        (click)="log()"
+        (tap)="changeMode($event)"
         [header]="header"
         [body]="body"
         [totals]="totals"

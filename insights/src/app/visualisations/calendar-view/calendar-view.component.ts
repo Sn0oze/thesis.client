@@ -1,15 +1,13 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader} from '../../shared/models';
-import {CalendarComponent} from '../../shared/components/visualisations/calendar/calendar.component';
 
 @Component({
   selector: 'app-calendar-view',
   templateUrl: './calendar-view.component.html',
   styleUrls: ['./calendar-view.component.scss']
 })
-export class CalendarViewComponent implements OnInit, AfterViewInit {
-  @ViewChild('calendar') calendar: CalendarComponent;
+export class CalendarViewComponent implements OnInit {
   hours: number[];
   days: number[];
   header = [] as CalendarHeader[];
@@ -49,20 +47,8 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     this.title = `${rangeStart.format(format)} - ${rangeEnd.format(format)}`;
   }
 
-  ngAfterViewInit(): void {
-    console.log(this.calendar);
-  }
-
   selected(day): void {
     alert('Selected: ' + day.day);
-  }
-
-  next(): void {
-    this.calendar.next();
-  }
-
-  previous(): void {
-    this.calendar.previous();
   }
 
   isWeekend(date: moment.Moment): boolean {

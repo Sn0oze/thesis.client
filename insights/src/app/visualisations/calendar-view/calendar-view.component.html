@@ -5,14 +5,14 @@
       <app-swipe-counter></app-swipe-counter>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <button mat-icon-button (click)="calendar.scrollStart()">
+      <button mat-icon-button (tap)="calendar.previous()" (press)="calendar.scrollStart()">
         <mat-icon>chevron_left</mat-icon>
       </button>
       <div class="text-center">
         <h1 class="user-select-none">Calendar</h1>
         <p class="user-select-none">{{title}}</p>
       </div>
-      <button mat-icon-button (click)="calendar.scrollEnd()">
+      <button mat-icon-button (tap)="calendar.next()" (press)="calendar.scrollEnd()">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
@@ -20,8 +20,6 @@
       <app-calendar
         #calendar
         (click)="log()"
-        (panleft)="next()"
-        (panright)="previous()"
         [header]="header"
         [body]="body"
         [totals]="totals"

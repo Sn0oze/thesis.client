@@ -5,25 +5,30 @@
       <app-swipe-counter></app-swipe-counter>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <button mat-icon-button (click)="previous()" [disabled]="(current === min) || includeAll">
+      <button mat-icon-button (click)="previous()" [disabled]="true">
         <mat-icon>chevron_left</mat-icon>
       </button>
       <div class="text-center">
-        <h1 class="user-select-none">Calendar {{text}}</h1>
+        <h1 class="user-select-none">Calendar</h1>
         <p class="user-select-none">{{title}}</p>
       </div>
-      <button mat-icon-button (click)="next()" [disabled]="(current === max) || includeAll">
+      <button mat-icon-button (click)="next()" [disabled]="true">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
-    <div>
+    <div class="position-relative">
       <app-calendar
-        [fixedLayout]="false"
+        #calendar
+        (click)="log()"
+        (panleft)="next()"
+        (panright)="previous()"
         [header]="header"
         [body]="body"
         [totals]="totals"
         (selected)="selected($event)"></app-calendar>
-      <svg class="sketch-display"></svg>
+      <!--<svg class="sketch-display">
+        <rect x="50" y="50" width="100" color="red" height="50"></rect>
+      </svg>-->
     </div>
   </div>
 </div>

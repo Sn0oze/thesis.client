@@ -1,29 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader} from '../../shared/models';
+import {CalendarComponent} from '../../shared/components/visualisations/calendar/calendar.component';
 
 @Component({
   selector: 'app-calendar-view',
   templateUrl: './calendar-view.component.html',
   styleUrls: ['./calendar-view.component.scss']
 })
-export class CalendarViewComponent implements OnInit {
+export class CalendarViewComponent implements OnInit, AfterViewInit {
+  @ViewChild('calendar') calendar: CalendarComponent;
   hours: number[];
   days: number[];
   header = [] as CalendarHeader[];
   body = [] as Array<CalendarCell>[];
   totals: number[];
-  headerRange = [] as CalendarHeader[];
-  bodyRange = [] as Array<CalendarCell>[];
-  totalsRange: number[];
   title: string;
-  current = 24;
-  readonly range = window.innerWidth >= 1000 ? 31 : 8;
-  readonly dayCount = 100;
-  readonly min = 0;
-  readonly max = this.dayCount - this.range;
-  text: string;
-  includeAll = false;
+  readonly dayCount = 365;
 
   constructor() { }
 
@@ -40,7 +33,8 @@ export class CalendarViewComponent implements OnInit {
         weekDay: now.format('dd'),
         dayOfMonth: now.format('DD'),
         weekend: this.isWeekend(now),
-        date: now.clone()};
+        date: now.clone()
+      };
     });
 
     this.hours.forEach(h => this.body[h] = this.days.map(d => {
@@ -49,18 +43,14 @@ export class CalendarViewComponent implements OnInit {
       this.totals[d] += value;
       return {value, weekend: this.header[d].weekend, day: `${this.header[d].weekDay} ${this.header[d].dayOfMonth}`};
     }));
-    this.selectSubset();
-  }
-
-  selectSubset(): void {
-    const end = this.current + this.range;
-    this.headerRange = this.header.slice(this.current, end);
-    this.bodyRange = this.body.map(r => r.slice(this.current, end));
-    this.totalsRange = this.totals.slice(this.current, end);
-    const rangeStart = this.headerRange[0].date;
-    const rangeEnd = this.headerRange[this.headerRange.length - 1].date;
+    const rangeStart = this.header[0].date;
+    const rangeEnd = this.header[this.header.length - 1].date;
     const format = 'MMMM Do';
     this.title = `${rangeStart.format(format)} - ${rangeEnd.format(format)}`;
+  }
+
+  ngAfterViewInit(): void {
+    console.log(this.calendar);
   }
 
   selected(day): void {
@@ -68,17 +58,11 @@ export class CalendarViewComponent implements OnInit {
   }
 
   next(): void {
-    if (this.current < this.max) {
-      this.current += 1;
-      this.selectSubset();
-    }
+    this.calendar.next();
   }
 
   previous(): void {
-    if (this.current > this.min) {
-      this.current -= 1;
-      this.selectSubset();
-    }
+    this.calendar.previous();
   }
 
   isWeekend(date: moment.Moment): boolean {
@@ -86,10 +70,7 @@ export class CalendarViewComponent implements OnInit {
     return day === 6 || day === 0;
   }
 
-  pan(event): void {
-    if (!this.includeAll) {
-      this.text = event.additionalEvent + ': ' + event.distance.toFixed(0);
-      event.additionalEvent === 'panleft' ? this.previous() : this.next();
-    }
+  log(): void {
+    console.log('dance');
   }
 }

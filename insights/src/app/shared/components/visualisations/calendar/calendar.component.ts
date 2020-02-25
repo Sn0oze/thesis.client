@@ -32,8 +32,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.scrollElement = this.scrollRef.nativeElement;
-    this.max = this.scrollElement.scrollWidth - this.scrollElement.clientWidth;
-    console.log(this.scrollElement.scrollWidth, this.scrollElement.clientWidth, this.max);
+    this.max = this.scrollElement.scrollWidth;
   }
 
   public picked(day: CalendarCell): void {

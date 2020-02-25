@@ -92,14 +92,4 @@ export class CalendarViewComponent implements OnInit {
       event.additionalEvent === 'panleft' ? this.previous() : this.next();
     }
   }
-
-  toggle(): void {
-    if (this.includeAll) {
-      this.headerRange = this.header;
-      this.bodyRange = this.body;
-      this.totalsRange = this.totals;
-    } else {
-      this.selectSubset();
-    }
-  }
 }

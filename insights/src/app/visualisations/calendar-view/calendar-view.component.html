@@ -2,25 +2,28 @@
 <div class="container">
   <div class="mt-5">
     <div>
-      <mat-slide-toggle [(ngModel)]="includeAll" (change)="toggle()">Include All</mat-slide-toggle>
+      <app-swipe-counter></app-swipe-counter>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
       <button mat-icon-button (click)="previous()" [disabled]="(current === min) || includeAll">
         <mat-icon>chevron_left</mat-icon>
       </button>
       <div class="text-center">
-        <h1>Calendar {{text}}</h1>
-        <p>{{title}}</p>
+        <h1 class="user-select-none">Calendar {{text}}</h1>
+        <p class="user-select-none">{{title}}</p>
       </div>
       <button mat-icon-button (click)="next()" [disabled]="(current === max) || includeAll">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
-    <app-calendar
-      [fixedLayout]="!includeAll"
-      [header]="headerRange"
-      [body]="bodyRange"
-      [totals]="totalsRange"
-      (selected)="selected($event)"></app-calendar>
+    <div>
+      <app-calendar
+        [fixedLayout]="false"
+        [header]="header"
+        [body]="body"
+        [totals]="totals"
+        (selected)="selected($event)"></app-calendar>
+      <svg class="sketch-display"></svg>
+    </div>
   </div>
 </div>

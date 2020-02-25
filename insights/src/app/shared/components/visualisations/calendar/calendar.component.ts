@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as moment from 'moment';
-import {CalendarCell, CalendarHeader} from '../../models';
+import {CalendarCell, CalendarHeader} from '../../../models';
 
 @Component({
   selector: 'app-calendar',

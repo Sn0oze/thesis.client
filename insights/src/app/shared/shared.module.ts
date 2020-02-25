@@ -3,16 +3,19 @@ import { CommonModule } from '@angular/common';
 import { KeyboardAnnotationComponent } from './components/keyboard-annotation/keyboard-annotation.component';
 import { StylusAnnotationComponent } from './components/stylus-annotation/stylus-annotation.component';
 import {CalendarComponent} from './components/visualisations/calendar/calendar.component';
+import { SwipeCounterComponent } from './components/swipe-counter/swipe-counter.component';
 
 @NgModule({
   declarations: [
     KeyboardAnnotationComponent,
     StylusAnnotationComponent,
-    CalendarComponent],
+    CalendarComponent,
+    SwipeCounterComponent],
   exports: [
     KeyboardAnnotationComponent,
     StylusAnnotationComponent,
-    CalendarComponent
+    CalendarComponent,
+    SwipeCounterComponent
   ],
   imports: [
     CommonModule

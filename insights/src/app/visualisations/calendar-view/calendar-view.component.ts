@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
-import {CalendarCell, CalendarHeader} from '../../shared/models';
+import {CalendarCell, CalendarHeader, Mode} from '../../shared/models';
 
 @Component({
   selector: 'app-calendar-view',
   templateUrl: './calendar-view.component.html',
   styleUrls: ['./calendar-view.component.scss']
 })
+
 export class CalendarViewComponent implements OnInit {
   hours: number[];
   days: number[];
@@ -14,10 +15,11 @@ export class CalendarViewComponent implements OnInit {
   body = [] as Array<CalendarCell>[];
   totals: number[];
   title: string;
-  lastTap: number;
   readonly dayCount = 365;
-  modes = ['navigate', 'draw'];
-  mode = this.modes[0];
+  mode: Mode;
+  modes = ['select', 'draw'] as Mode[];
+  shapes = [];
+  value: string;
 
   constructor() { }
 
@@ -48,26 +50,25 @@ export class CalendarViewComponent implements OnInit {
     const rangeEnd = this.header[this.header.length - 1].date;
     const format = 'MMMM Do';
     this.title = `${rangeStart.format(format)} - ${rangeEnd.format(format)}`;
+
+    this.mode = 'select';
   }
 
   selected(day): void {
-   console.log('Selected: ' + day.day);
+    console.log('Selected: ' + day);
+    this.value = day;
   }
 
   isWeekend(date: moment.Moment): boolean {
     const day = date.day();
     return day === 6 || day === 0;
   }
-
-  changeMode(event): void {
-    const threshold = 500;
-    const currentTime = event.timeStamp;
-    // only values below the threshold are considered double taps
-    if (this.lastTap && currentTime - this.lastTap <= threshold) {
-      this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
-      event.stopImmediatePropagation();
-
+  draw(event): void {
+    if (this.mode === 'draw') {
+      this.shapes.push({x: event.clientX, y: event.clientY});
     }
-    this.lastTap = currentTime;
+  }
+  toggleMode(): void {
+    this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
   }
 }

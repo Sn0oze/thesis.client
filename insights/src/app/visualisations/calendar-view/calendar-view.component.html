@@ -9,18 +9,17 @@
         <mat-icon>chevron_left</mat-icon>
       </button>
       <div class="text-center">
-        <h1 class="user-select-none">Calendar</h1>
+        <h1 class="user-select-none">Calendar {{value}}</h1>
         <p class="user-select-none">{{title}}</p>
       </div>
       <button mat-icon-button (tap)="calendar.next()" (press)="calendar.scrollEnd()">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>
-    <div class="mb-3 pb-3">Mode: {{mode}}</div>
+    <div (dblclick)="toggleMode()" class="mb-3 pb-3 user-select-none pointer">Mode: {{mode}}</div>
     <div class="position-relative">
       <app-calendar
         #calendar
-        (tap)="changeMode($event)"
         [header]="header"
         [body]="body"
         [totals]="totals"

@@ -1,4 +1,6 @@
-<div class="table-responsive" #scroll>
+<!--suppress AngularUndefinedBinding -->
+<div>{{setLabel('text')}}</div>
+<div style="overflow: hidden; touch-action: none" #scroll> <!--(scroll)="log($event)" on parent container and emit if other components should know the current scroll position-->
   <table class="calendar">
     <thead>
     <tr>
@@ -22,7 +24,6 @@
       </td>
       <td
         *ngFor="let day of row"
-        (click)="picked(day)"
         [ngClass]="{'weekend': day.weekend}">{{day.value > 0 ? day.value : ''}}</td>
     </tr>
     </tbody>

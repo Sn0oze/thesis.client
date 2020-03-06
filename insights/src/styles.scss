@@ -57,3 +57,20 @@ a[mat-button]:hover{
 .marked{
   border-color: #cd6359 !important;
 }
+
+//d3 styles
+svg {
+  &.canvas{
+    background-color: lightblue;
+    border: 1px solid black;
+    cursor: crosshair;
+    touch-action: none;
+  }
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}

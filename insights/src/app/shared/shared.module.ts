@@ -11,6 +11,7 @@ import {MatRippleModule} from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     MatRippleModule,
     MatIconModule,
     MatButtonModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    FormsModule
   ]
 })
 export class SharedModule { }

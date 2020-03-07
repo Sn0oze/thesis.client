@@ -12,7 +12,7 @@ export class DrawCanvas {
   path: any;
   drawing: boolean;
   touchEvents: any[];
-  color = '#313131';
+  color = 'rgba(50,130,250, .6)';
 
   constructor(private container: HTMLElement) {
     this.init();
@@ -28,7 +28,7 @@ export class DrawCanvas {
       .attr('height', this.height + this.margin.top + this.margin.bottom);
 
     this.svg.append('g')
-      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+      .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     this.ptData = [];
     this.session = [];
@@ -56,7 +56,7 @@ export class DrawCanvas {
       .data([this.ptData])
       .attr('class', 'line')
       .attr('d', this.line)
-      .style('stroke', 'rgba(50,130,250, .6)');
+      .style('stroke', this.color);
   }
 
   ignore(): void {
@@ -74,19 +74,21 @@ export class DrawCanvas {
     this.tick();
   }
 
-  onmove(d, i, n): void {
-    const type = d3.event.type;
-    let point;
+  onmove(data, index, nodes): void {
+    if (this.drawing) {
+      const type = d3.event.type;
+      let point;
 
-    if (type === 'mousemove') {
-      point = d3.mouse(n[i]);
-    } else {
-      // only deal with a single touch input
-      point = d3.touches(n[i])[0];
+      if (type === 'mousemove') {
+        point = d3.mouse(nodes[index]);
+      } else {
+        // only deal with a single touch input
+        point = d3.touches(nodes[index])[0];
+      }
+      // push a new data point onto the back
+      this.ptData.push({ x: point[0], y: point[1] });
+      this.tick();
     }
-    // push a new data point onto the back
-    this.ptData.push({ x: point[0], y: point[1] });
-    this.tick();
   }
 
   tick(): void {

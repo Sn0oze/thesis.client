@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader, Mode} from '../../shared/models';
+import {DataService} from '../../shared/services/data.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -16,12 +17,12 @@ export class CalendarViewComponent implements OnInit {
   totals: number[];
   title: string;
   readonly dayCount = 365;
-  mode: Mode;
   modes = ['select', 'draw'] as Mode[];
+  mode = this.modes[1];
   shapes = [];
   value: string;
 
-  constructor() { }
+  constructor(private data: DataService) { }
 
   ngOnInit(): void {
     const now = moment().subtract(this.dayCount, 'day');
@@ -51,7 +52,7 @@ export class CalendarViewComponent implements OnInit {
     const format = 'MMMM Do';
     this.title = `${rangeStart.format(format)} - ${rangeEnd.format(format)}`;
 
-    this.mode = 'select';
+    this.data.loadCSV().subscribe((res) => console.log('res', res));
   }
 
   selected(day): void {
@@ -70,5 +71,10 @@ export class CalendarViewComponent implements OnInit {
   }
   toggleMode(): void {
     this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
+  }
+
+  viewChecked(): string {
+    console.log('view checked');
+    return 'view checked2';
   }
 }

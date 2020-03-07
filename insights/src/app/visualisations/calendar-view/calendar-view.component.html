@@ -1,10 +1,8 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="container">
   <div class="mt-5">
-    <div>
-      <app-swipe-counter></app-swipe-counter>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="user-select-none">{{viewChecked()}}</p>
+    <!--<div class="d-flex justify-content-between align-items-center mb-3">
       <button mat-icon-button (tap)="calendar.previous()" (press)="calendar.scrollStart()">
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -15,18 +13,17 @@
       <button mat-icon-button (tap)="calendar.next()" (press)="calendar.scrollEnd()">
         <mat-icon>chevron_right</mat-icon>
       </button>
-    </div>
+    </div>-->
     <div (dblclick)="toggleMode()" class="mb-3 pb-3 user-select-none pointer">Mode: {{mode}}</div>
     <div class="position-relative">
+      <app-draw-canvas *ngIf="mode === 'draw'" class="draw-canvas"></app-draw-canvas>
       <app-calendar
         #calendar
+        [mode]="mode"
         [header]="header"
         [body]="body"
         [totals]="totals"
         (selected)="selected($event)"></app-calendar>
-      <!--<svg class="sketch-display">
-        <rect x="50" y="50" width="100" color="red" height="50"></rect>
-      </svg>-->
     </div>
   </div>
 </div>

@@ -1,13 +1,26 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader, Mode} from '../../../models';
 
+const marker = 'marked';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit, AfterViewInit {
+export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() selected = new EventEmitter<any>();
   @Output() modeChange = new EventEmitter<Mode>();
   @Input() header: CalendarHeader[];
@@ -15,15 +28,43 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   @Input() totals: number[];
   @Input() mode: Mode;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
-  scrollElement: Element;
+  scrollElement: HTMLElement;
   labels: string[];
   max: number;
   readonly cellWidth = 37;
   readonly min = 0;
-  modes = ['select', 'draw'] as Mode[];
-  shapes = new Set<HTMLElement>();
+  currentSelection = new Set<HTMLElement>();
+  hammer: HammerManager;
+  onTap: (event) => void;
+  onPan: (event) => void;
+  onPanEnd: () => void;
 
-  constructor(private zone: NgZone) { }
+  constructor(private zone: NgZone) {
+    this.onTap = (event) => {
+      const element = (event.target as HTMLElement);
+      this.zone.run(() => {
+        this.selected.emit(element.innerText);
+        this.mark(element);
+      });
+    };
+
+    this.onPan = (event) => {
+      const element = (event.target as HTMLElement);
+      if (element.innerText) {
+        this.panned(event);
+        this.currentSelection.add(element);
+      }
+    };
+    this.onPanEnd = () => {
+      this.currentSelection.forEach(element => {
+        element.classList.remove(marker);
+      });
+      this.zone.run(() => {
+        this.selected.emit(this.currentSelection.values());
+      });
+      this.currentSelection.clear();
+    };
+  }
 
   ngOnInit(): void {
     const now = moment();
@@ -35,42 +76,37 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.scrollElement = this.scrollRef.nativeElement;
+    this.scrollElement = this.scrollRef.nativeElement as HTMLElement;
     this.max = this.scrollElement.scrollWidth;
-
     this.zone.runOutsideAngular(() => {
-      this.scrollElement.addEventListener('click', (event) => {
-        const element = (event.target as HTMLElement);
-        if (element.nodeName === 'TD' && element.innerText) {
-          this.zone.run(() => {
-            this.selected.emit(element.innerText);
-          });
-        }
-      });
-      this.scrollElement.addEventListener('touchstart', (event) => {
-        const element = (event.target as HTMLElement);
-        if (element.nodeName === 'TD' && element.innerText) {
-          this.zone.run(() => {
-            this.selected.emit(element.innerText);
-            this.mark(element);
-          });
-        }
-      });
-      this.scrollElement.addEventListener('touchmove', (event) => {
-        const element = (event.target as HTMLElement);
-        if (element.nodeName === 'TD' && element.innerText) {
-          this.zone.run(() => {
-            // this.panned(event);
-          });
-        }
-      });
-      this.scrollElement.addEventListener('mousemove', (event) => {
-        const element = (event.target as HTMLElement);
-        if (element.nodeName === 'TD' && element.innerText) {
-          this.panned(event);
-        }
-      });
+      this.hammer = new Hammer(this.scrollElement);
     });
+    if (this.mode === 'select') {
+      this.addListeners();
+    }
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    const newMode = changes.mode;
+    if (newMode && this.scrollElement) {
+      const value = newMode.currentValue;
+      value === 'select' ? this.addListeners() : this.removeListeners();
+    }
+  }
+
+  addListeners(): void {
+    this.zone.runOutsideAngular(() => {
+      this.hammer = new Hammer(this.scrollElement);
+      this.hammer.on('panmove', this.onPan);
+      this.hammer.on('tap', this.onTap);
+      this.hammer.on('panend', this.onPanEnd);
+    });
+  }
+  removeListeners(): void {
+    if (this.hammer) {
+      this.hammer.off('panmove', this.onPan);
+      this.hammer.off('panend', this.onTap);
+      this.hammer.off('tap', this.onPanEnd);
+    }
   }
 
   next(): void {
@@ -82,7 +118,6 @@ export class CalendarComponent implements OnInit, AfterViewInit {
   }
 
   previous(): void {
-    console.log(this.scrollElement.scrollLeft, this.cellWidth, this.scrollElement.scrollWidth);
     if (this.scrollElement.scrollLeft - this.cellWidth >= this.min) {
       this.scrollElement.scrollLeft -= this.cellWidth;
     }
@@ -101,44 +136,20 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     this.scrollElement.scrollLeft = this.max;
   }
 
-  clicked(data, event): void {
-    /*
-    console.log(event);
-    if (event.type === 'dblclick') {
-      this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
-      this.modeChange.emit(this.mode);
-    } else {
-      if (event.value > 0) {
-        this.selected.emit(event);
-      }
-    }
-     */
-    this.zone.runOutsideAngular(() => {
-      if (data.value > 0) {
-        // this.selected.emit(data);
-        this.mark(event.target);
-      }
-    });
-  }
-
   mark(element: HTMLElement): void {
-    const marker = 'marked';
     const classList = element.classList;
-    classList.contains('marked') ? classList.remove(marker) : classList.add(marker);
+    if (element.innerText) {
+      classList.contains('marked') ? classList.remove(marker) : classList.add(marker);
+    }
   }
 
   panned(event): void {
     const element = event.target;
     this.zone.runOutsideAngular(() => {
-      if (!this.shapes.has(element)) {
-        this.shapes.add(element);
+      if (!this.currentSelection.has(element)) {
+        this.currentSelection.add(element);
         this.mark(element);
       }
     });
-  }
-
-  setLabel(value: string): string {
-    console.log('change detected');
-    return value;
   }
 }

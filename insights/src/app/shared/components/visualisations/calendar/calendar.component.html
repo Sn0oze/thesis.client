@@ -1,7 +1,6 @@
 <!--suppress AngularUndefinedBinding -->
-<div>{{setLabel('text')}}</div>
-<div style="overflow: hidden; touch-action: none" #scroll> <!--(scroll)="log($event)" on parent container and emit if other components should know the current scroll position-->
-  <table class="calendar">
+<div class="table-responsive" style="overflow: hidden" #scroll> <!--(scroll)="log($event)" on parent container and emit if other components should know the current scroll position-->
+  <table class="calendar" style="touch-action: pinch-zoom">
     <thead>
     <tr>
       <th class="hour-label">

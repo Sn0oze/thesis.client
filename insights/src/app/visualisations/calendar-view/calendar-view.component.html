@@ -7,16 +7,23 @@
         <mat-icon>chevron_left</mat-icon>
       </button>
       <div class="text-center">
-        <h1 class="user-select-none">Calendar {{value}}</h1>
+        <h1 class="user-select-none">Calendar</h1>
         <p class="user-select-none">{{title}}</p>
       </div>
       <button mat-icon-button (tap)="calendar.next()" (press)="calendar.scrollEnd()">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </div>-->
-    <div (dblclick)="toggleMode()" class="mb-3 pb-3 user-select-none pointer">Mode: {{mode}}</div>
+    <div (dblclick)="toggleMode()" class="mb-3 user-select-none pointer d-flex align-items-center">
+      <span>Double tap tp switch mode: {{mode}}</span>
+    </div>
+    <div class="mb-3 toolbar-container">
+      <app-canvas-toolbar
+        *ngIf="isDrawMode()"
+        (colorPicked)="changeColor($event)"></app-canvas-toolbar>
+    </div>
     <div class="position-relative">
-      <app-draw-canvas *ngIf="mode === 'draw'" class="draw-canvas"></app-draw-canvas>
+      <app-draw-canvas [color]="color"  *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>
       <app-calendar
         #calendar
         [mode]="mode"

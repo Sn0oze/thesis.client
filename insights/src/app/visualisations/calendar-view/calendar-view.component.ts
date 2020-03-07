@@ -6,7 +6,7 @@ import {DataService} from '../../shared/services/data.service';
 @Component({
   selector: 'app-calendar-view',
   templateUrl: './calendar-view.component.html',
-  styleUrls: ['./calendar-view.component.scss']
+  styleUrls: ['./calendar-view.component.scss'],
 })
 
 export class CalendarViewComponent implements OnInit {
@@ -21,6 +21,7 @@ export class CalendarViewComponent implements OnInit {
   mode = this.modes[1];
   shapes = [];
   value: string;
+  color: string;
 
   constructor(private data: DataService) { }
 
@@ -64,17 +65,19 @@ export class CalendarViewComponent implements OnInit {
     const day = date.day();
     return day === 6 || day === 0;
   }
-  draw(event): void {
-    if (this.mode === 'draw') {
-      this.shapes.push({x: event.clientX, y: event.clientY});
-    }
-  }
+
   toggleMode(): void {
     this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
   }
 
   viewChecked(): string {
     console.log('view checked');
-    return 'view checked2';
+    return 'view checked';
+  }
+  changeColor(color: string): void {
+    this.color = color;
+  }
+  isDrawMode(): boolean {
+    return this.mode === 'draw';
   }
 }

@@ -1,7 +1,22 @@
-<div class="d-flex align-items-center toolbar" [@fadeInStagger]="colors.length">
-  <mat-icon class="user-select-none">palette</mat-icon>
-  <app-color-patch
-    class="ml-2"
-    *ngFor="let color of colors" [color]="color"
-    (click)="changeColor(color)"></app-color-patch>
+<div class="d-flex flex-row align-items-center toolbar" [@fadeInStagger]="colors.length">
+  <div class="pr-5 d-flex flex-row align-items-center">
+    <mat-icon @fadeInOut class="user-select-none mr-2">palette</mat-icon>
+    <div>
+      <app-color-patch
+        [ngClass]="{'mr-2': !last}"
+        *ngFor="let color of colors; let last = last" [color]="color"
+        (click)="changeColor(color)"></app-color-patch>
+    </div>
+  </div>
+  <div class="pr-5 d-flex flex-row align-items-center">
+    <mat-icon @fadeInOut class="user-select-none mr-2">gesture</mat-icon>
+    <mat-button-toggle-group @fadeInOut [(ngModel)]="width" (change)="changeWidth()">
+      <mat-button-toggle value="2px">
+        <mat-icon>edit</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="4px">
+        <mat-icon>brush</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
 </div>

@@ -1,0 +1,7 @@
+<div class="d-flex align-items-center toolbar" [@fadeStagger]="colors.length">
+  <mat-icon class="user-select-none">palette</mat-icon>
+  <app-color-patch
+    class="ml-2"
+    *ngFor="let color of colors" [color]="color"
+    (click)="changeColor(color)"></app-color-patch>
+</div>

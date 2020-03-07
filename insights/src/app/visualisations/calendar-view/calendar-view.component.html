@@ -1,7 +1,7 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="container">
   <div class="mt-5">
-    <p class="user-select-none">{{viewChecked()}}</p>
+    <!--<p class="user-select-none">{{viewChecked()}}</p>-->
     <!--<div class="d-flex justify-content-between align-items-center mb-3">
       <button mat-icon-button (tap)="calendar.previous()" (press)="calendar.scrollStart()">
         <mat-icon>chevron_left</mat-icon>
@@ -20,10 +20,11 @@
     <div class="mb-3 toolbar-container">
       <app-canvas-toolbar
         *ngIf="isDrawMode()"
+        (widthPicked)="changeWidth($event)"
         (colorPicked)="changeColor($event)"></app-canvas-toolbar>
     </div>
     <div class="position-relative">
-      <app-draw-canvas [color]="color"  *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>
+      <app-draw-canvas [color]="color" [width]="width" *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>
       <app-calendar
         #calendar
         [mode]="mode"

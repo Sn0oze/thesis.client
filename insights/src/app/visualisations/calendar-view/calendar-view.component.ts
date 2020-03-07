@@ -21,6 +21,7 @@ export class CalendarViewComponent implements OnInit {
   mode = this.modes[1];
   value: string;
   color: string;
+  width: string;
 
   constructor(private data: DataService) { }
 
@@ -75,6 +76,9 @@ export class CalendarViewComponent implements OnInit {
   }
   changeColor(color: string): void {
     this.color = color;
+  }
+  changeWidth(width: string): void {
+    this.width = width;
   }
   isDrawMode(): boolean {
     return this.mode === 'draw';

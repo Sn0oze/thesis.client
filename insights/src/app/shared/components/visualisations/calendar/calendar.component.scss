@@ -34,6 +34,7 @@ $border: $border-width solid $border-color;
         overflow: visible;
         font-size: $hour-label-size;
         line-height: $hour-label-size;
+        pointer-events: none;
       }
     }
   }

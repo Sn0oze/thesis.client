@@ -10,7 +10,7 @@ import { ColorPatchComponent } from './components/color-patch/color-patch.compon
 import {MatRippleModule} from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import { PenWidthSelectComponent } from './components/pen-width-select/pen-width-select.component';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { PenWidthSelectComponent } from './components/pen-width-select/pen-width
     DrawCanvasComponent,
     CanvasToolbarComponent,
     ColorPatchComponent,
-    PenWidthSelectComponent],
+  ],
     exports: [
         KeyboardAnnotationComponent,
         StylusAnnotationComponent,
@@ -34,7 +34,8 @@ import { PenWidthSelectComponent } from './components/pen-width-select/pen-width
     CommonModule,
     MatRippleModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatButtonToggleModule
   ]
 })
 export class SharedModule { }

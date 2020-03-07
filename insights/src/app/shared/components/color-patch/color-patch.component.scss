@@ -1,4 +1,6 @@
 $patch-width: 2.5rem;
+$border-width: 2px;
+$active-width: 3rem;
 :host{
   display: inline-block;
   height: $patch-width;
@@ -13,4 +15,8 @@ $patch-width: 2.5rem;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   cursor: pointer;
   overflow: hidden;
+  transition: all 225ms ease-out;
+  &.active{
+    transform: scale(1.25);
+  }
 }

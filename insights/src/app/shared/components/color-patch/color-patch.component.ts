@@ -7,6 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class ColorPatchComponent implements OnInit {
   @Input() color: string;
+  @Input() active: boolean;
   constructor() { }
 
   ngOnInit(): void {

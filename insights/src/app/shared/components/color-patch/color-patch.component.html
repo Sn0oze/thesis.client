@@ -1,1 +1,5 @@
-<div matRipple [matRippleRadius]="16" [matRippleCentered]="true" class="patch" [style.background-color]="color"></div>
+<div
+  class="patch"
+  [ngClass]="{'active': active}"
+  [style.background-color]="color">
+</div>

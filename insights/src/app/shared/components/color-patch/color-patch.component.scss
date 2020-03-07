@@ -1,0 +1,15 @@
+$patch-width: 2rem;
+:host{
+  display: inline-block;
+  width: $patch-width;
+  height: $patch-width;
+}
+.patch{
+  display: inline-block;
+  width: $patch-width;
+  height: $patch-width;
+  border-radius: $patch-width;
+  background-color: #cccccc;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  cursor: pointer;
+}

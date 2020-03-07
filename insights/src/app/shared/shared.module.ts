@@ -5,6 +5,10 @@ import { StylusAnnotationComponent } from './components/stylus-annotation/stylus
 import {CalendarComponent} from './components/visualisations/calendar/calendar.component';
 import { SwipeCounterComponent } from './components/swipe-counter/swipe-counter.component';
 import { DrawCanvasComponent } from './components/visualisations/draw-canvas/draw-canvas.component';
+import { CanvasToolbarComponent } from './components/visualisations/draw-canvas/canvas-toolbar/canvas-toolbar.component';
+import { ColorPatchComponent } from './components/color-patch/color-patch.component';
+import {MatRippleModule} from '@angular/material/core';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -12,16 +16,21 @@ import { DrawCanvasComponent } from './components/visualisations/draw-canvas/dra
     StylusAnnotationComponent,
     CalendarComponent,
     SwipeCounterComponent,
-    DrawCanvasComponent],
+    DrawCanvasComponent,
+    CanvasToolbarComponent,
+    ColorPatchComponent],
     exports: [
         KeyboardAnnotationComponent,
         StylusAnnotationComponent,
         CalendarComponent,
         SwipeCounterComponent,
-        DrawCanvasComponent
+        DrawCanvasComponent,
+        CanvasToolbarComponent
     ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatRippleModule,
+    MatIconModule
   ]
 })
 export class SharedModule { }

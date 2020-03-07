@@ -2,19 +2,20 @@ import * as d3 from 'd3';
 import * as simplify from 'simplify-js';
 
 export class DrawCanvas {
-  svg: any;
-  line: d3.Line<[number, number]>;
-  margin: {top: number, right: number, bottom: number, left: number};
-  width: number;
-  height: number;
-  ptData: any[];
+  private svg: any;
+  private line: d3.Line<[number, number]>;
+  private margin: {top: number, right: number, bottom: number, left: number};
+  private width: number;
+  private height: number;
+  private ptData: any[];
   session: any[];
-  path: any;
-  drawing: boolean;
-  touchEvents: any[];
-  color = 'rgba(50,130,250, .6)';
+  private path: any;
+  private drawing: boolean;
 
-  constructor(private container: HTMLElement) {
+  constructor(
+    private container: HTMLElement,
+    public color = 'rgba(50,130,250, .6)',
+    public strokeWidth = '2px') {
     this.init();
   }
 
@@ -56,7 +57,8 @@ export class DrawCanvas {
       .data([this.ptData])
       .attr('class', 'line')
       .attr('d', this.line)
-      .style('stroke', this.color);
+      .style('stroke', this.color)
+      .style('stroke-width', this.strokeWidth);
   }
 
   ignore(): void {

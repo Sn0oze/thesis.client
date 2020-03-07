@@ -1,6 +1,8 @@
 $patch-width: 2.5rem;
 :host{
-  display: block;
+  display: inline-block;
+  height: $patch-width;
+  width: $patch-width;
 }
 .patch{
   display: inline-block;

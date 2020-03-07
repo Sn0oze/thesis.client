@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader, Mode} from '../../shared/models';
 import {DataService} from '../../shared/services/data.service';
+import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 
 @Component({
   selector: 'app-calendar-view',
@@ -54,6 +55,8 @@ export class CalendarViewComponent implements OnInit {
     this.title = `${rangeStart.format(format)} - ${rangeEnd.format(format)}`;
 
     this.data.loadCSV().subscribe((res) => console.log('res', res));
+    this.width = PEN_WIDTHS[0];
+    this.color = COLORS[0];
   }
 
   selected(day): void {
@@ -74,12 +77,7 @@ export class CalendarViewComponent implements OnInit {
     console.log('view checked');
     return 'view checked';
   }
-  changeColor(color: string): void {
-    this.color = color;
-  }
-  changeWidth(width: string): void {
-    this.width = width;
-  }
+
   isDrawMode(): boolean {
     return this.mode === 'draw';
   }

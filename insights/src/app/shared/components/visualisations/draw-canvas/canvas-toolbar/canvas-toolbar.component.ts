@@ -1,5 +1,6 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {fadeInOut, fadeInStagger} from '../../../../animations';
+import {COLORS, PEN_WIDTHS} from '../../../../constants';
 
 @Component({
   selector: 'app-canvas-toolbar',
@@ -8,22 +9,23 @@ import {fadeInOut, fadeInStagger} from '../../../../animations';
   animations: [fadeInStagger, fadeInOut]
 })
 export class CanvasToolbarComponent implements OnInit {
-  @Output() colorPicked = new EventEmitter<string>();
-  @Output() widthPicked = new EventEmitter<string>();
-  colors = ['#4c81c1', '#c58145', '#95ba8a'];
-  width: string;
+  @Input() width: string;
+  @Input() color: string;
+  @Output() colorChange = new EventEmitter<string>();
+  @Output() widthChange = new EventEmitter<string>();
+  colors = COLORS;
+  widths = PEN_WIDTHS;
 
   constructor() { }
 
-  ngOnInit(): void {
-    this.width = '2px';
-  }
+  ngOnInit(): void {}
 
   changeColor(color: string): void {
-   this.colorPicked.emit(color);
+    this.color = color;
+    this.colorChange.emit(color);
   }
 
   changeWidth(): void {
-    this.widthPicked.emit(this.width);
+    this.widthChange.emit(this.width);
   }
 }

@@ -20,8 +20,8 @@
     <div class="mb-3 toolbar-container">
       <app-canvas-toolbar
         *ngIf="isDrawMode()"
-        (widthPicked)="changeWidth($event)"
-        (colorPicked)="changeColor($event)"></app-canvas-toolbar>
+        [(width)]="width"
+        [(color)]="color"></app-canvas-toolbar>
     </div>
     <div class="position-relative">
       <app-draw-canvas [color]="color" [width]="width" *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>

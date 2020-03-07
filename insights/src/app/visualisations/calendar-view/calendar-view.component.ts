@@ -19,7 +19,6 @@ export class CalendarViewComponent implements OnInit {
   readonly dayCount = 365;
   modes = ['select', 'draw'] as Mode[];
   mode = this.modes[1];
-  shapes = [];
   value: string;
   color: string;
 

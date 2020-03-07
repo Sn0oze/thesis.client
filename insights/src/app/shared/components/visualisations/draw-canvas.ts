@@ -12,6 +12,7 @@ export class DrawCanvas {
   path: any;
   drawing: boolean;
   touchEvents: any[];
+  color = '#313131';
 
   constructor(private container: HTMLElement) {
     this.init();
@@ -20,7 +21,7 @@ export class DrawCanvas {
   init(): void {
     this.margin = {top: 0, right: 0, bottom: 0, left: 0};
     this.width = this.container.offsetWidth - this.margin.left - this.margin.right;
-    this.height = 638 - this.margin.top - this.margin.bottom;
+    this.height = 618 - this.margin.top - this.margin.bottom;
 
     this.svg = d3.select(this.container).append('svg').attr('class', 'canvas')
       .attr('width', this.width + this.margin.left + this.margin.right)
@@ -43,10 +44,9 @@ export class DrawCanvas {
       .on('touchend', this.ignore.bind(this))
       .on('touchleave', this.ignore.bind(this))
       .on('mouseup', this.ignore.bind(this))
-      .on('mouseleave', this.ignore.bind(this));
-
-    // ignore default touch behavior
-    this.touchEvents = ['touchstart', 'touchmove', 'touchend'];
+      .on('mouseleave', this.ignore.bind(this))
+      .on('mousemove', this.onmove.bind(this))
+      .on('touchmove', this.onmove.bind(this));
   }
 
   listen(): void {
@@ -55,20 +55,11 @@ export class DrawCanvas {
     this.path = this.svg.append('path') // start a new line
       .data([this.ptData])
       .attr('class', 'line')
-      .attr('d', this.line);
-
-    if (d3.event.type === 'mousedown') {
-      this.svg.on('mousemove', this.onmove.bind(this));
-    } else {
-      this.svg.on('touchmove', this.onmove.bind(this));
-    }
+      .attr('d', this.line)
+      .style('stroke', 'rgba(50,130,250, .6)');
   }
 
   ignore(): void {
-    console.log('lemem', this);
-    this.svg.on('mousemove', null);
-    this.svg.on('touchmove', null);
-
     // skip out if we're not drawing
     if (!this.drawing) { return; }
     this.drawing = false;

@@ -28,6 +28,8 @@ $insights-theme: mat-light-theme($insights-primary, $insights-accent, $insights-
 
 /* You can add global styles to this file, and also import other style files */
 
+$card-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
@@ -62,7 +64,6 @@ a[mat-button]:hover{
 svg {
   &.canvas{
     background-color: transparent;
-    border: 1px solid black;
     cursor: crosshair;
     touch-action: none;
   }

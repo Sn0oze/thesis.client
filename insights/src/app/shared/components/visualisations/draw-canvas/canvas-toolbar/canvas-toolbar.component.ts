@@ -1,11 +1,11 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {fadeStagger} from '../../../../animations';
+import {fadeInStagger} from '../../../../animations';
 
 @Component({
   selector: 'app-canvas-toolbar',
   templateUrl: './canvas-toolbar.component.html',
   styleUrls: ['./canvas-toolbar.component.scss'],
-  animations: [fadeStagger]
+  animations: [fadeInStagger]
 })
 export class CanvasToolbarComponent implements OnInit {
   @Output() colorPicked = new EventEmitter<string>();
@@ -19,5 +19,4 @@ export class CanvasToolbarComponent implements OnInit {
   changeColor(color: string): void {
    this.colorPicked.emit(color);
   }
-
 }

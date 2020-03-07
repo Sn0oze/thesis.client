@@ -9,6 +9,8 @@ import { CanvasToolbarComponent } from './components/visualisations/draw-canvas/
 import { ColorPatchComponent } from './components/color-patch/color-patch.component';
 import {MatRippleModule} from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import { PenWidthSelectComponent } from './components/pen-width-select/pen-width-select.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,8 @@ import {MatIconModule} from '@angular/material/icon';
     SwipeCounterComponent,
     DrawCanvasComponent,
     CanvasToolbarComponent,
-    ColorPatchComponent],
+    ColorPatchComponent,
+    PenWidthSelectComponent],
     exports: [
         KeyboardAnnotationComponent,
         StylusAnnotationComponent,
@@ -30,7 +33,8 @@ import {MatIconModule} from '@angular/material/icon';
   imports: [
     CommonModule,
     MatRippleModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule
   ]
 })
 export class SharedModule { }

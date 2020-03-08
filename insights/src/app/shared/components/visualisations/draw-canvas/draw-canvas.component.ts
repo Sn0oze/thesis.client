@@ -19,7 +19,7 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
     this.zone.runOutsideAngular(() => {
       this.canvasContainer = this.canvasContainerRef.nativeElement;
-      this.canvas = new DrawCanvas(this.canvasContainer);
+      this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width);
     });
   }
 

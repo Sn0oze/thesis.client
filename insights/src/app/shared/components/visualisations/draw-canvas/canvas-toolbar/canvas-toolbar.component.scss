@@ -19,6 +19,8 @@ $radius: .25rem;
   &:not(.expanded){
     .toolbar-handle{
       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      border-top-left-radius: $radius;
+      border-bottom-left-radius: $radius;
     }
   }
 }
@@ -32,7 +34,8 @@ $radius: .25rem;
 .toolbar-handle{
   height: $toolbar-height;
   width: $toolbar-height;
-  border-radius: $radius $toolbar-height $toolbar-height $radius;
+  border-top-right-radius: $toolbar-height;
+  border-bottom-right-radius: $toolbar-height;
   background-color: #cccccc;
   justify-content: center;
 }

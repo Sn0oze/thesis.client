@@ -1,6 +1,6 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="toolbar-container py-2" (swiperight)="open()" (swipeleft)="close()">
-  <div class="toolbar" [ngClass]="{'collapsed': !isOpen}">
+  <div class="toolbar" [ngClass]="{'expanded': isOpen}">
     <div class="toolbar-content"  [@collapseHorizontal]="!isOpen">
       <div class="pl-3 pr-5 d-flex flex-row align-items-center">
         <app-color-patch

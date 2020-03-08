@@ -13,10 +13,10 @@ $radius: .25rem;
 .toolbar{
   // border-radius: $radius;
   border-radius: $radius $toolbar-height $toolbar-height $radius;
-  &:not(.collapsed) {
+  &.expanded {
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   }
-  &.collapsed{
+  &:not(.expanded){
     .toolbar-handle{
       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     }

@@ -17,12 +17,13 @@
     <app-canvas-toolbar
       class="mb-3"
       [isOpen]="isDrawMode()"
+      (undo)="undo()"
       (opened)="mode = 'draw'"
       (closed)="mode = 'select'"
       [(width)]="width"
       [(color)]="color"></app-canvas-toolbar>
     <div class="position-relative">
-      <app-draw-canvas [color]="color" [width]="width" *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>
+      <app-draw-canvas #canvas [color]="color" [width]="width" *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>
       <app-calendar
         #calendar
         [mode]="mode"

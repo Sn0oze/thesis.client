@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader, Mode} from '../../shared/models';
 import {DataService} from '../../shared/services/data.service';
 import {COLORS, PEN_WIDTHS} from '../../shared/constants';
+import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 
 @Component({
   selector: 'app-calendar-view',
@@ -11,6 +12,7 @@ import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 })
 
 export class CalendarViewComponent implements OnInit {
+  @ViewChild('canvas') canvas: DrawCanvasComponent;
   hours: number[];
   days: number[];
   header = [] as CalendarHeader[];
@@ -76,5 +78,11 @@ export class CalendarViewComponent implements OnInit {
 
   isDrawMode(): boolean {
     return this.mode === 'draw';
+  }
+
+  undo(): void {
+    if (this.canvas) {
+      this.canvas.undo();
+    }
   }
 }

@@ -19,7 +19,7 @@ export class CalendarViewComponent implements OnInit {
   title: string;
   readonly dayCount = 365;
   modes = ['select', 'draw'] as Mode[];
-  mode = this.modes[1];
+  mode = this.modes[1] as Mode;
   value: string;
   color: string;
   width: string;
@@ -67,10 +67,6 @@ export class CalendarViewComponent implements OnInit {
   isWeekend(date: moment.Moment): boolean {
     const day = date.day();
     return day === 6 || day === 0;
-  }
-
-  toggleMode(): void {
-    this.mode = this.modes[(this.modes.indexOf(this.mode) + 1) % this.modes.length];
   }
 
   viewChecked(): string {

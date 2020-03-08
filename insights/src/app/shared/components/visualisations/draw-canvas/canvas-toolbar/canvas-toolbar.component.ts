@@ -12,11 +12,13 @@ import {collapseHorizontal} from '../../../../animations';
 export class CanvasToolbarComponent implements OnInit {
   @Input() width: string;
   @Input() color: string;
+  @Input() isOpen: boolean;
   @Output() colorChange = new EventEmitter<string>();
   @Output() widthChange = new EventEmitter<string>();
+  @Output() opened = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
   colors = COLORS;
   widths = PEN_WIDTHS;
-  isOpen = false;
 
   constructor() { }
 
@@ -32,11 +34,13 @@ export class CanvasToolbarComponent implements OnInit {
   }
   open(): void {
     this.isOpen = true;
+    this.opened.emit();
   }
   close(): void {
     this.isOpen = false;
+    this.closed.emit();
   }
   toggle(): void {
-    this.isOpen = !this.isOpen;
+    this.isOpen ? this.close() : this.open();
   }
 }

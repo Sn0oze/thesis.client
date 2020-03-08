@@ -1,12 +1,13 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {fadeInOut, fadeInStagger} from '../../../../animations';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {COLORS, PEN_WIDTHS} from '../../../../constants';
+import {collapseHorizontal} from '../../../../animations';
 
 @Component({
   selector: 'app-canvas-toolbar',
   templateUrl: './canvas-toolbar.component.html',
   styleUrls: ['./canvas-toolbar.component.scss'],
-  animations: [fadeInStagger, fadeInOut]
+  animations: [collapseHorizontal],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CanvasToolbarComponent implements OnInit {
   @Input() width: string;
@@ -15,6 +16,7 @@ export class CanvasToolbarComponent implements OnInit {
   @Output() widthChange = new EventEmitter<string>();
   colors = COLORS;
   widths = PEN_WIDTHS;
+  isOpen = false;
 
   constructor() { }
 
@@ -27,5 +29,14 @@ export class CanvasToolbarComponent implements OnInit {
 
   changeWidth(): void {
     this.widthChange.emit(this.width);
+  }
+  open(): void {
+    this.isOpen = true;
+  }
+  close(): void {
+    this.isOpen = false;
+  }
+  toggle(): void {
+    this.isOpen = !this.isOpen;
   }
 }

@@ -1,10 +1,38 @@
+$toolbar-height: 4.125rem;
+$radius: .25rem;
 :host{
   display: block;
 }
 
+.toolbar, .toolbar-content, .toolbar-handle, .toolbar-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .toolbar{
-  border-radius: .25rem;
-  padding: .5rem;
-  max-height: 4.125rem;
+  // border-radius: $radius;
+  border-radius: $radius $toolbar-height $toolbar-height $radius;
+  &:not(.collapsed) {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  }
+  &.collapsed{
+    .toolbar-handle{
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+  }
+}
+
+.toolbar-content{
+  padding: .5rem 0;
+  max-height: $toolbar-height;
   overflow: hidden;
+}
+
+.toolbar-handle{
+  height: $toolbar-height;
+  width: $toolbar-height;
+  border-radius: $radius $toolbar-height $toolbar-height $radius;
+  background-color: #cccccc;
+  justify-content: center;
 }

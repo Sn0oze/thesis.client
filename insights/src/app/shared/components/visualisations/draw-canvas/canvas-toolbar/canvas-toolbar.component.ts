@@ -17,6 +17,7 @@ export class CanvasToolbarComponent implements OnInit {
   @Output() widthChange = new EventEmitter<string>();
   @Output() opened = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
+  @Output() undo = new EventEmitter<void>();
   colors = COLORS;
   widths = PEN_WIDTHS;
 

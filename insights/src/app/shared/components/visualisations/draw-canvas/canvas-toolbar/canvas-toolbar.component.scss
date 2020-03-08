@@ -39,3 +39,10 @@ $radius: .25rem;
   background-color: #cccccc;
   justify-content: center;
 }
+
+.tool-group{
+  display: flex;
+  flex-direction: row;
+  padding-right: 3rem;
+  align-items: center;
+}

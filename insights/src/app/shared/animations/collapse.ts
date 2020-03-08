@@ -3,10 +3,10 @@ export  const collapseTiming = '225ms cubic-bezier(0.4,0.0,0.2,1)';
 
 export const collapseHorizontal = trigger('collapseHorizontal', [
   state('true', style({
-    width : '0', visibility: 'hidden'
+    width : '0', visibility: 'hidden', opacity: 0
   })),
   state('false', style({
-    width : '*', visibility: 'visible'
+    width : '*', visibility: 'visible', opacity: 1
   })),
   transition('true <=> false', animate(collapseTiming)),
 ]);

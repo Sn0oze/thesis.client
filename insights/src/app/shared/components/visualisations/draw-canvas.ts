@@ -20,6 +20,17 @@ export class DrawCanvas {
     this.init();
   }
 
+  public undo(): void {
+    this.session.pop();
+    d3.selectAll('.line').data(this.session).exit().remove();
+  }
+
+  public clear(): void {
+    this.session = [];
+    this.ptData = [];
+    d3.selectAll('.line').remove();
+  }
+
   init(): void {
     this.margin = {top: 0, right: 0, bottom: 0, left: 0};
     this.width = this.container.offsetWidth - this.margin.left - this.margin.right;
@@ -49,9 +60,12 @@ export class DrawCanvas {
       .on('mouseleave', this.ignore.bind(this))
       .on('mousemove', this.onmove.bind(this))
       .on('touchmove', this.onmove.bind(this));
+
+    this.clear.bind(this);
+    this.undo.bind(this);
   }
 
-  listen(): void {
+  private listen(): void {
     this.drawing = true;
     this.ptData = []; // reset point data
     this.path = this.svg.append('path') // start a new line
@@ -62,7 +76,7 @@ export class DrawCanvas {
       .style('stroke-width', this.strokeWidth);
   }
 
-  ignore(): void {
+  private ignore(): void {
     // skip out if we're not drawing
     if (!this.drawing) { return; }
     this.drawing = false;
@@ -77,7 +91,7 @@ export class DrawCanvas {
     this.tick();
   }
 
-  onmove(data, index, nodes): void {
+  private onmove(data, index, nodes): void {
     if (this.drawing) {
       const type = d3.event.type;
       let point;
@@ -94,7 +108,7 @@ export class DrawCanvas {
     }
   }
 
-  tick(): void {
+  private tick(): void {
     this.path.attr('d', d => this.line(d)); // Redraw the path:
   }
 }

@@ -33,4 +33,11 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
       this.canvas.strokeWidth = width;
     }
   }
+  undo(): void {
+    this.canvas.undo();
+  }
+
+  clear(): void {
+    this.canvas.clear();
+  }
 }

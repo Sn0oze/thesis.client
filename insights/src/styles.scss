@@ -66,6 +66,8 @@ svg {
     background-color: transparent;
     cursor: crosshair;
     touch-action: none;
+    border: 1px solid rgba(0,0,0,.86);
+    border-radius: .25rem;
   }
 }
 

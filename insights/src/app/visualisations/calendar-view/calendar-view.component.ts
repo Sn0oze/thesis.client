@@ -1,9 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
-import {CalendarCell, CalendarHeader, Mode} from '../../shared/models';
+import {CalendarCell, CalendarHeader, DataSet, Mode} from '../../shared/models';
 import {DataService} from '../../shared/services/data.service';
 import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-calendar-view',
@@ -25,8 +26,9 @@ export class CalendarViewComponent implements OnInit {
   value: string;
   color: string;
   width: string;
+  dataSet: DataSet;
 
-  constructor(private data: DataService) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     const now = moment().subtract(this.dayCount, 'day');
@@ -55,10 +57,10 @@ export class CalendarViewComponent implements OnInit {
     const rangeEnd = this.header[this.header.length - 1].date;
     const format = 'MMMM Do';
     this.title = `${rangeStart.format(format)} - ${rangeEnd.format(format)}`;
-
-    this.data.loadCSV().subscribe((res) => console.log('res', res));
     this.width = PEN_WIDTHS[0];
     this.color = COLORS[0];
+    this.dataSet = this.route.parent.snapshot.data.dataSet;
+    console.log(this.dataSet);
   }
 
   selected(day): void {

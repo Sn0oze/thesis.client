@@ -1,19 +1,8 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="container">
-  <div class="mt-5">
+  <div class="mt-2">
     <!--<p class="user-select-none">{{viewChecked()}}</p>-->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <button mat-icon-button (tap)="calendar.previous()" (press)="calendar.scrollStart()">
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <div class="text-center">
-        <h1 class="user-select-none">Calendar</h1>
-        <p class="user-select-none">{{title}}</p>
-      </div>
-      <button mat-icon-button (tap)="calendar.next()" (press)="calendar.scrollEnd()">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-    </div>
+    <app-timeline [dataSet]="dataSet"></app-timeline>
     <app-canvas-toolbar
       class="mb-3"
       [isOpen]="isDrawMode()"

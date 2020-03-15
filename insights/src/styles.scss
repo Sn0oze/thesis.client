@@ -95,7 +95,9 @@ svg {
 $grid-color: rgba(#cccccc, .7);
 
 .grid{
+  user-select: none;
   line {
+    pointer-events: none;
     stroke: $grid-color;
     stroke-opacity: 0.7;
     shape-rendering: crispEdges;

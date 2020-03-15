@@ -69,6 +69,9 @@ svg {
     border: 1px solid rgba(0,0,0,.86);
     border-radius: .25rem;
   }
+  &.timeline{
+    // background-color: #cccccc;
+  }
 }
 
 .line {
@@ -76,4 +79,48 @@ svg {
   stroke: #000;
   stroke-width: 2px;
   stroke-linejoin: round;
+}
+
+.bar{
+  fill: rgba(76, 129, 193, 1);
+}
+
+.axis text{
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+$grid-color: rgba(#cccccc, .7);
+
+.grid{
+  line {
+    stroke: $grid-color;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+  }
+
+  .tick:first-of-type line{
+    stroke: black;
+  }
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.y.axis{
+  .domain{
+    stroke: transparent;
+  }
+  .tick line{
+    stroke: transparent;
+  }
+}
+
+.x.axis{
+  .domain{
+    stroke: transparent;
+  }
 }

@@ -35,14 +35,13 @@ export class Timeline {
       .attr('height', svgHeight);
 
     // adding one day is a workaround because the last day is excluded for some reason
-    const range = moment.range(this.dataSet.min, this.dataSet.max.add(1, 'day'));
+    const range = moment.range(
+      this.dataSet.min.utc().startOf('day'), this.dataSet.max.utc().endOf( 'day'));
     const xDomain = Array.from(range.by('day'), m => m.format(timeFormat));
 
-    // const now = moment();
-    // const then = now.clone().add(57, 'day');
-    // const range2 = moment.range(now, then);
-    // console.log(now.format(timeFormat), then.format(timeFormat), Array.from(range2.by('day'), d => d.format(timeFormat)));
-    // console.log(this.dataSet.min.format(timeFormat), this.dataSet.max.format(timeFormat), xDomain);
+    const now = moment();
+    const then = now.clone().add(57, 'day');
+    const range2 = moment.range(now, then);
     this.xScale = d3.scaleBand()
       .range([0, this.width])
       .domain(xDomain)

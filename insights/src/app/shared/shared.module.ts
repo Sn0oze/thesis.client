@@ -12,6 +12,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {FormsModule} from '@angular/forms';
+import { TimelineComponent } from './components/visualisations/timeline/timeline.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import {FormsModule} from '@angular/forms';
     DrawCanvasComponent,
     CanvasToolbarComponent,
     ColorPatchComponent,
+    TimelineComponent,
   ],
     exports: [
         KeyboardAnnotationComponent,
@@ -29,7 +31,8 @@ import {FormsModule} from '@angular/forms';
         CalendarComponent,
         SwipeCounterComponent,
         DrawCanvasComponent,
-        CanvasToolbarComponent
+        CanvasToolbarComponent,
+        TimelineComponent
     ],
   imports: [
     CommonModule,

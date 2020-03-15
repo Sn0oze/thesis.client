@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import {extendMoment} from 'moment-range';
 import * as Moment from 'moment';
-import {DataSet} from '../../models';
+import {DataSet, DayNest} from '../../models';
 
 export const timeFormat = 'DD-MM-YYYY';
 const moment = extendMoment(Moment);
@@ -12,11 +12,13 @@ export class Timeline {
   private margin: {top: number, right: number, bottom: number, left: number};
   private width: number;
   private height: number;
-  private xScale: any;
-  private xAxis: any;
-  private yScale: any;
-  private yAxis: any;
-  parseTime = d3.timeParse('%d-%m-%Y');
+  private xScale: d3.ScaleBand<string>;
+  private xAxis: d3.Axis<string>;
+  private yScale: d3.ScaleLinear<number, number>;
+  // private yAxis: d3.Axis<d3.Numeric>;
+  private yAxisGrid: d3.Axis<d3.Numeric>;
+  // parseTime = d3.timeParse('%d-%m-%Y');
+  private brush: d3.BrushBehavior<any>;
 
   constructor(private container: HTMLElement, private dataSet: DataSet) {
     this.init();
@@ -56,14 +58,21 @@ export class Timeline {
     this.xAxis = d3.axisBottom(this.xScale)
       .ticks(12).tickValues(tickValues)
       .tickFormat(value => moment(value, timeFormat).format('MMMM'));
-    this.yAxis = d3.axisLeft(this.yScale).ticks(4);
+    // this.yAxis = d3.axisLeft(this.yScale).ticks(4);
 
-    const yAxisGrid = d3.axisLeft(this.yScale).tickSize(-this.width).ticks(5);
+    this.yAxisGrid = d3.axisLeft(this.yScale).tickSize(-this.width).ticks(5);
+
+    const focus = this.svg.append('g')
+      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
+    this.brush = d3.brushX()
+      .extent([[0, 0], [this.width, this.height]])
+      .on('brush', this.brushed.bind(this));
 
     this.svg.append('g')
       .attr('class', 'y grid')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`)
-      .call(yAxisGrid);
+      .call(this.yAxisGrid);
 
     // Create axes
     this.svg.append('g')
@@ -88,5 +97,16 @@ export class Timeline {
       .attr('width', this.xScale.bandwidth())
       .attr('y',  d => this.yScale(d.total) + this.margin.top)
       .attr('height', d => this.height - this.yScale(d.total));
+
+    const brushArea = focus.append('g')
+      .attr('class', 'brush')
+      .call(this.brush);
+    const selection = d3.selectAll('.bar').filter((d: DayNest) => d.key.includes('-11-2016'));
+    console.log(selection);
+    brushArea.call(this.brush.move, [this.xScale('01-11-2016'), this.xScale('20-11-2016')]);
+  }
+
+  brushed(event: d3.D3BrushEvent<any>): void {
+    console.log('brushed');
   }
 }

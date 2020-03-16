@@ -5,11 +5,12 @@ import {DataSet, DayNest} from '../../models';
 
 export const timeFormat = 'DD-MM-YYYY';
 const moment = extendMoment(Moment);
+
 // moment.locale('da');
 
 export class Timeline {
   svg: any;
-  private margin: {top: number, right: number, bottom: number, left: number};
+  private margin: { top: number, right: number, bottom: number, left: number };
   private width: number;
   private height: number;
   private xScale: d3.ScaleBand<string>;
@@ -23,10 +24,11 @@ export class Timeline {
   constructor(private container: HTMLElement, private dataSet: DataSet) {
     this.init();
   }
+
   init(): void {
     const svgHeight = 150;
     const svgWidth = this.container.offsetWidth;
-    this.margin = {top: 8, right: 8, bottom: 20, left: 32};
+    this.margin = {top: 8, right: 38, bottom: 20, left: 38};
     this.width = svgWidth - this.margin.left - this.margin.right;
     this.height = svgHeight - this.margin.top - this.margin.bottom;
     this.svg = d3.select(this.container).append('svg')
@@ -36,12 +38,9 @@ export class Timeline {
 
     // adding one day is a workaround because the last day is excluded for some reason
     const range = moment.range(
-      this.dataSet.min.utc().startOf('day'), this.dataSet.max.utc().endOf( 'day'));
+      this.dataSet.min.utc().startOf('day'), this.dataSet.max.utc().endOf('day'));
     const xDomain = Array.from(range.by('day'), m => m.format(timeFormat));
 
-    const now = moment();
-    const then = now.clone().add(57, 'day');
-    const range2 = moment.range(now, then);
     this.xScale = d3.scaleBand()
       .range([0, this.width])
       .domain(xDomain)
@@ -53,25 +52,28 @@ export class Timeline {
       .domain([0, Math.ceil(yMax / 10) * 10]);
 
     // Define  axis
-    const tickValues = this.xScale.domain().filter(day => day.startsWith('01'));
+    const tickValues = this.xScale.domain().filter((day, i) =>
+      day.startsWith('01') || i === 0 || i === this.xScale.domain().length - 1);
     this.xAxis = d3.axisBottom(this.xScale)
       .ticks(12).tickValues(tickValues)
-      .tickFormat(value => moment(value, timeFormat).format('MMMM'));
+      .tickFormat(value => moment(value, timeFormat).format('Do MMM'));
     // this.yAxis = d3.axisLeft(this.yScale).ticks(4);
 
     this.yAxisGrid = d3.axisLeft(this.yScale).tickSize(-this.width).ticks(5);
-
-    const focus = this.svg.append('g')
-      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
     this.brush = d3.brushX()
       .extent([[0, 0], [this.width, this.height]])
       .on('brush', this.brushed.bind(this));
 
-    this.svg.append('g')
+    const focus = this.svg.append('g')
+      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
+    const grid = this.svg.append('g')
       .attr('class', 'y grid')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`)
-      .call(this.yAxisGrid);
+      .call(this.yAxisGrid)
+      .selectAll('text')
+      .attr('x', -12);
 
     // Create axes
     this.svg.append('g')
@@ -88,20 +90,23 @@ export class Timeline {
     this.svg.selectAll('.bar')
       .data(this.dataSet.days)
       .enter().append('rect')
-      .attr('class', 'bar');
+      .attr('class', 'bar')
+      .classed('weekend', d => d.isWeekend);
 
     this.svg.selectAll('.bar')
       .data(this.dataSet.days)
       .attr('x', d => this.xScale(d.key) + this.margin.left)
       .attr('width', this.xScale.bandwidth())
-      .attr('y',  d => this.yScale(d.total) + this.margin.top)
+      .attr('y', d => this.yScale(d.total) + this.margin.top)
       .attr('height', d => this.height - this.yScale(d.total));
 
     const brushArea = focus.append('g')
       .attr('class', 'brush')
       .call(this.brush);
-    const selection = d3.selectAll('.bar').filter((d: DayNest) => d.key.includes('-11-2016'));
-    console.log(selection);
+
+    d3.selectAll('rect.handle').remove();
+    d3.select('rect.overlay').remove();
+
     brushArea.call(this.brush.move, [this.xScale('01-11-2016'), this.xScale('20-11-2016')]);
   }
 

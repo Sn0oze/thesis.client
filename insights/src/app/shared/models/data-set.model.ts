@@ -13,6 +13,7 @@ export interface DayNest {
   values: Array<HourNest>;
   value?: any;
   total?: any;
+  isWeekend?: boolean;
 }
 
 export interface HourNest {

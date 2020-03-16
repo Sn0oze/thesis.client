@@ -71,6 +71,7 @@ svg {
   }
   &.timeline{
     // background-color: #cccccc;
+    touch-action: none;
   }
 }
 
@@ -82,7 +83,10 @@ svg {
 }
 
 .bar{
-  fill: rgba(76, 129, 193, 1);
+  fill: rgb(136, 205, 255);
+  &.weekend{
+    fill: #4C81C1;
+  }
 }
 
 .axis text{
@@ -103,8 +107,10 @@ $grid-color: rgba(#cccccc, .7);
     shape-rendering: crispEdges;
   }
 
-  .tick:first-of-type line{
-    stroke: black;
+  .tick{
+    &:first-of-type line{
+      stroke: black;
+    }
   }
 }
 
@@ -124,5 +130,17 @@ $grid-color: rgba(#cccccc, .7);
 .x.axis{
   .domain{
     stroke: transparent;
+  }
+}
+
+.brush{
+  .handle {
+    pointer-events: none;
+  }
+  .selection{
+    fill: #cccccc;
+  }
+  .overlay{
+    pointer-events: none;
   }
 }

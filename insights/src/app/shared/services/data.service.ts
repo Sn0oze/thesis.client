@@ -4,6 +4,9 @@ import {Observable} from 'rxjs';
 import * as moment from 'moment';
 import {DataSet, DayNest, Observation} from '../models';
 
+export const dateFormat = 'DD-MM-YYYY';
+export const hourFormat = 'HH';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,12 +30,14 @@ export class DataService {
         const max = d3.max(data.map(d => d.date));
 
         const nested = d3.nest()
-          .key((row: Observation) => row.date.format('DD-MM-YYYY'))
-          .key((days: Observation) => days.date.format('HH'))
+          .key((row: Observation) => row.date.format(dateFormat))
+          .key((days: Observation) => days.date.format(hourFormat))
           .entries(data) as Array<DayNest>;
 
         nested.map((d) => {
+          const day = moment(d.key, dateFormat);
           d.total = d.values.reduce((total, hour) => total + hour.values.length, 0);
+          d.isWeekend = day.weekday() === 0 || day.weekday() === 6;
         });
 
         const dataSet = {

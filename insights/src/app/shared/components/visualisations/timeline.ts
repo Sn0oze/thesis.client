@@ -1,10 +1,8 @@
 import * as d3 from 'd3';
-import {extendMoment} from 'moment-range';
-import * as Moment from 'moment';
-import {DataSet, DayNest} from '../../models';
+import {DataSet} from '../../models';
+import {moment} from '../../utils';
 
 export const timeFormat = 'DD-MM-YYYY';
-const moment = extendMoment(Moment);
 
 // moment.locale('da');
 

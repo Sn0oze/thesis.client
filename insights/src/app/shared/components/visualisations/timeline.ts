@@ -1,8 +1,6 @@
 import * as d3 from 'd3';
 import {DataSet} from '../../models';
-import {moment} from '../../utils';
-
-export const timeFormat = 'DD-MM-YYYY';
+import {moment, dateFormat} from '../../utils';
 
 // moment.locale('da');
 
@@ -34,14 +32,9 @@ export class Timeline {
       .attr('width', svgWidth)
       .attr('height', svgHeight);
 
-    // adding one day is a workaround because the last day is excluded for some reason
-    const range = moment.range(
-      this.dataSet.min.utc().startOf('day'), this.dataSet.max.utc().endOf('day'));
-    const xDomain = Array.from(range.by('day'), m => m.format(timeFormat));
-
     this.xScale = d3.scaleBand()
       .range([0, this.width])
-      .domain(xDomain)
+      .domain(this.dataSet.span)
       .padding(.1);
 
     const yMax = d3.max(this.dataSet.days.map((day) => day.total));
@@ -54,7 +47,7 @@ export class Timeline {
       day.startsWith('01') || i === 0 || i === this.xScale.domain().length - 1);
     this.xAxis = d3.axisBottom(this.xScale)
       .ticks(12).tickValues(tickValues)
-      .tickFormat(value => moment(value, timeFormat).format('Do MMM'));
+      .tickFormat(value => moment(value, dateFormat).format('Do MMM'));
     // this.yAxis = d3.axisLeft(this.yScale).ticks(4);
 
     this.yAxisGrid = d3.axisLeft(this.yScale).tickSize(-this.width).ticks(5);

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
 import {DataSet, DayNest, Observation} from '../models';
-import {moment} from '../utils';
+import {dateFormat, hourFormat, moment, monthFormat} from '../utils';
+import {Moment} from 'moment';
 
-export const dateFormat = 'DD-MM-YYYY';
-export const hourFormat = 'HH';
+export type DataMap = Map<string, Map<string, Map<string, Array<Observation>>>>;
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,22 @@ export class DataService {
     };
   }
 
+  dayNestToMap(span: Array<Moment>, nest: Array<DayNest>): DataMap {
+    const dataMap = new Map() as DataMap;
+    span.forEach(month => {
+      dataMap.set(month.format(monthFormat), new Map());
+    });
+
+    nest.forEach(day => {
+      const month = moment(day.key, dateFormat).format(monthFormat);
+      const observations = new Map() as Map<string, Array<Observation>>;
+      day.values.forEach(hour => observations.set(hour.key, hour.values));
+      dataMap.get(month).set(day.key, observations);
+    });
+
+    return dataMap;
+  }
+
   loadCSV(): Observable<DataSet> {
     return new Observable(observer => {
       d3.text('assets/data/ptsd_filtered.csv').then(text => {
@@ -31,28 +47,52 @@ export class DataService {
         const range = moment.range(
           min.utc().startOf('day'), max.utc().endOf('day'));
         // adding one day is a workaround because the last day is excluded for some reason
-        const span = Array.from(range.by('day'), m => m.format(dateFormat));
-        const months = Array.from(range.by('month'), m => m.format(dateFormat));
+        const daySpan = Array.from(range.by('day'), m => m.format(dateFormat));
 
-        const nested = d3.nest()
+        const dayNest = d3.nest()
           .key((row: Observation) => row.date.format(dateFormat))
           .key((days: Observation) => days.date.format(hourFormat))
           .entries(data) as Array<DayNest>;
 
-        nested.map((d) => {
+        dayNest.map((d) => {
           const day = moment(d.key, dateFormat);
           d.total = d.values.reduce((total, hour) => total + hour.values.length, 0);
           d.isWeekend = day.weekday() === 0 || day.weekday() === 6;
+        });
+
+        const monthSpan = Array.from(range.by('month'));
+        const dataMap = this.dayNestToMap(monthSpan, dayNest);
+
+        const calendarData = monthSpan.map(month => {
+          const monthKey = month.format(monthFormat);
+          return {
+            key: monthKey,
+            date: month,
+            values: Array.from((moment(month)).range('month').by('day')).map(day => {
+              const dayKey = day.format(dateFormat);
+              return {
+                key: dayKey,
+                date: day,
+                values: Array.from((moment(day)).range('day').by('hour')).map(hour => {
+                  const hourKey = hour.format(hourFormat);
+                  const observations = dataMap.get(monthKey)?.get(dayKey)?.get(hourKey) || [];
+                  return {
+                    key: hour.format(hourFormat),
+                    values: observations
+                  };
+                })
+              };
+            })
+          };
         });
 
         const dataSet = {
           min,
           max,
           range,
-          span,
-          months,
-          duration: max.diff(min, 'days') + 1,
-          days: nested,
+          daySpan,
+          days: dayNest,
+          months: calendarData
         };
 
         observer.next(dataSet);

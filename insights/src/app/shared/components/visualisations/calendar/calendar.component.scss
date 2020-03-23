@@ -10,13 +10,19 @@ $border: $border-width solid $border-color;
 $month-label-height: 1.5rem;
 $cell-width: 2rem;
 $cell-height: 1.25rem;
+$cell-border-width: 1px;
+
+.cell{
+  border: $cell-border-width solid white;
+  border-radius: .125rem;
+}
 
 .calendar{
   display: flex;
   flex-direction: row;
 }
 .hour-labels{
-  padding-top: ($month-label-height + 2 * $cell-height) - .125rem;
+  padding-top: calc(#{$month-label-height + 2 * $cell-height} - #{$cell-border-width});
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -44,7 +50,7 @@ $cell-height: 1.25rem;
   display: flex;
   flex-direction: column;
   border-left: 1px solid black;
-  padding-left: 1px;
+  padding: 0 $cell-border-width;
   // margin: 0 1rem;
 }
 .month-label{
@@ -63,6 +69,7 @@ $cell-height: 1.25rem;
   display: flex;
   flex-direction: column;
   .day-label {
+    @extend .cell;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -71,18 +78,22 @@ $cell-height: 1.25rem;
       font-weight: bold;
     }
   }
+  &.weekend{
+    .day-label, .hour{
+      background: #959595 !important;
+      color: $background-color;
+    }
+  }
 }
 
 .hour{
+  @extend .cell;
   display: flex;
   align-items: center;
   justify-content: center;
   width: $cell-width;
   height: $cell-height;
-  background: #cccccc;
-  border: 2px solid white;
-  border-radius: .125rem
-
+  background: #f0f0f0;
 }
 .large-label{
   font-weight: 400;
@@ -92,7 +103,3 @@ $cell-height: 1.25rem;
   font-size: .75rem;
 }
 
-.weekend{
-  background: #959595 !important;
-  color: $background-color;
-}

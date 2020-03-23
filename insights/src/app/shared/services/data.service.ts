@@ -74,6 +74,7 @@ export class DataService {
               return {
                 key: dayKey,
                 date: day,
+                isWeekend: day.weekday() === 0 || day.weekday() === 6,
                 values: Array.from((moment(day)).range('day').by('hour')).map(hour => {
                   const hourKey = hour.format(hourFormat);
                   const observations = dataMap.get(monthKey)?.get(dayKey)?.get(hourKey) || [];

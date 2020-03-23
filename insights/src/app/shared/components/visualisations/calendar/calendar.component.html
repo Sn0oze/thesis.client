@@ -11,8 +11,8 @@
         {{month.date.format('MMMM')}}
       </div>
       <div class="days">
-        <div class="day" *ngFor="let day of month.values">
-          <div class="day-label">
+        <div class="day" *ngFor="let day of month.values" [ngClass]="{'weekend': day.isWeekend}">
+          <div class="day-label" [ngClass]="{'weekend': day.isWeekend}">
             <div class="day-of-week">{{day.date.format('ddd')}}</div>
             <div class="day-of-month">{{day.date.format('DD')}}</div>
           </div>

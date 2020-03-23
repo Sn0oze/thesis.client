@@ -1,5 +1,5 @@
 import {BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule} from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {Injectable, NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +9,7 @@ import {VisualisationsModule} from './visualisations/visualisations.module';
 import * as hammer from 'hammerjs';
 import {MatButtonModule} from '@angular/material/button';
 
+@Injectable()
 class HammerConfig extends HammerGestureConfig {
   overrides = {
     swipe: { direction: hammer.DIRECTION_ALL },

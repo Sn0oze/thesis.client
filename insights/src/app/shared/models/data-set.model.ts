@@ -15,6 +15,7 @@ export interface DataSet {
 export interface DayNest {
   key: string;
   values: Array<Nest>;
+  date: Moment;
   value?: any;
   total?: any;
   isWeekend?: boolean;

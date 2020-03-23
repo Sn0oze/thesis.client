@@ -58,6 +58,7 @@ export class DataService {
           const day = moment(d.key, dateFormat);
           d.total = d.values.reduce((total, hour) => total + hour.values.length, 0);
           d.isWeekend = day.weekday() === 0 || day.weekday() === 6;
+          d.date = day;
         });
 
         const monthSpan = Array.from(range.by('month'));

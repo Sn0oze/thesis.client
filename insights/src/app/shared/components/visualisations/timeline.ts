@@ -34,7 +34,7 @@ export class Timeline {
 
     this.xScale = d3.scaleBand()
       .range([0, this.width])
-      .domain(this.dataSet.span)
+      .domain(this.dataSet.daySpan)
       .padding(.1);
 
     const yMax = d3.max(this.dataSet.days.map((day) => day.total));

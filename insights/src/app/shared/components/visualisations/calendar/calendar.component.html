@@ -1,36 +1,26 @@
 <!--suppress AngularUndefinedBinding -->
-<div class="table-responsive" style="overflow: hidden" #scroll> <!--(scroll)="log($event)" on parent container and emit if other components should know the current scroll position-->
-  <table class="calendar" style="touch-action: pinch-zoom">
-    <thead>
-    <tr>
-      <th class="hour-label">
-        <span>00:00</span>
-      </th>
-      <th *ngFor="let label of header" [ngClass]="{'weekend': label.weekend}">
-        <div class="large-label">
-          {{label.weekDay}}
+<div class="calendar">
+  <div class="hour-labels">
+    <div class="hour-label" *ngFor="let label of labels">
+      <span>{{label}}</span>
+    </div>
+  </div>
+  <div class="calendar-content" #scroll>
+    <div class="month" *ngFor="let month of dataSet.months">
+      <div class="month-label">
+        {{month.date.format('MMMM')}}
+      </div>
+      <div class="days">
+        <div class="day" *ngFor="let day of month.values">
+          <div class="day-label">
+            <div class="day-of-week">{{day.date.format('ddd')}}</div>
+            <div class="day-of-month">{{day.date.format('DD')}}</div>
+          </div>
+          <div class="hour" *ngFor="let hour of day.values">
+            {{hour.values.length > 0 ? hour.values.length : ''}}
+          </div>
         </div>
-        <div class="small-label">
-          {{label.dayOfMonth}}
-        </div>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let row of body; let i = index;">
-      <td class="hour-label">
-        <span>{{labels[i]}}</span>
-      </td>
-      <td
-        *ngFor="let day of row"
-        [ngClass]="{'weekend': day.weekend}">{{day.value > 0 ? day.value : ''}}</td>
-    </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td>Day</td>
-        <td *ngFor="let total of totals">{{total}}</td>
-      </tr>
-    </tfoot>
-  </table>
+      </div>
+    </div>
+  </div>
 </div>

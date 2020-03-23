@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {CalendarCell, CalendarHeader, DataSet, Mode} from '../../shared/models';
-import {DataService} from '../../shared/services/data.service';
 import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
@@ -22,7 +21,7 @@ export class CalendarViewComponent implements OnInit {
   title: string;
   readonly dayCount = 365;
   modes = ['select', 'draw'] as Mode[];
-  mode = this.modes[1] as Mode;
+  mode = this.modes[0] as Mode;
   value: string;
   color: string;
   width: string;
@@ -60,7 +59,6 @@ export class CalendarViewComponent implements OnInit {
     this.width = PEN_WIDTHS[0];
     this.color = COLORS[0];
     this.dataSet = this.route.parent.snapshot.data.dataSet;
-    console.log(this.dataSet);
   }
 
   selected(day): void {

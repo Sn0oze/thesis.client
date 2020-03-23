@@ -12,7 +12,7 @@ import {
   ViewChild
 } from '@angular/core';
 import * as moment from 'moment';
-import {CalendarCell, CalendarHeader, Mode} from '../../../models';
+import {DataSet, Mode} from '../../../models';
 
 const marker = 'marked';
 @Component({
@@ -22,10 +22,7 @@ const marker = 'marked';
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() selected = new EventEmitter<any>();
-  @Output() modeChange = new EventEmitter<Mode>();
-  @Input() header: CalendarHeader[];
-  @Input() body: Array<CalendarCell>[];
-  @Input() totals: number[];
+  @Input() dataSet: DataSet;
   @Input() mode: Mode;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
   scrollElement: HTMLElement;
@@ -67,12 +64,14 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
+    console.log(this.dataSet);
     const now = moment();
     const hours = Array.from({length: 24}, (v, k) => k);
 
     this.labels = hours.map((h, i) => {
       return now.hour(i).minute(60).format('HH:mm');
     });
+    this.labels.unshift('00:00');
   }
 
   ngAfterViewInit(): void {

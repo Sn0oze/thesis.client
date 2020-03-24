@@ -38,6 +38,16 @@ export class DataService {
     return dataMap;
   }
 
+  trimMonthRange(month: Moment, min: Moment, max: Moment): Array<Moment> {
+    if (month.month() === min.month()) {
+      return Array.from((moment.range(min.utc(), month.endOf('month').utc())).by('day'));
+    }
+    if (month.month() === max.month()) {
+      return Array.from((moment.range(month.startOf('month').utc(), max.utc())).by('day'));
+    }
+    return Array.from((moment(month)).range('month').by('day'));
+  }
+
   loadCSV(): Observable<DataSet> {
     return new Observable(observer => {
       d3.text('assets/data/ptsd_filtered.csv').then(text => {
@@ -69,7 +79,7 @@ export class DataService {
           return {
             key: monthKey,
             date: month,
-            values: Array.from((moment(month)).range('month').by('day')).map(day => {
+            values: this.trimMonthRange(month, min, max).map(day => {
               const dayKey = day.format(dateFormat);
               return {
                 key: dayKey,

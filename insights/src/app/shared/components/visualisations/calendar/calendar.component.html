@@ -8,7 +8,9 @@
   <div class="calendar-content" #scroll>
     <div class="month" *ngFor="let month of dataSet.months">
       <div class="month-label">
-        {{month.date.format('MMMM')}}
+        <span>
+          {{month.date.format('MMMM')}}
+        </span>
       </div>
       <div class="days">
         <div class="day" *ngFor="let day of month.values" [ngClass]="{'weekend': day.isWeekend}">

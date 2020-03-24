@@ -7,34 +7,48 @@ $border-width: 2px;
 $background-color: white;
 $border-color: $background-color;
 $border: $border-width solid $border-color;
-$month-label-height: 1.5rem;
+$month-label-height: 3rem;
 $cell-width: 2rem;
 $cell-height: 1.25rem;
 $cell-border-width: 1px;
+$hour-label-width: 2.5rem;
 
 .cell{
   border: $cell-border-width solid white;
   border-radius: .125rem;
+  touch-action: none;
 }
 
 .calendar{
   display: flex;
   flex-direction: row;
+  user-select: none;
+  touch-action: none;
+  overflow: hidden;
+  padding: 1rem calc(#{.75rem} + #{$cell-border-width}) 1rem .5rem;
+  // border: 1px solid black;
 }
 .hour-labels{
-  padding-top: calc(#{$month-label-height + 2 * $cell-height} - #{$cell-border-width});
+  touch-action: none;
+  padding-top: $month-label-height + $cell-height;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
-  width: 2.5rem;
+  width: $hour-label-width;
   .hour-label{
+    width: 100%;
     height: $cell-height;
     display: flex;
     align-items: flex-start;
+    position: relative;
+    justify-content: center;
     span{
-      font-size: .5rem;
-      line-height: .5rem;
+      font-size: $hour-label-size;
+      line-height: $hour-label-size;
+      position: absolute;
+      top: calc(#{$cell-height} - #{$cell-border-width});
+      z-index: -1;
     }
   }
 }
@@ -43,22 +57,28 @@ $cell-border-width: 1px;
   display: flex;
   flex-direction: row;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .month{
   display: flex;
   flex-direction: column;
   border-left: 1px solid black;
-  padding: 0 $cell-border-width;
+  padding-right: 2 * $cell-border-width;
   // margin: 0 1rem;
 }
 .month-label{
   height: $month-label-height;
   // border-bottom:  1px solid black;
   display: flex;
-  align-items: center;
-  padding-left: .5rem;
+  align-items: flex-start;
+  span{
+    padding: .5rem;
+    // border-top: 1px solid black;
+    // border-right: 1px solid black;
+    font-size: 1.5rem;
+    font-weight: 100;
+  }
 }
 .days{
   display: flex;
@@ -68,6 +88,9 @@ $cell-border-width: 1px;
 .day{
   display: flex;
   flex-direction: column;
+  &:first-child{
+    padding-left: $cell-border-width;
+  }
   .day-label {
     @extend .cell;
     display: flex;
@@ -75,7 +98,7 @@ $cell-border-width: 1px;
     align-items: center;
     justify-content: center;
     .day-of-week{
-      font-weight: bold;
+      font-weight: 500;
     }
   }
   &.weekend{

@@ -34,7 +34,7 @@ export class DrawCanvas {
   init(): void {
     this.margin = {top: 0, right: 0, bottom: 0, left: 0};
     this.width = this.container.offsetWidth - this.margin.left - this.margin.right;
-    this.height = 618 - this.margin.top - this.margin.bottom;
+    this.height = 602 - this.margin.top - this.margin.bottom;
 
     this.svg = d3.select(this.container).append('svg').attr('class', 'canvas')
       .attr('width', this.width + this.margin.left + this.margin.right)

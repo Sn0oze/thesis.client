@@ -141,6 +141,7 @@ $grid-color: rgba(#cccccc, .7);
     fill: #cccccc;
   }
   .overlay{
-    pointer-events: none;
+    // pointer-events: none;
+    cursor: default;
   }
 }

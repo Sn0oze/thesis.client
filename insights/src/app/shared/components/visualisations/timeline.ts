@@ -27,6 +27,7 @@ export class Timeline {
   public selection = new BehaviorSubject<TimeSpan>(null);
   private span = 10;
   private currentSelection: TimeSpan;
+  private brushWidth: number;
 
   constructor(private container: HTMLElement, private dataSet: DataSet) {
     this.init();
@@ -103,14 +104,16 @@ export class Timeline {
       .attr('y', d => this.yScale(d.total) + this.margin.top)
       .attr('height', d => this.height - this.yScale(d.total));
 
+    this.brushWidth = this.xScale(this.xScale.domain()[this.span]) -  this.xScale(this.xScale.domain()[0]);
     const brushArea = focus.append('g')
       .attr('class', 'brush')
-      .call(this.brush);
+      .call(this.brush)
+      .call(this.brush.move, [this.xScale(this.xScale.domain()[0]), this.xScale(this.xScale.domain()[this.span])])
+      .call(g => g.select('.overlay')
+        .datum({type: 'selection'})
+        .on('mousedown touchstart', this.clicked.bind(this)));
 
     d3.selectAll('rect.handle').remove();
-    d3.select('rect.overlay').remove();
-
-    brushArea.call(this.brush.move, [this.xScale(this.xScale.domain()[0]), this.xScale(this.xScale.domain()[this.span])]);
   }
 
   brushed(): void {
@@ -128,5 +131,16 @@ export class Timeline {
       this.selection.next(result);
     }
     this.currentSelection = result;
+  }
+  clicked(data, index, nodes): void {
+    const self = nodes[index];
+    const dx = this.brushWidth;
+    const [cx] = d3.mouse(self);
+    const [x0, x1] = [cx - dx / 2, cx + dx / 2];
+    const [X0, X1] = this.xScale.range();
+    d3.select(self.parentNode)
+      .call(this.brush.move, x1 > X1 ? [X1 - dx, X1]
+        : x0 < X0 ? [X0, X0 + dx]
+          : [x0, x1]);
   }
 }

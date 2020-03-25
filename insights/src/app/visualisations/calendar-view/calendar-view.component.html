@@ -1,8 +1,8 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="container">
   <div class="mt-2">
-    <!--<p class="user-select-none">{{viewChecked()}}</p>-->
-    <app-timeline [dataSet]="dataSet"></app-timeline>
+  <!--  <p class="user-select-none">{{viewChecked()}}</p>-->
+    <app-timeline [dataSet]="dataSet" (selected)="calendar.scrollTo($event.position)"></app-timeline>
     <app-canvas-toolbar
       class="mb-3"
       [isOpen]="isDrawMode()"

@@ -1,8 +1,15 @@
 import * as d3 from 'd3';
 import {DataSet} from '../../models';
 import {moment, dateFormat} from '../../utils';
+import {BehaviorSubject} from 'rxjs';
 
 // moment.locale('da');
+
+export interface TimeSpan {
+  start: string;
+  end: string;
+  position: number;
+}
 
 export class Timeline {
   svg: any;
@@ -16,6 +23,9 @@ export class Timeline {
   private yAxisGrid: d3.Axis<d3.Numeric>;
   // parseTime = d3.timeParse('%d-%m-%Y');
   private brush: d3.BrushBehavior<any>;
+  public selection = new BehaviorSubject<TimeSpan>(null);
+  private span = 10;
+  private currentSelection: TimeSpan;
 
   constructor(private container: HTMLElement, private dataSet: DataSet) {
     this.init();
@@ -98,10 +108,23 @@ export class Timeline {
     d3.selectAll('rect.handle').remove();
     d3.select('rect.overlay').remove();
 
-    brushArea.call(this.brush.move, [this.xScale('01-11-2016'), this.xScale('20-11-2016')]);
+    brushArea.call(this.brush.move, [this.xScale(this.xScale.domain()[0]), this.xScale(this.xScale.domain()[this.span])]);
   }
 
-  brushed(event: d3.D3BrushEvent<any>): void {
-    console.log('brushed');
+  brushed(): void {
+    const event = d3.event as d3.D3BrushEvent<any>;
+    // const selection = event.selection.map(point => this.xScale.inv)
+    const width = this.xScale.step();
+    const index = Math.round(event.selection[0] as any / width);
+    const result = {
+      start: this.xScale.domain()[index],
+      end: this.xScale.domain()[index + this.span],
+      position: index
+    };
+    // only emit the initial selection or if the brush moved to a new day
+    if (!this.currentSelection || result.start !== this.currentSelection.start) {
+      this.selection.next(result);
+    }
+    this.currentSelection = result;
   }
 }

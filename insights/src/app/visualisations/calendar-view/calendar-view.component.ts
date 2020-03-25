@@ -4,6 +4,7 @@ import {CalendarCell, CalendarHeader, DataSet, Mode} from '../../shared/models';
 import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
+import {TimeSpan} from '../../shared/components/visualisations/timeline';
 
 @Component({
   selector: 'app-calendar-view',
@@ -84,5 +85,9 @@ export class CalendarViewComponent implements OnInit {
     if (this.canvas) {
       this.canvas.undo();
     }
+  }
+
+  updateCalendar(span: TimeSpan): void {
+    console.log(span);
   }
 }

@@ -7,6 +7,7 @@
     <div class="hour-label" *ngFor="let label of labels">
       <span>{{label}}</span>
     </div>
+    <div class="total-label">Total</div>
   </div>
   <div class="calendar-content" #scroll>
     <div class="month" *ngFor="let month of dataSet.months; odd as highlight " [ngClass]="{'highlighted': highlight}">
@@ -24,9 +25,17 @@
           <div
             class="hour"
             *ngFor="let hour of day.values"
-            [style.color]="textColorScale(hour.values.length)"
-            [style.background-color]="getColor(hour.values.length)">
+            [style.color]="getTextColor(hour.values.length, hourScale)"
+            [style.background-color]="getColor(hour.values.length, hourScale)">
             {{hour.values.length > 0 ? hour.values.length : ''}}
+          </div>
+          <div
+            class="total-value">
+            <div
+              [style.color]="getTextColor(day.total, totalScale)"
+              [style.background-color]="getColor(day.total, totalScale)">
+              {{day.total}}
+            </div>
           </div>
         </div>
       </div>

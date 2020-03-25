@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import * as moment from 'moment';
 import {DataSet, Mode} from '../../../models';
-import {scaleSequential, interpolateOrRd, interpolateGreys, max} from 'd3';
+import {scaleSequential, interpolateOrRd, interpolateGreys, max, ScaleSequential, Numeric} from 'd3';
 
 const marker = 'marked';
 @Component({
@@ -36,8 +36,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   onTap: (event) => void;
   onPan: (event) => void;
   onPanEnd: () => void;
-  colorScale = scaleSequential(interpolateOrRd);
-  textColorScale = scaleSequential(interpolateGreys);
+  hourScale = scaleSequential(interpolateOrRd);
+  totalScale = scaleSequential(interpolateOrRd);
 
   constructor(private zone: NgZone) {
     this.onTap = (event) => {
@@ -74,9 +74,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       return now.hour(i).minute(60).format('HH:mm');
     });
     this.labels.unshift('00:00');
-    const maxValue = max(this.dataSet.days, day => max(day.values, hour => hour.values.length));
-    this.colorScale.domain([1, maxValue]);
-    this.textColorScale.domain([maxValue, 0]);
+    const dayMax = max(this.dataSet.days, day => max(day.values, hour => hour.values.length));
+    this.hourScale.domain([1, dayMax]);
+
+    const totalMax = max(this.dataSet.days.map(day => day.total));
+    this.totalScale.domain([1, totalMax]);
   }
 
   ngAfterViewInit(): void {
@@ -135,7 +137,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       }
     });
   }
-  getColor(value: number): string {
-    return value > 0 ? this.colorScale(value) : '';
+  getColor(value: number, scale: ScaleSequential<string>): string {
+    return value > 0 ? scale(value) : '';
+  }
+  getTextColor(value: number, scale: ScaleSequential<string>): string {
+    return value >= scale.domain()[1] * .66 ? 'rgba(255,255,255,.87)' : 'rgba(0,0,0,.87)';
   }
 }

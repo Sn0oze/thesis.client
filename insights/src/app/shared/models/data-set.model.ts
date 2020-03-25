@@ -2,12 +2,14 @@ import * as moment from 'moment';
 import {Observation} from './observation.model';
 import {DateRange} from 'moment-range';
 import {Moment} from 'moment';
+import {DataMap} from '../services/data.service';
 
 export interface DataSet {
   min: moment.Moment;
   max: moment.Moment;
   range: DateRange;
   daySpan: Array<string>;
+  mappings: DataMap;
   days: Array<DayNest>;
   months: Array<MonthNest>;
 }

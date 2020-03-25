@@ -15,8 +15,8 @@ $hour-label-width: 2.625rem;
 $month-highlight-color: rgb(220, 241, 255);
 $cell-color-default: #f0f0f0;
 $cell-color-weekend: #959595;
-
-
+$margin-total: $border-width;
+$padding-total: .75rem;
 .cell{
   border: $cell-border-width solid $background-color;
   // border-radius: .125rem;
@@ -35,7 +35,7 @@ $cell-color-weekend: #959595;
 }
 .hour-labels{
   touch-action: none;
-  padding-top: $month-label-height + $cell-height;
+  padding-top: calc(#{$month-label-height +  $cell-height} + #{$border-width});
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -52,7 +52,7 @@ $cell-color-weekend: #959595;
       font-size: $hour-label-size;
       line-height: $hour-label-size;
       position: absolute;
-      top: calc(#{$cell-height} - #{$cell-border-width});
+      top: $cell-height - $hour-label-size / 2;
     }
   }
 }
@@ -135,3 +135,19 @@ $cell-color-weekend: #959595;
   height: $cell-height;
   background: $cell-color-default;
 }
+
+.total-value{
+  width: calc(#{$cell-width} - #{2 * $margin-total});
+  padding-top: $padding-total;
+  text-align: center;
+  margin: $margin-total;
+}
+
+.total-label{
+  font-size: .75rem;
+  margin: $margin-total 0;
+  padding-top: $padding-total;
+  width: $hour-label-width;
+  text-align: center;
+}
+

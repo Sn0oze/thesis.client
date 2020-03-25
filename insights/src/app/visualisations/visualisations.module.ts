@@ -11,6 +11,7 @@ import { GesturesViewComponent } from './gestures-view/gestures-view.component';
 import {MatRippleModule} from '@angular/material/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {FormsModule} from '@angular/forms';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 
@@ -27,7 +28,8 @@ import {FormsModule} from '@angular/forms';
     MatButtonModule,
     MatRippleModule,
     MatSlideToggleModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ]
 })
 export class VisualisationsModule { }

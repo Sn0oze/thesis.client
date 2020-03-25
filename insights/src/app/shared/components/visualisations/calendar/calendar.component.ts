@@ -43,7 +43,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     this.onTap = (event) => {
       const element = (event.target as HTMLElement);
       this.zone.run(() => {
-        this.selected.emit(element.innerText);
+        this.selected.emit([element.innerText]);
         this.mark(element);
       });
     };
@@ -60,7 +60,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
         element.classList.remove(marker);
       });
       this.zone.run(() => {
-        this.selected.emit(this.currentSelection.values());
+        this.selected.emit(Array.from(this.currentSelection).map(d => d.innerText));
       });
       this.currentSelection.clear();
     };

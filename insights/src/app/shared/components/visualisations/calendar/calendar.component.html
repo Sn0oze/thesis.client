@@ -1,4 +1,7 @@
 <!--suppress AngularUndefinedBinding -->
+<div class="d-flex align-items-center justify-content-center">
+  <div class="testtest"></div>
+</div>
 <div class="calendar">
   <div class="hour-labels">
     <div class="hour-label" *ngFor="let label of labels">
@@ -6,7 +9,7 @@
     </div>
   </div>
   <div class="calendar-content" #scroll>
-    <div class="month" *ngFor="let month of dataSet.months">
+    <div class="month" *ngFor="let month of dataSet.months; odd as highlight " [ngClass]="{'highlighted': highlight}">
       <div class="month-label">
         <span>
           {{month.date.format('MMMM')}}
@@ -18,7 +21,11 @@
             <div class="day-of-week">{{day.date.format('ddd')}}</div>
             <div class="day-of-month">{{day.date.format('DD')}}</div>
           </div>
-          <div class="hour" *ngFor="let hour of day.values">
+          <div
+            class="hour"
+            *ngFor="let hour of day.values"
+            [style.color]="textColorScale(hour.values.length)"
+            [style.background-color]="getColor(hour.values.length)">
             {{hour.values.length > 0 ? hour.values.length : ''}}
           </div>
         </div>

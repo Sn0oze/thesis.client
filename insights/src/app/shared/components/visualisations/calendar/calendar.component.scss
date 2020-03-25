@@ -11,12 +11,18 @@ $month-label-height: 3rem;
 $cell-width: 2rem;
 $cell-height: 1.25rem;
 $cell-border-width: 1px;
-$hour-label-width: 2.5rem;
+$hour-label-width: 2.625rem;
+$month-highlight-color: rgb(220, 241, 255);
+$cell-color-default: #f0f0f0;
+$cell-color-weekend: #959595;
+
 
 .cell{
-  border: $cell-border-width solid white;
-  border-radius: .125rem;
+  border: $cell-border-width solid $background-color;
+  // border-radius: .125rem;
   touch-action: none;
+  position: relative;
+  width: $cell-width;
 }
 
 .calendar{
@@ -25,8 +31,7 @@ $hour-label-width: 2.5rem;
   user-select: none;
   touch-action: none;
   overflow: hidden;
-  padding: 1rem calc(#{.75rem} + #{$cell-border-width}) 1rem .5rem;
-  // border: 1px solid black;
+  padding: 1rem .75rem 1rem 0;
 }
 .hour-labels{
   touch-action: none;
@@ -37,7 +42,7 @@ $hour-label-width: 2.5rem;
   flex-direction: column;
   width: $hour-label-width;
   .hour-label{
-    width: 100%;
+    width: $hour-label-width;
     height: $cell-height;
     display: flex;
     align-items: flex-start;
@@ -48,7 +53,6 @@ $hour-label-width: 2.5rem;
       line-height: $hour-label-size;
       position: absolute;
       top: calc(#{$cell-height} - #{$cell-border-width});
-      z-index: -1;
     }
   }
 }
@@ -60,22 +64,35 @@ $hour-label-width: 2.5rem;
   overflow: hidden;
 }
 
+.mask:after{
+  position: absolute;
+  content: '';
+  width: calc(100% + #{2 * $cell-border-width});
+  height: 2 * $cell-border-width;
+  background-color: $background-color;
+  bottom: -$cell-border-width
+}
+
 .month{
   display: flex;
   flex-direction: column;
-  border-left: 1px solid black;
-  padding-right: 2 * $cell-border-width;
-  // margin: 0 1rem;
+  &.highlighted{
+    background-color: $month-highlight-color;
+    .day-label, .day-label.weekend{
+      border-color: $month-highlight-color;
+    }
+    .day-label:first-child:after{
+      @extend .mask
+    }
+
+  }
 }
 .month-label{
   height: $month-label-height;
-  // border-bottom:  1px solid black;
   display: flex;
   align-items: flex-start;
   span{
     padding: .5rem;
-    // border-top: 1px solid black;
-    // border-right: 1px solid black;
     font-size: 1.5rem;
     font-weight: 100;
   }
@@ -88,9 +105,6 @@ $hour-label-width: 2.5rem;
 .day{
   display: flex;
   flex-direction: column;
-  &:first-child{
-    padding-left: $cell-border-width;
-  }
   .day-label {
     @extend .cell;
     display: flex;
@@ -100,11 +114,15 @@ $hour-label-width: 2.5rem;
     .day-of-week{
       font-weight: 500;
     }
+    .day-of-month{
+      font-weight: 100;
+    }
   }
   &.weekend{
     .day-label, .hour{
-      background: #959595 !important;
+      background: $cell-color-weekend;
       color: $background-color;
+      @extend .mask
     }
   }
 }
@@ -114,15 +132,6 @@ $hour-label-width: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: $cell-width;
   height: $cell-height;
-  background: #f0f0f0;
+  background: $cell-color-default;
 }
-.large-label{
-  font-weight: 400;
-}
-.small-label{
-  font-weight: 200;
-  font-size: .75rem;
-}
-

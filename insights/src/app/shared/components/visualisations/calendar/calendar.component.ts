@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import * as moment from 'moment';
 import {DataSet, Mode} from '../../../models';
+import {scaleSequential, interpolateOrRd, interpolateGreys, max} from 'd3';
 
 const marker = 'marked';
 @Component({
@@ -28,13 +29,15 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   scrollElement: HTMLElement;
   labels: string[];
   max: number;
-  readonly cellWidth = 37;
+  readonly cellWidth = 32;
   readonly min = 0;
   currentSelection = new Set<HTMLElement>();
   hammer: HammerManager;
   onTap: (event) => void;
   onPan: (event) => void;
   onPanEnd: () => void;
+  colorScale = scaleSequential(interpolateOrRd);
+  textColorScale = scaleSequential(interpolateGreys);
 
   constructor(private zone: NgZone) {
     this.onTap = (event) => {
@@ -72,6 +75,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       return now.hour(i).minute(60).format('HH:mm');
     });
     this.labels.unshift('00:00');
+    const maxValue = max(this.dataSet.days, day => max(day.values, hour => hour.values.length));
+    this.colorScale.domain([1, maxValue]);
+    this.textColorScale.domain([maxValue, 0]);
   }
 
   ngAfterViewInit(): void {
@@ -108,31 +114,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  next(): void {
-    this.zone.runOutsideAngular(() => {
-      if (this.scrollElement.scrollLeft + this.cellWidth <= this.max) {
-        this.scrollElement.scrollLeft += this.cellWidth;
-      }
-    });
-  }
-
-  previous(): void {
-    if (this.scrollElement.scrollLeft - this.cellWidth >= this.min) {
-      this.scrollElement.scrollLeft -= this.cellWidth;
-    }
-  }
-
   scrollTo(position: number): void {
     if ((position >= this.min && position <= this.max)) {
-      this.scrollElement.scrollLeft = position;
+      this.scrollElement.scrollLeft = position * this.cellWidth;
     }
-  }
-  scrollStart(): void {
-    this.scrollElement.scrollLeft = 0;
-  }
-
-  scrollEnd(): void {
-    this.scrollElement.scrollLeft = this.max;
   }
 
   mark(element: HTMLElement): void {
@@ -150,5 +135,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
         this.mark(element);
       }
     });
+  }
+  getColor(value: number): string {
+    return value > 0 ? this.colorScale(value) : '';
   }
 }

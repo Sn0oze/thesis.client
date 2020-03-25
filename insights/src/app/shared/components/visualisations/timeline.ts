@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import {DataSet} from '../../models';
 import {moment, dateFormat} from '../../utils';
 import {BehaviorSubject} from 'rxjs';
+import {CELL_WIDTH, SPACING_LEFT, SPACING_RIGHT} from '../../constants';
 
 // moment.locale('da');
 
@@ -34,6 +35,7 @@ export class Timeline {
   init(): void {
     const svgHeight = 150;
     const svgWidth = this.container.offsetWidth;
+    this.span = Math.floor((svgWidth - SPACING_LEFT - SPACING_RIGHT) / CELL_WIDTH);
     this.margin = {top: 8, right: 38, bottom: 20, left: 38};
     this.width = svgWidth - this.margin.left - this.margin.right;
     this.height = svgHeight - this.margin.top - this.margin.bottom;

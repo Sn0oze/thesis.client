@@ -67,7 +67,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log(this.dataSet);
     const now = moment();
     const hours = Array.from({length: 24}, (v, k) => k);
 

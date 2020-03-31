@@ -55,7 +55,7 @@ export class DataService {
         const min = d3.min(data.map(d => d.date));
         const max = d3.max(data.map(d => d.date));
         const range = moment.range(
-          min.utc().startOf('day'), max.utc().endOf('day'));
+          min.clone().utc().startOf('day'), max.clone().utc().endOf('day'));
         // adding one day is a workaround because the last day is excluded for some reason
         const daySpan = Array.from(range.by('day'), m => m.format(dateFormat));
 

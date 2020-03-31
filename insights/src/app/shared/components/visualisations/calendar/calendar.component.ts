@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import * as moment from 'moment';
 import {DataSet, Mode} from '../../../models';
-import {scaleSequential, interpolateOrRd, interpolateGreys, max, ScaleSequential, Numeric} from 'd3';
+import {scaleSequential, interpolateOrRd, max, ScaleSequential} from 'd3';
 
 const marker = 'marked';
 @Component({
@@ -44,16 +44,17 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       const element = (event.target as HTMLElement);
       this.zone.run(() => {
         this.selected.emit([element.innerText]);
-        this.mark(element);
+        // this.mark(element);
       });
     };
 
     this.onPan = (event) => {
-      const element = (event.target as HTMLElement);
+      const element = this.getElement(event);
       if (element.innerText) {
         this.panned(event);
         this.currentSelection.add(element);
       }
+      console.log(event.target.innerText);
     };
     this.onPanEnd = () => {
       this.currentSelection.forEach(element => {
@@ -62,6 +63,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       this.zone.run(() => {
         this.selected.emit(Array.from(this.currentSelection).map(d => d.innerText));
       });
+      console.log(Array.from(this.currentSelection).map(d => d.innerText));
       this.currentSelection.clear();
     };
   }
@@ -129,7 +131,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   panned(event): void {
-    const element = event.target;
+    const element = this.getElement(event);
     this.zone.runOutsideAngular(() => {
       if (!this.currentSelection.has(element)) {
         this.currentSelection.add(element);
@@ -142,5 +144,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   }
   getTextColor(value: number, scale: ScaleSequential<string>): string {
     return value >= scale.domain()[1] * .66 ? 'rgba(255,255,255,.87)' : 'rgba(0,0,0,.87)';
+  }
+
+  getElement(event): HTMLElement {
+    return document.elementFromPoint(event.center.x, event.center.y) as HTMLElement;
   }
 }

@@ -4,7 +4,7 @@
   <!--  <p class="user-select-none">{{viewChecked()}}</p>-->
     <app-timeline [dataSet]="dataSet" (selected)="calendar.scrollTo($event.position)"></app-timeline>
     <app-canvas-toolbar
-      class="mb-3"
+      class="my-2"
       [isOpen]="isDrawMode()"
       (undo)="undo()"
       (opened)="mode = 'draw'"

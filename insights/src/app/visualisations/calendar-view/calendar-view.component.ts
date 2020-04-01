@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import * as moment from 'moment';
-import {CalendarCell, CalendarHeader, DataSet, Mode} from '../../shared/models';
+import {CalendarCell, DataSet, Mode} from '../../shared/models';
 import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
-import {TimeSpan} from '../../shared/components/visualisations/timeline';
 import {MatDialog} from '@angular/material/dialog';
 import {AnnotationDialogComponent} from './annotation-dialog/annotation-dialog.component';
 
@@ -30,19 +28,24 @@ export class CalendarViewComponent implements OnInit {
     this.width = PEN_WIDTHS[0];
     this.color = COLORS[0];
     this.dataSet = this.route.parent.snapshot.data.dataSet;
+    const dialogRef = this.dialog.open(AnnotationDialogComponent, {
+      width: '80vw',
+      height: '80vh',
+      data: {values: Array(80).fill({type: 'test', date: 'none'})}
+    });
   }
 
   selected(selection): void {
-    console.log('Selected: ', selection);
+    // console.log('Selected: ', selection);
     this.value = selection;
     const dialogRef = this.dialog.open(AnnotationDialogComponent, {
-      width: '60vw',
-      height: '60vh',
+      width: '80vw',
+      height: '80vh',
       data: {values: selection}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
+      // console.log('The dialog was closed', result);
     });
   }
 

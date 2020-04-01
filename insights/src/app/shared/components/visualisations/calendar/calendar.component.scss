@@ -113,16 +113,21 @@ $padding-total: .75rem;
     justify-content: center;
     .day-of-week{
       font-weight: 500;
+      pointer-events: none;
     }
     .day-of-month{
       font-weight: 100;
+      pointer-events: none;
     }
   }
   &.weekend{
+    .day-label{
+      // only add mask to weekend labels to reduce the amount of after elements since the default background is white
+      @extend .mask
+    }
     .day-label, .hour{
       background: $cell-color-weekend;
       color: $background-color;
-      @extend .mask
     }
   }
 }
@@ -149,5 +154,9 @@ $padding-total: .75rem;
   padding-top: $padding-total;
   width: $hour-label-width;
   text-align: center;
+}
+
+.selectable{
+  // box-shadow: 0 0 0 1px rgba(0,0,0,0.75) inset;
 }
 

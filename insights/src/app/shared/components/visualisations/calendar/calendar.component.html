@@ -1,27 +1,39 @@
 <!--suppress AngularUndefinedBinding -->
-<div class="calendar">
+<div class="calendar" #calendar>
   <div class="hour-labels">
     <div class="hour-label" *ngFor="let label of labels">
-      <span>{{label}}</span>
+      <span
+        class="selectable"
+        [attr.data-date]="label"
+        [attr.data-type]="'hours'">{{label}}</span>
     </div>
     <div class="total-label">Total</div>
   </div>
   <div class="calendar-content" #scroll>
     <div class="month" *ngFor="let month of dataSet.months; odd as highlight " [ngClass]="{'highlighted': highlight}">
       <div class="month-label">
-        <span>
+        <span
+          class="selectable"
+          [attr.data-date]="month.date.format('DD-MM-YYYY')"
+          [attr.data-type]="'month'">
           {{month.date.format('MMMM')}}
         </span>
       </div>
       <div class="days">
         <div class="day" *ngFor="let day of month.values" [ngClass]="{'weekend': day.isWeekend}">
-          <div class="day-label" [ngClass]="{'weekend': day.isWeekend}">
+          <div
+            class="day-label selectable"
+            [ngClass]="{'weekend': day.isWeekend}"
+            [attr.data-date]="day.date.format('DD-MM-YYYY')"
+            [attr.data-type]="'day'">
             <div class="day-of-week">{{day.date.format('ddd')}}</div>
             <div class="day-of-month">{{day.date.format('DD')}}</div>
           </div>
           <div
-            class="hour"
+            class="hour selectable"
             *ngFor="let hour of day.values"
+            [attr.data-date]="day.date.format('DD-MM-YYYY') + ':' + hour.key"
+            [attr.data-type]="'hour'"
             [style.color]="getTextColor(hour.values.length, hourScale)"
             [style.background-color]="getColor(hour.values.length, hourScale)">
             {{hour.values.length > 0 ? hour.values.length : ''}}
@@ -29,6 +41,9 @@
           <div
             class="total-value">
             <div
+              class="selectable"
+              [attr.data-date]="day.date.format('DD-MM-YYYY')"
+              [attr.data-type]="'total'"
               [style.color]="getTextColor(day.total, totalScale)"
               [style.background-color]="getColor(day.total, totalScale)">
               {{day.total}}

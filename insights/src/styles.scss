@@ -37,6 +37,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 // @import "~bootstrap/scss/bootstrap-grid";
 @import "~bootstrap/scss/bootstrap";
 
+// Disable touch action on material backdrop to prevent scrolling on background content
+.cdk-overlay-container, mat-dialog-container{
+  touch-action: none;
+}
+
 button{
   &:focus{
     outline: none;
@@ -57,7 +62,9 @@ a[mat-button]:hover{
 }
 
 .marked{
-  border-color: #cd6359 !important;
+  // box-shadow: 0 0 0 1px rgba(0,0,0,0.75) inset;
+  background-color: #4C81C1 !important;
+  color: white !important;
 }
 
 //d3 styles

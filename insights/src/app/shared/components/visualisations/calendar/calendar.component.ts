@@ -26,7 +26,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() dataSet: DataSet;
   @Input() mode: Mode;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
+  @ViewChild('calendar') calendarRef: ElementRef<HTMLElement>;
   scrollElement: HTMLElement;
+  calendarElement: HTMLElement;
   labels: string[];
   max: number;
   readonly cellWidth = 32;
@@ -41,29 +43,23 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(private zone: NgZone) {
     this.onTap = (event) => {
-      const element = (event.target as HTMLElement);
+      const element = event.target as HTMLElement;
+      console.log(element.dataset);
       this.zone.run(() => {
-        this.selected.emit([element.innerText]);
-        // this.mark(element);
+        this.selected.emit([element.dataset]);
       });
     };
 
     this.onPan = (event) => {
-      const element = this.getElement(event);
-      if (element.innerText) {
-        this.panned(event);
-        this.currentSelection.add(element);
-      }
-      console.log(event.target.innerText);
+      this.panned(event);
     };
     this.onPanEnd = () => {
       this.currentSelection.forEach(element => {
         element.classList.remove(marker);
       });
       this.zone.run(() => {
-        this.selected.emit(Array.from(this.currentSelection).map(d => d.innerText));
+        this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
       });
-      console.log(Array.from(this.currentSelection).map(d => d.innerText));
       this.currentSelection.clear();
     };
   }
@@ -85,9 +81,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.scrollElement = this.scrollRef.nativeElement as HTMLElement;
+    this.calendarElement = this.calendarRef.nativeElement as HTMLElement;
     this.max = this.scrollElement.scrollWidth;
     this.zone.runOutsideAngular(() => {
-      this.hammer = new Hammer(this.scrollElement);
+      this.hammer = new Hammer(this.calendarElement);
     });
     if (this.mode === 'select') {
       this.addListeners();
@@ -103,15 +100,15 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   addListeners(): void {
     this.zone.runOutsideAngular(() => {
-      this.hammer = new Hammer(this.scrollElement);
-      this.hammer.on('panmove', this.onPan);
+      this.hammer = new Hammer(this.calendarElement);
+      this.hammer.on('pan', this.onPan);
       this.hammer.on('tap', this.onTap);
       this.hammer.on('panend', this.onPanEnd);
     });
   }
   removeListeners(): void {
     if (this.hammer) {
-      this.hammer.off('panmove', this.onPan);
+      this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onTap);
       this.hammer.off('tap', this.onPanEnd);
     }
@@ -125,19 +122,19 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   mark(element: HTMLElement): void {
     const classList = element.classList;
-    if (element.innerText) {
-      classList.contains('marked') ? classList.remove(marker) : classList.add(marker);
-    }
+    classList.contains('marked') ? classList.remove(marker) : classList.add(marker);
   }
 
   panned(event): void {
     const element = this.getElement(event);
-    this.zone.runOutsideAngular(() => {
-      if (!this.currentSelection.has(element)) {
-        this.currentSelection.add(element);
-        this.mark(element);
-      }
-    });
+    if (element && element.classList.contains('selectable')) {
+      this.zone.runOutsideAngular(() => {
+        if (!this.currentSelection.has(element)) {
+          this.currentSelection.add(element);
+          this.mark(element);
+        }
+      });
+    }
   }
   getColor(value: number, scale: ScaleSequential<string>): string {
     return value > 0 ? scale(value) : '';

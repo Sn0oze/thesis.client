@@ -44,7 +44,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private zone: NgZone) {
     this.onTap = (event) => {
       const element = event.target as HTMLElement;
-      if (this.isSelectable(element)) {
+      if (this.currentSelection.size && this.isSelectable(element)) {
         this.zone.run(() => {
           this.selected.emit([element.dataset]);
         });
@@ -55,13 +55,15 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       this.panned(event);
     };
     this.onPanEnd = () => {
-      this.currentSelection.forEach(element => {
-        element.classList.remove(marker);
-      });
-      this.zone.run(() => {
-        this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
-      });
-      this.currentSelection.clear();
+      if (this.currentSelection.size) {
+        this.currentSelection.forEach(element => {
+          element.classList.remove(marker);
+        });
+        this.zone.run(() => {
+          this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
+        });
+        this.currentSelection.clear();
+      }
     };
   }
 

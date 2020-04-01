@@ -44,7 +44,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private zone: NgZone) {
     this.onTap = (event) => {
       const element = event.target as HTMLElement;
-      if (this.currentSelection.size && this.isSelectable(element)) {
+      if (this.isSelectable(element)) {
         this.zone.run(() => {
           this.selected.emit([element.dataset]);
         });

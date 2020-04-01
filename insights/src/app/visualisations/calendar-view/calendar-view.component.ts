@@ -28,11 +28,13 @@ export class CalendarViewComponent implements OnInit {
     this.width = PEN_WIDTHS[0];
     this.color = COLORS[0];
     this.dataSet = this.route.parent.snapshot.data.dataSet;
+    /*
     const dialogRef = this.dialog.open(AnnotationDialogComponent, {
       width: '80vw',
       height: '80vh',
       data: {values: Array(80).fill({type: 'test', date: 'none'})}
     });
+     */
   }
 
   selected(selection): void {

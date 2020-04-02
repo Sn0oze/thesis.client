@@ -16,6 +16,7 @@ import {DataSet, Mode} from '../../../models';
 import {scaleSequential, interpolateOrRd, max, ScaleSequential} from 'd3';
 
 const marker = 'marked';
+type SelectionType = 'hours' | 'month' | 'hour' | 'total' | null;
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -34,6 +35,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   readonly cellWidth = 32;
   readonly min = 0;
   currentSelection = new Set<HTMLElement>();
+  currentType: SelectionType;
   hammer: HammerManager;
   onTap: (event) => void;
   onPan: (event) => void;
@@ -63,6 +65,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
           this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
         });
         this.currentSelection.clear();
+        this.currentType = null;
       }
     };
   }
@@ -131,12 +134,18 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   panned(event): void {
     const element = this.getElement(event);
     if (element && this.isSelectable(element)) {
-      this.zone.runOutsideAngular(() => {
-        if (!this.currentSelection.has(element)) {
-          this.currentSelection.add(element);
-          this.mark(element);
-        }
-      });
+      const type = element.dataset.type as SelectionType;
+      if (!this.currentSelection.size) {
+        this.currentType = type;
+      }
+      if (type === this.currentType) {
+        this.zone.runOutsideAngular(() => {
+          if (!this.currentSelection.has(element)) {
+            this.currentSelection.add(element);
+            this.mark(element);
+          }
+        });
+      }
     }
   }
   getColor(value: number, scale: ScaleSequential<string>): string {

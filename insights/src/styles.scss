@@ -63,8 +63,15 @@ a[mat-button]:hover{
 
 .marked{
   // box-shadow: 0 0 0 1px rgba(0,0,0,0.75) inset;
-  background-color: #4C81C1 !important;
-  color: white !important;
+  &:after{
+    background-color: rgba(#4C81C1, 0.5) !important;
+    content: '';
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top:0;
+    left: 0;
+  }
 }
 
 //d3 styles

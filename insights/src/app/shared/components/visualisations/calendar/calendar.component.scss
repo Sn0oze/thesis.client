@@ -68,7 +68,7 @@ $padding-total: .75rem;
   overflow: hidden;
 }
 
-.mask:after{
+.mask:before{
   position: absolute;
   content: '';
   width: calc(100% + #{2 * $cell-border-width});
@@ -159,9 +159,11 @@ $padding-total: .75rem;
   padding-top: $padding-total;
   width: $hour-label-width;
   text-align: center;
+  position: relative;
 }
 
 .selectable{
   // box-shadow: 0 0 0 1px rgba(0,0,0,0.75) inset;
+  position: relative;
 }
 

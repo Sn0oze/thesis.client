@@ -17,6 +17,7 @@ import {scaleSequential, interpolateOrRd, max, ScaleSequential} from 'd3';
 
 const marker = 'marked';
 type SelectionType = 'hours' | 'month' | 'hour' | 'total' | null;
+type Shape = 'hLine' | 'vLine' | 'line' | 'shape';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -38,6 +39,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   currentType: SelectionType;
   hammer: HammerManager;
   onTap: (event) => void;
+  onPanStart: () => void;
   onPan: (event) => void;
   onPanEnd: () => void;
   hourScale = scaleSequential(interpolateOrRd);
@@ -46,28 +48,61 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private zone: NgZone) {
     this.onTap = (event) => {
       const element = event.target as HTMLElement;
-      if (this.isSelectable(element)) {
-        this.zone.run(() => {
-          this.selected.emit([element.dataset]);
-        });
+      if (this.currentSelection.size) {
+        if (!this.currentSelection.has(element)) {
+          this.clearSelection();
+        }
+      } else {
+        if (this.isSelectable(element)) {
+          this.zone.run(() => {
+            // this.selected.emit([element.dataset]);
+          });
+        }
       }
+    };
+
+    this.onPanStart = () => {
+      this.clearSelection();
     };
 
     this.onPan = (event) => {
       this.panned(event);
     };
+
     this.onPanEnd = () => {
       if (this.currentSelection.size) {
-        this.currentSelection.forEach(element => {
-          element.classList.remove(marker);
-        });
+        if (this.currentType === 'hour') {
+          const elements = Array.from(this.currentSelection).map(element => element.getBoundingClientRect());
+          // this.currentSelection.forEach(element => console.log(element.getBoundingClientRect()));
+          console.log(this.calculateShape(elements));
+        }
         this.zone.run(() => {
-          this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
+          // this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
         });
-        this.currentSelection.clear();
-        this.currentType = null;
       }
     };
+  }
+  calculateShape(elements: Array<DOMRect>): Shape {
+    const count  = elements.length;
+    const first = elements[0];
+    const middle = elements[Math.floor(count / 2)];
+    const last = elements[count - 1];
+    const height = first.height;
+    const width = first.width;
+    if (this.inRadius(first.x, last.x, height) && this.inRadius(middle.x, last.x, height)) {
+      return 'vLine';
+    }
+    if (this.inRadius(first.y, middle.y, width) && this.inRadius(middle.y, last.y, width)) {
+      return 'hLine';
+    }
+    if (this.inRadius(first.x, last.x, 2 * height) && this.inRadius(first.y, last.y, 2 * width)) {
+      return 'shape';
+    }
+    return 'line';
+  }
+
+  inRadius(a: number, b: number, threshold: number): boolean {
+    return Math.abs(b - a) <= threshold;
   }
 
   ngOnInit(): void {
@@ -107,16 +142,18 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   addListeners(): void {
     this.zone.runOutsideAngular(() => {
       this.hammer = new Hammer(this.calendarElement);
-      this.hammer.on('pan', this.onPan);
       this.hammer.on('tap', this.onTap);
+      this.hammer.on('pan', this.onPan);
+      this.hammer.on('panstart', this.onPanStart);
       this.hammer.on('panend', this.onPanEnd);
     });
   }
   removeListeners(): void {
     if (this.hammer) {
+      this.hammer.off('tap', this.onPanEnd);
+      this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onTap);
-      this.hammer.off('tap', this.onPanEnd);
     }
   }
 
@@ -161,5 +198,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   isSelectable(element: HTMLElement | DOMTokenList): boolean {
     return element instanceof HTMLElement ? element.classList.contains('selectable') : element.contains('selectable');
+  }
+
+  clearSelection(): void {
+    this.currentSelection.forEach(element => {
+      element.classList.remove(marker);
+    });
+    this.currentSelection.clear();
+    this.currentType = null;
   }
 }

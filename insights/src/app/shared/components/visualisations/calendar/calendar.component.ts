@@ -13,11 +13,12 @@ import {
 } from '@angular/core';
 import * as moment from 'moment';
 import {DataSet, Mode} from '../../../models';
-import {scaleSequential, interpolateOrRd, max, ScaleSequential} from 'd3';
+import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
+import {dateFormat} from '../../../utils';
 
 const marker = 'marked';
 type SelectionType = 'hours' | 'month' | 'hour' | 'total' | null;
-type Shape = 'hLine' | 'vLine' | 'line' | 'shape';
+type Shape = 'hLine' | 'vLine' | 'line' | 'complex';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -72,9 +73,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     this.onPanEnd = () => {
       if (this.currentSelection.size) {
         if (this.currentType === 'hour') {
-          const elements = Array.from(this.currentSelection).map(element => element.getBoundingClientRect());
-          // this.currentSelection.forEach(element => console.log(element.getBoundingClientRect()));
-          console.log(this.calculateShape(elements));
+          const elements = Array.from(this.currentSelection);
+          const shape = this.categorize(elements.map(element => element.getBoundingClientRect()));
+          if (shape === 'complex') {
+            this.fillSelection(elements);
+          }
         }
         this.zone.run(() => {
           // this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
@@ -82,21 +85,42 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       }
     };
   }
-  calculateShape(elements: Array<DOMRect>): Shape {
-    const count  = elements.length;
+  fillSelection(elements: Array<HTMLElement>): void {
+    const data = new Map<string, Array<number>>();
+    // build map of all selected hour grouped by day
+    elements.forEach(element => {
+      const date = element.dataset.date.split(':');
+      const day = date[0];
+      const hour = parseInt(date[1], 10);
+      data.has(day) ? data.get(day).push(hour) : data.set(day, [hour]);
+    });
+
+    // fill in each day
+    data.forEach((hours, day) => {
+      const start = min(hours);
+      const end = max(hours);
+      if (start === end) {
+        // const previous = moment(day, dateFormat).subtract(1, 'day').format(dateFormat);
+        // const next = moment(day, dateFormat).add(1, 'day').format(dateFormat);
+        // console.log(day, previous, next);
+      }
+      for (let i = start + 1; i < end; i++) {
+        // hours from 0-9 have to be zero padded
+        const selector = `[data-date="${day}:${i > 9 ? i : String(i).padStart(2, '0')}"]`;
+        const element = document.querySelector(selector) as HTMLElement;
+        this.currentSelection.add(element);
+        this.mark(element);
+      }
+    });
+  }
+
+  categorize(elements: Array<DOMRect>): Shape {
     const first = elements[0];
-    const middle = elements[Math.floor(count / 2)];
-    const last = elements[count - 1];
+    const last = elements[elements.length - 1];
     const height = first.height;
     const width = first.width;
-    if (this.inRadius(first.x, last.x, height) && this.inRadius(middle.x, last.x, height)) {
-      return 'vLine';
-    }
-    if (this.inRadius(first.y, middle.y, width) && this.inRadius(middle.y, last.y, width)) {
-      return 'hLine';
-    }
-    if (this.inRadius(first.x, last.x, 2 * height) && this.inRadius(first.y, last.y, 2 * width)) {
-      return 'shape';
+    if (this.inRadius(first.x, last.x, 4 * height) && this.inRadius(first.y, last.y, 4 * width)) {
+      return 'complex';
     }
     return 'line';
   }
@@ -164,8 +188,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   mark(element: HTMLElement): void {
-    const classList = element.classList;
-    classList.contains('marked') ? classList.remove(marker) : classList.add(marker);
+    element.classList.add(marker);
+  }
+  unmark(element: HTMLElement): void {
+    element.classList.remove(marker);
   }
 
   panned(event): void {
@@ -202,7 +228,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   clearSelection(): void {
     this.currentSelection.forEach(element => {
-      element.classList.remove(marker);
+     this.unmark(element);
     });
     this.currentSelection.clear();
     this.currentType = null;

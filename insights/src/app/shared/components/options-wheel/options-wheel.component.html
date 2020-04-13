@@ -1,16 +1,16 @@
 <div class="wheel-container">
-  <div class="options-container">
-    <button class="option" mat-mini-fab (mouseup)="action($event)">
+  <div class="options-container" *ngIf="isOpen">
+    <button class="option" mat-mini-fab (click)="action('annotate')">
       <mat-icon>chat</mat-icon>
     </button>
-    <button class="option" mat-mini-fab (mouseup)="action($event)">
+    <button class="option" mat-mini-fab (click)="action('filter')">
       <mat-icon>list</mat-icon>
     </button>
-    <button class="option" mat-mini-fab (mouseup)="action($event)">
+    <button class="option" mat-mini-fab (click)="action('trim')">
       <mat-icon>crop</mat-icon>
     </button>
   </div>
   <div class="anchor-container">
-    <div class="anchor"></div>
+    <div (click)="toggle()" class="anchor"></div>
   </div>
 </div>

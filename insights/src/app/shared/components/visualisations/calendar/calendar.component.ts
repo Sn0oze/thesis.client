@@ -12,7 +12,7 @@ import {
   ViewChild
 } from '@angular/core';
 import * as moment from 'moment';
-import {DataSet, Mode} from '../../../models';
+import {DataSet, Mode, Observation, ObservationsMap} from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
 import {dateFormat} from '../../../utils';
 
@@ -243,9 +243,24 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
         const month = day.slice(3);
         const hasObservations = this.dataSet.mappings.get(month)?.get(day)?.has(hour);
         if (!hasObservations) {
+          this.currentSelection.delete(element);
           this.unmark(element);
         }
       });
     }
+  }
+
+  getObservations(): ObservationsMap {
+    this.trim();
+    const data = new Map<string, Array<{hour: string, observations: Array<Observation>}>>() as ObservationsMap;
+    this.currentSelection.forEach(element => {
+      const date = element.dataset.date.split(':');
+      const day = date[0];
+      const hour = date[1];
+      const month = day.slice(3);
+      const observations = this.dataSet.mappings.get(month)?.get(day)?.get(hour);
+      data.has(day) ? data.get(day).push({hour, observations}) : data.set(day, [{hour, observations}]);
+    });
+    return data;
   }
 }

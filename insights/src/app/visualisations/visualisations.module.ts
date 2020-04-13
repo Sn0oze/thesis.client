@@ -12,11 +12,12 @@ import {MatRippleModule} from '@angular/material/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {FormsModule} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
+import { FilterDialogComponent } from './calendar-view/filter-dialog/filter-dialog.component';
 
 
 
 @NgModule({
-    declarations: [CalendarViewComponent, VisualisationsComponent, AnnotationDialogComponent, GesturesViewComponent],
+    declarations: [CalendarViewComponent, VisualisationsComponent, AnnotationDialogComponent, GesturesViewComponent, FilterDialogComponent],
     exports: [
       SharedModule
     ],

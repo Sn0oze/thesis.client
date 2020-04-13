@@ -1,10 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {CalendarCell, DataSet, Mode} from '../../shared/models';
+import {CalendarCell, DataSet, Mode, ObservationsMap} from '../../shared/models';
 import {COLORS, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {AnnotationDialogComponent} from './annotation-dialog/annotation-dialog.component';
+import {FilterDialogComponent} from './filter-dialog/filter-dialog.component';
 
 @Component({
   selector: 'app-calendar-view',
@@ -17,7 +18,6 @@ export class CalendarViewComponent implements OnInit {
   body = [] as Array<CalendarCell>[];
   modes = ['select', 'draw'] as Mode[];
   mode = this.modes[0] as Mode;
-  value: string;
   color: string;
   width: string;
   dataSet: DataSet;
@@ -39,7 +39,6 @@ export class CalendarViewComponent implements OnInit {
 
   selected(selection): void {
     // console.log('Selected: ', selection);
-    this.value = selection;
     const dialogRef = this.dialog.open(AnnotationDialogComponent, {
       width: '80vw',
       height: '80vh',
@@ -63,6 +62,23 @@ export class CalendarViewComponent implements OnInit {
   undo(): void {
     if (this.canvas) {
       this.canvas.undo();
+    }
+  }
+
+  annotate(): void {
+    const dialogRef = this.dialog.open(AnnotationDialogComponent, {
+      width: '80vw',
+      height: '80vh',
+    });
+  }
+
+  filter(observations: ObservationsMap) {
+    if (observations.size) {
+      const dialogRef = this.dialog.open(FilterDialogComponent, {
+        width: '80vw',
+        height: '80vh',
+        data: observations
+      });
     }
   }
 }

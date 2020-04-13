@@ -5,3 +5,9 @@ export interface Observation {
   date: moment.Moment;
   offset: string;
 }
+
+export interface ObservationGroup {
+  hour: string;
+  observations: Array<Observation>;
+}
+export type ObservationsMap = Map<string, Array<ObservationGroup>>;

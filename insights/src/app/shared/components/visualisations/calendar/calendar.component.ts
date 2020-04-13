@@ -233,4 +233,19 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     this.currentSelection.clear();
     this.currentType = null;
   }
+
+  trim(): void {
+    if (this.currentSelection.size) {
+      this.currentSelection.forEach(element => {
+        const date = element.dataset.date.split(':');
+        const day = date[0];
+        const hour = date[1];
+        const month = day.slice(3);
+        const hasObservations = this.dataSet.mappings.get(month)?.get(day)?.has(hour);
+        if (!hasObservations) {
+          this.unmark(element);
+        }
+      });
+    }
+  }
 }

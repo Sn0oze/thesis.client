@@ -1,0 +1,77 @@
+$anchor-size: 2rem;
+$line-width: 2px;
+$line-length: 1rem;
+$outer-length: 2 * $line-length;
+:host{
+  display: block;
+}
+
+.line{
+  height: $line-length;
+  width: $line-width;
+  background-color: black;
+  content: '';
+  position: absolute;
+  bottom: -$line-length;
+  left: calc(50% - #{$line-width / 2});
+}
+
+.wheel-container{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+}
+
+.options-container{
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
+}
+
+.option{
+  margin: 0 .25rem;
+  z-index: 2;
+  position: relative;
+  &:nth-child(2){
+    margin-bottom: 1rem;
+  }
+  /*
+  &:after{
+    @extend .line;
+    z-index: 1;
+  }
+  &:first-child:after{
+    @extend .line;
+    z-index: 1;
+    height: $outer-length;
+    bottom: -$outer-length;
+    transform: rotate(-45deg) translate(1.5rem, .5rem);
+  }
+  &:last-child:after{
+    @extend .line;
+    z-index: 1;
+    height: $outer-length;
+    bottom: -$outer-length;
+    transform: rotate(45deg) translate(-1.5rem, .5rem);
+  }
+   */
+}
+
+.anchor-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.anchor{
+  display: flex;
+  width: $anchor-size;
+  height: $anchor-size;
+  background-color: gray;
+  border-radius: $anchor-size;
+  z-index: 10;
+}

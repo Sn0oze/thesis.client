@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {DataSet} from '../../models';
+import {DataSet, DayNest} from '../../models';
 import {moment, dateFormat} from '../../utils';
 import {BehaviorSubject} from 'rxjs';
 import {CELL_WIDTH, SPACING_LEFT, SPACING_RIGHT} from '../../constants';
@@ -28,27 +28,69 @@ export class Timeline {
   private span = 10;
   private currentSelection: TimeSpan;
   private brushWidth: number;
+  private grid: d3.Selection<any, any, any, any>;
+  private focus: d3.Selection<any, any, any, any>;
+  private brushArea: d3.Selection<any, any, any, any>;
 
   constructor(private container: HTMLElement, private dataSet: DataSet) {
     this.init();
   }
 
   init(): void {
+    this.svg = d3.select(this.container).append('svg')
+      .attr('class', 'timeline');
+    this.xScale = d3.scaleBand()
+      .padding(.1);
+    this.yScale = d3.scaleLinear();
+    // Define  axis
+    this.xAxis = d3.axisBottom(this.xScale);
+    this.brush = d3.brushX()
+      .on('brush', this.brushed.bind(this));
+    this.focus = this.svg.append('g');
+
+    this.grid = this.svg.append('g')
+      .attr('class', 'y grid');
+
+    // Create axes
+    this.svg.append('g')
+      .attr('class', 'x axis');
+
+    this.svg.selectAll('.bar')
+      .data(this.dataSet.days)
+      .enter().append('rect')
+      .attr('class', 'bar')
+      .classed('weekend', d => d.isWeekend);
+
+    this.brushWidth = this.xScale(this.xScale.domain()[this.span]) -  this.xScale(this.xScale.domain()[0]);
+    this.brushArea = this.focus.append('g')
+      .attr('class', 'brush');
+
+    this.draw();
+    d3.selectAll('rect.handle').remove();
+
+    window.addEventListener('resize', () => this.draw());
+  }
+
+  draw(): void {
+    // recalculate the old brush selection before resizing
+    const current = d3.brushSelection(this.brushArea.node()) || [0, 0];
+    const width = this.xScale.step() || 1;
+    const index = Math.round(current[0] as any / width);
+
+    // resize all the rest
     const svgHeight = 150;
     const svgWidth = this.container.offsetWidth;
     this.span = Math.floor((svgWidth - SPACING_LEFT - SPACING_RIGHT) / CELL_WIDTH);
     this.margin = {top: 8, right: 38, bottom: 20, left: 38};
     this.width = svgWidth - this.margin.left - this.margin.right;
     this.height = svgHeight - this.margin.top - this.margin.bottom;
-    this.svg = d3.select(this.container).append('svg')
-      .attr('class', 'timeline')
+    this.svg
       .attr('width', svgWidth)
       .attr('height', svgHeight);
 
-    this.xScale = d3.scaleBand()
+    this.xScale
       .range([0, this.width])
-      .domain(this.dataSet.daySpan)
-      .padding(.1);
+      .domain(this.dataSet.daySpan);
 
     const yMax = d3.max(this.dataSet.days.map((day) => day.total));
     this.yScale = d3.scaleLinear()
@@ -58,62 +100,45 @@ export class Timeline {
     // Define  axis
     const tickValues = this.xScale.domain().filter((day, i) =>
       day.startsWith('01') || i === 0 || i === this.xScale.domain().length - 1);
-    this.xAxis = d3.axisBottom(this.xScale)
+    this.xAxis
       .ticks(12).tickValues(tickValues)
       .tickFormat(value => moment(value, dateFormat).format('Do MMM'));
-    // this.yAxis = d3.axisLeft(this.yScale).ticks(4);
 
-    this.yAxisGrid = d3.axisLeft(this.yScale).tickSize(-this.width).ticks(5);
+    this.yAxisGrid = d3.axisLeft(this.yScale)
+      .tickSize(-this.width).ticks(5);
 
-    this.brush = d3.brushX()
-      .extent([[0, 0], [this.width, this.height]])
-      .on('brush', this.brushed.bind(this));
+    this.brush
+      .extent([[0, 0], [this.width, this.height]]);
 
-    const focus = this.svg.append('g')
+    this.focus
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
-    const grid = this.svg.append('g')
-      .attr('class', 'y grid')
+    this.grid
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`)
-      .call(this.yAxisGrid)
-      .selectAll('text')
-      .attr('x', -12);
+      .call(this.yAxisGrid);
 
     // Create axes
-    this.svg.append('g')
-      .attr('class', 'x axis')
+    d3.select('.x.axis')
       .attr('transform', `translate(${this.margin.left},${this.height + this.margin.top})`)
       .call(this.xAxis);
-    /*
-    this.svg.append('g')
-      .attr('class', 'y axis')
-      .attr('transform', `translate(${this.margin.left},${this.margin.top})`)
-      .call(this.yAxis);
-     */
 
     this.svg.selectAll('.bar')
-      .data(this.dataSet.days)
-      .enter().append('rect')
-      .attr('class', 'bar')
-      .classed('weekend', d => d.isWeekend);
-
-    this.svg.selectAll('.bar')
-      .data(this.dataSet.days)
       .attr('x', d => this.xScale(d.key) + this.margin.left)
       .attr('width', this.xScale.bandwidth())
       .attr('y', d => this.yScale(d.total) + this.margin.top)
       .attr('height', d => this.height - this.yScale(d.total));
 
     this.brushWidth = this.xScale(this.xScale.domain()[this.span]) -  this.xScale(this.xScale.domain()[0]);
-    const brushArea = focus.append('g')
-      .attr('class', 'brush')
+    const start = this.xScale(this.xScale.domain()[index]);
+    const max = index + this.span;
+    const end = this.xScale(this.xScale.domain()[max]);
+    console.log(index + this.span, this.xScale.domain()[1], end);
+    this.brushArea
       .call(this.brush)
-      .call(this.brush.move, [this.xScale(this.xScale.domain()[0]), this.xScale(this.xScale.domain()[this.span])])
+      .call(this.brush.move, [start, end])
       .call(g => g.select('.overlay')
         .datum({type: 'selection'})
         .on('mousedown touchstart', this.clicked.bind(this)));
-
-    d3.selectAll('rect.handle').remove();
   }
 
   brushed(): void {

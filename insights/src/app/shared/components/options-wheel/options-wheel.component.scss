@@ -6,23 +6,12 @@ $outer-length: 2 * $line-length;
   display: block;
 }
 
-.line{
-  height: $line-length;
-  width: $line-width;
-  background-color: black;
-  content: '';
-  position: absolute;
-  bottom: -$line-length;
-  left: calc(50% - #{$line-width / 2});
-}
-
 .wheel-container{
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
   z-index: 999;
   display: flex;
   flex-direction: column;
+  min-width: 9rem;
+  touch-action: none;
 }
 
 .options-container{
@@ -38,26 +27,6 @@ $outer-length: 2 * $line-length;
   &:nth-child(2){
     margin-bottom: 1rem;
   }
-  /*
-  &:after{
-    @extend .line;
-    z-index: 1;
-  }
-  &:first-child:after{
-    @extend .line;
-    z-index: 1;
-    height: $outer-length;
-    bottom: -$outer-length;
-    transform: rotate(-45deg) translate(1.5rem, .5rem);
-  }
-  &:last-child:after{
-    @extend .line;
-    z-index: 1;
-    height: $outer-length;
-    bottom: -$outer-length;
-    transform: rotate(45deg) translate(-1.5rem, .5rem);
-  }
-   */
 }
 
 .anchor-container{

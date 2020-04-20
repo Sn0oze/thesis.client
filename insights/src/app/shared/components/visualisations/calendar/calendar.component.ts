@@ -15,6 +15,8 @@ import * as moment from 'moment';
 import {DataSet, Mode, Observation, ObservationsMap} from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
 import {dateFormat} from '../../../utils';
+import {createViewChild} from '@angular/compiler/src/core';
+import {OptionsWheelComponent} from '../../options-wheel/options-wheel.component';
 
 const marker = 'marked';
 type SelectionType = 'hours' | 'month' | 'hour' | 'total' | null;
@@ -26,10 +28,12 @@ type Shape = 'hLine' | 'vLine' | 'line' | 'complex';
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() selected = new EventEmitter<any>();
+  @Output() selectOption = new EventEmitter<void>();
   @Input() dataSet: DataSet;
   @Input() mode: Mode;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
   @ViewChild('calendar') calendarRef: ElementRef<HTMLElement>;
+  @ViewChild('wheel') wheel: OptionsWheelComponent;
   scrollElement: HTMLElement;
   calendarElement: HTMLElement;
   labels: string[];
@@ -40,14 +44,19 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   currentType: SelectionType;
   hammer: HammerManager;
   onTap: (event) => void;
+  onPress: (event) => void;
   onPanStart: () => void;
   onPan: (event) => void;
-  onPanEnd: () => void;
+  onPanEnd: (event) => void;
   hourScale = scaleSequential(interpolateOrRd);
   totalScale = scaleSequential(interpolateOrRd);
 
-  constructor(private zone: NgZone) {
+  constructor(
+    private zone: NgZone
+  ) {
     this.onTap = (event) => {
+      this.wheel.open(event, {data: 'test'});
+      return;
       const element = event.target as HTMLElement;
       if (this.currentSelection.size) {
         if (!this.currentSelection.has(element)) {
@@ -56,9 +65,18 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         if (this.isSelectable(element)) {
           this.zone.run(() => {
-            // this.selected.emit([element.dataset]);
+            this.selected.emit([element.dataset]);
           });
         }
+      }
+    };
+
+    this.onPress = (event) => {
+      const element = event.target as HTMLElement;
+      if (this.isSelectable(element)) {
+        this.zone.run(() => {
+          this.selectOption.emit();
+        });
       }
     };
 
@@ -70,14 +88,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       this.panned(event);
     };
 
-    this.onPanEnd = () => {
+    this.onPanEnd = (event) => {
       if (this.currentSelection.size) {
         if (this.currentType === 'hour') {
-          const elements = Array.from(this.currentSelection);
-          const shape = this.categorize(elements.map(element => element.getBoundingClientRect()));
-          if (shape === 'complex') {
-            this.fillSelection(elements);
-          }
+          this.fillSelection(Array.from(this.currentSelection));
         }
         this.zone.run(() => {
           // this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
@@ -167,6 +181,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     this.zone.runOutsideAngular(() => {
       this.hammer = new Hammer(this.calendarElement);
       this.hammer.on('tap', this.onTap);
+      // this.hammer.on('press', this.onPress);
       this.hammer.on('pan', this.onPan);
       this.hammer.on('panstart', this.onPanStart);
       this.hammer.on('panend', this.onPanEnd);
@@ -175,6 +190,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   removeListeners(): void {
     if (this.hammer) {
       this.hammer.off('tap', this.onPanEnd);
+      // this.hammer.on('press', this.onPress);
       this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onTap);

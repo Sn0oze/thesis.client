@@ -1,9 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-
-class DialogOverviewExampleDialog {
-}
-
 @Component({
   selector: 'app-annotation-dialog',
   templateUrl: './annotation-dialog.component.html',
@@ -11,7 +7,7 @@ class DialogOverviewExampleDialog {
 })
 export class AnnotationDialogComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+  constructor(public dialogRef: MatDialogRef<AnnotationDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: {values: Array<any>}) { }
 
   ngOnInit(): void {
@@ -23,5 +19,4 @@ export class AnnotationDialogComponent implements OnInit {
   delete(index: number): void {
     this.data.values.splice(index, 1);
   }
-
 }

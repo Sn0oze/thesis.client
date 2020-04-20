@@ -7,7 +7,6 @@ $outer-length: 2 * $line-length;
 }
 
 .wheel-container{
-  z-index: 999;
   display: flex;
   flex-direction: column;
   min-width: 9rem;
@@ -42,5 +41,4 @@ $outer-length: 2 * $line-length;
   height: $anchor-size;
   background-color: gray;
   border-radius: $anchor-size;
-  z-index: 10;
 }

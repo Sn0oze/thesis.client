@@ -8,7 +8,7 @@ import { DrawCanvasComponent } from './components/visualisations/draw-canvas/dra
 import { CanvasToolbarComponent } from './components/visualisations/draw-canvas/canvas-toolbar/canvas-toolbar.component';
 import { ColorPatchComponent } from './components/color-patch/color-patch.component';
 import {MatRippleModule} from '@angular/material/core';
-import {MatIconModule} from '@angular/material/icon';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {FormsModule} from '@angular/forms';

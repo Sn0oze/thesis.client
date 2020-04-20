@@ -158,4 +158,8 @@ $grid-color: rgba(#cccccc, .7);
     // pointer-events: none;
     cursor: default;
   }
+
+  .invisible-backdrop{
+    background: transparent;
+  }
 }

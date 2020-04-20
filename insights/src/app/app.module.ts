@@ -8,6 +8,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {VisualisationsModule} from './visualisations/visualisations.module';
 import * as hammer from 'hammerjs';
 import {MatButtonModule} from '@angular/material/button';
+import {SharedModule} from './shared/shared.module';
 
 @Injectable()
 class HammerConfig extends HammerGestureConfig {

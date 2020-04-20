@@ -15,8 +15,7 @@ import * as moment from 'moment';
 import {DataSet, Mode, Observation, ObservationsMap} from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
 import {dateFormat} from '../../../utils';
-import {createViewChild} from '@angular/compiler/src/core';
-import {OptionsWheelComponent} from '../../options-wheel/options-wheel.component';
+import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
 
 const marker = 'marked';
 type SelectionType = 'hours' | 'month' | 'hour' | 'total' | null;
@@ -33,7 +32,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() mode: Mode;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
   @ViewChild('calendar') calendarRef: ElementRef<HTMLElement>;
-  @ViewChild('wheel') wheel: OptionsWheelComponent;
   scrollElement: HTMLElement;
   calendarElement: HTMLElement;
   labels: string[];
@@ -52,11 +50,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   totalScale = scaleSequential(interpolateOrRd);
 
   constructor(
-    private zone: NgZone
+    private zone: NgZone,
+    private wheel: OptionsWheelService
   ) {
     this.onTap = (event) => {
-      this.wheel.open(event, {data: 'test'});
-      return;
       const element = event.target as HTMLElement;
       if (this.currentSelection.size) {
         if (!this.currentSelection.has(element)) {
@@ -95,6 +92,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this.zone.run(() => {
           // this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
+          this.wheel.open(event);
         });
       }
     };
@@ -278,5 +276,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
       data.has(day) ? data.get(day).push({hour, observations}) : data.set(day, [{hour, observations}]);
     });
     return data;
+  }
+
+  checked(): void {
+    console.log('checked');
   }
 }

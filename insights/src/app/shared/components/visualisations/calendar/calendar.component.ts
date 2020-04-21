@@ -140,6 +140,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
 
   scrollTo(position: number): void {
     if ((position >= this.min && position <= this.max)) {
+      this.clearSelection();
       this.scrollElement.scrollLeft = position * this.cellWidth;
     }
   }

@@ -1,13 +1,13 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="wheel-container">
   <div class="options-container">
-    <button class="option" mat-mini-fab (click)="selected('filter')">
+    <button class="option" mat-mini-fab (click)="selected('filter')" *ngIf="config.canFilter">
       <mat-icon>list</mat-icon>
     </button>
-    <button class="option" mat-mini-fab (click)="selected('annotate')">
+    <button class="option" mat-mini-fab (click)="selected('annotate')" *ngIf="config.canAnnotate">
       <mat-icon>chat</mat-icon>
     </button>
-    <button class="option" mat-mini-fab (click)="selected('trim')">
+    <button class="option" mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed" *ngIf="config.canTrim">
       <mat-icon>crop</mat-icon>
     </button>
   </div>

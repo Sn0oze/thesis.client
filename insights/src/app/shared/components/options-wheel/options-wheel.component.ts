@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {WheelActionService} from './wheel-action.service';
-import {WheelAction} from './models';
+import {WHEEL_CONFIG_DATA, WheelAction, WheelConfig} from './models';
 
 @Component({
   selector: 'app-options-wheel',
@@ -9,15 +9,18 @@ import {WheelAction} from './models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OptionsWheelComponent implements OnInit {
-  @Output() trim = new EventEmitter<void>();
-  @Output() annotate = new EventEmitter<void>();
-  @Output() filter = new EventEmitter<void>();
-  constructor(private action: WheelActionService) { }
+  hasTrimmed: boolean;
+  constructor(
+    private action: WheelActionService,
+    @Inject(WHEEL_CONFIG_DATA) public config: WheelConfig
+  ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   selected(option: WheelAction): void {
     this.action.next(option);
+    if (option === 'trim') {
+      this.hasTrimmed = true;
+    }
   }
 }

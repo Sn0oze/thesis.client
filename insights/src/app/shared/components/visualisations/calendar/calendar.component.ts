@@ -1,14 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnChanges, OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges,
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {DataDate, DataSet, Mode, Observation, ObservationsMap, SelectionType} from '../../../models';
@@ -25,7 +15,6 @@ import {getColor, getElement, getTextColor, isSelectable, mark, parseDate, unmar
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-  @Output() selected = new EventEmitter<ObservationsMap>();
   @Output() annotate = new EventEmitter<any>();
   @Output() filter = new EventEmitter<any>();
   @Output() selectOption = new EventEmitter<void>();
@@ -119,8 +108,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     } else {
       if (isSelectable(element)) {
         this.zone.run(() => {
-          const observations = this.getObservations(parseDate(element.dataset.date));
-          if (observations) {
+          // only show the wheel if there actually are options to chose from
+          if (this.hasObservations()) {
             this.clearSelection();
             this.panned(event);
             this.wheel.open(event);
@@ -143,12 +132,27 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   onPanEnd(event): void {
-    if (this.currentSelection.size) {
+    if (this.currentSelection.size > 1) {
       if (this.currentType === 'hour') {
         this.fillSelection(Array.from(this.currentSelection));
       }
       this.zone.run(() => {
-        this.wheel.open(event);
+        if (this.hasObservations()) {
+          this.wheel.open(event);
+        } else {
+          this.annotate.emit(Array.from(this.currentSelection));
+          this.clearSelection();
+        }
+      });
+    } else if (this.currentSelection.size === 1) {
+      const date = Array.from(this.currentSelection)[0].dataset.date;
+      const observations = this.getObservations(parseDate(date));
+      this.zone.run(() => {
+        if (observations) {
+          this.wheel.open(event);
+        } else {
+          this.annotate.emit(date);
+        }
       });
     }
   }
@@ -228,6 +232,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     });
     return data;
   }
+  hasObservations(): boolean {
+    return Array.from(this.currentSelection).some(element => this.getObservations(parseDate(element.dataset.date))?.length);
+  }
+
   getObservations(date: DataDate): Array<Observation> {
     return this.dataSet.mappings.get(date.month)?.get(date.day)?.get(date.hour);
   }

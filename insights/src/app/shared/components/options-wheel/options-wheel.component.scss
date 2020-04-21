@@ -11,6 +11,8 @@ $outer-length: 2 * $line-length;
   flex-direction: column;
   min-width: 9rem;
   touch-action: none;
+  align-items: center;
+  justify-content: center;
 }
 
 .options-container{
@@ -20,7 +22,7 @@ $outer-length: 2 * $line-length;
 }
 
 .option{
-  margin: 0 .25rem;
+  margin: .25rem;
   z-index: 2;
   position: relative;
   &:nth-child(2){

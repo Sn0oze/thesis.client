@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {Overlay, OverlayRef} from '@angular/cdk/overlay';
-import {ComponentPortal} from '@angular/cdk/portal';
+import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {OptionsWheelComponent} from './options-wheel.component';
+import {WHEEL_CONFIG_DATA, WheelConfig} from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +10,13 @@ import {OptionsWheelComponent} from './options-wheel.component';
 export class OptionsWheelService {
   private overlayRef: OverlayRef;
 
-  constructor(private overlay: Overlay) {}
+  constructor(
+    private overlay: Overlay,
+    private injector: Injector
+  ) {
+  }
 
-  open(event): void {
+  open(event, config?: WheelConfig): void {
     this.close();
     const origin = event.center;
     // Returns an OverlayRef (which is a PortalHost)
@@ -30,9 +35,21 @@ export class OptionsWheelService {
     });
     // this.overlayRef.backdropClick().subscribe(e => this.close());
     // Create ComponentPortal that can be attached to a PortalHost
-    const portal = new ComponentPortal(OptionsWheelComponent);
+    const wheelConfig = {canAnnotate: true, canFilter: true, canTrim: true};
+    if (config) {
+      Object.keys(config).forEach(property => wheelConfig[property] = config[property]);
+    }
+    const portal = new ComponentPortal(OptionsWheelComponent, null, this.configInjector(
+      wheelConfig
+    ));
     // Attach ComponentPortal to PortalHost
     this.overlayRef.attach(portal);
+  }
+
+  configInjector(dataToPass): PortalInjector {
+    const injectorTokens = new WeakMap();
+    injectorTokens.set(WHEEL_CONFIG_DATA, dataToPass);
+    return new PortalInjector(this.injector, injectorTokens);
   }
 
   close(): void {

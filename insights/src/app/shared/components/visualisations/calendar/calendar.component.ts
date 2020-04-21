@@ -25,7 +25,7 @@ import {getColor, getElement, getTextColor, isSelectable, mark, parseDate, unmar
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-  @Output() selected = new EventEmitter<any>();
+  @Output() selected = new EventEmitter<ObservationsMap>();
   @Output() annotate = new EventEmitter<any>();
   @Output() filter = new EventEmitter<any>();
   @Output() selectOption = new EventEmitter<void>();
@@ -67,11 +67,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.trim();
           break;
         case 'filter':
-          this.selected.emit(this.getObservationsFromSelection());
+          this.filter.emit(this.getObservationsFromSelection());
           this.clearSelection();
           break;
         case 'annotate':
-          this.selected.emit(this.currentSelection);
+          this.annotate.emit(this.currentSelection);
           this.clearSelection();
           break;
       }
@@ -119,13 +119,23 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     } else {
       if (isSelectable(element)) {
         this.zone.run(() => {
-          // mark(element);
-          const date = parseDate(element.dataset.date);
-          const observations = this.getObservations(date);
-          this.wheel.open(event);
+          const observations = this.getObservations(parseDate(element.dataset.date));
+          if (observations) {
+            this.clearSelection();
+            this.panned(event);
+            this.wheel.open(event);
+          } else {
+            this.annotate.emit(element.dataset.date);
+          }
         });
       }
     }
+  }
+
+  // this allows to restart selection without doing any other gestures to clear an old selection
+  onPanStart(): void {
+    this.wheel.close();
+    this.clearSelection();
   }
 
   onPan(event): void {
@@ -147,15 +157,17 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     this.zone.runOutsideAngular(() => {
       this.hammer = new Hammer(this.calendarElement);
       this.hammer.on('tap', this.onTap.bind(this));
+      this.hammer.on('panstart', this.onPanStart.bind(this));
       this.hammer.on('pan', this.onPan.bind(this));
       this.hammer.on('panend', this.onPanEnd.bind(this));
     });
   }
   removeListeners(): void {
     if (this.hammer) {
-      this.hammer.off('tap', this.onPanEnd.bind);
+      this.hammer.off('tap', this.onTap);
+      this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
-      this.hammer.off('panend', this.onTap);
+      this.hammer.off('panend', this.onPanEnd);
     }
   }
 

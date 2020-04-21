@@ -34,8 +34,8 @@
             *ngFor="let hour of day.values"
             [attr.data-date]="day.date.format('DD-MM-YYYY') + ':' + hour.key"
             [attr.data-type]="'hour'"
-            [style.color]="getTextColor(hour.values.length, hourScale)"
-            [style.background-color]="getColor(hour.values.length, hourScale)">
+            [style.color]="colorText(hour.values.length, hourScale)"
+            [style.background-color]="colorBackground(hour.values.length, hourScale)">
             {{hour.values.length > 0 ? hour.values.length : ''}}
           </div>
           <div
@@ -44,8 +44,8 @@
               class="selectable"
               [attr.data-date]="day.date.format('DD-MM-YYYY')"
               [attr.data-type]="'total'"
-              [style.color]="getTextColor(day.total, totalScale)"
-              [style.background-color]="getColor(day.total, totalScale)">
+              [style.color]="colorText(day.total, totalScale)"
+              [style.background-color]="colorBackground(day.total, totalScale)">
               {{day.total}}
             </div>
           </div>

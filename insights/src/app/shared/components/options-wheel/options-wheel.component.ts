@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
-
-export type WheelOption = 'annotate' | 'filter' | 'trim';
+import {WheelActionService} from './wheel-action.service';
+import {WheelAction} from './models';
 
 @Component({
   selector: 'app-options-wheel',
@@ -12,23 +12,12 @@ export class OptionsWheelComponent implements OnInit {
   @Output() trim = new EventEmitter<void>();
   @Output() annotate = new EventEmitter<void>();
   @Output() filter = new EventEmitter<void>();
-  constructor() { }
+  constructor(private action: WheelActionService) { }
 
   ngOnInit(): void {
   }
 
-  action(option: WheelOption): void {
-    switch (option) {
-      case 'annotate':
-        this.annotate.emit();
-        break;
-      case 'filter':
-        this.filter.emit();
-        break;
-      case 'trim':
-        this.trim.emit();
-    }
-  }
-  close(): void {
+  selected(option: WheelAction): void {
+    this.action.next(option);
   }
 }

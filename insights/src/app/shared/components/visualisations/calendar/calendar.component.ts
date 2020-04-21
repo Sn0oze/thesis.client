@@ -14,12 +14,10 @@ import {
 import * as moment from 'moment';
 import {DataSet, Mode, Observation, ObservationsMap} from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
-import {dateFormat} from '../../../utils';
 import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
 
 const marker = 'marked';
 type SelectionType = 'hours' | 'month' | 'hour' | 'total' | null;
-type Shape = 'hLine' | 'vLine' | 'line' | 'complex';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -41,105 +39,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   currentSelection = new Set<HTMLElement>();
   currentType: SelectionType;
   hammer: HammerManager;
-  onTap: (event) => void;
-  onPress: (event) => void;
-  onPanStart: () => void;
-  onPan: (event) => void;
-  onPanEnd: (event) => void;
   hourScale = scaleSequential(interpolateOrRd);
   totalScale = scaleSequential(interpolateOrRd);
 
   constructor(
     private zone: NgZone,
     private wheel: OptionsWheelService
-  ) {
-    this.onTap = (event) => {
-      const element = event.target as HTMLElement;
-      if (this.currentSelection.size) {
-        if (!this.currentSelection.has(element)) {
-          this.clearSelection();
-        }
-      } else {
-        if (this.isSelectable(element)) {
-          this.zone.run(() => {
-            this.selected.emit([element.dataset]);
-          });
-        }
-      }
-    };
-
-    this.onPress = (event) => {
-      const element = event.target as HTMLElement;
-      if (this.isSelectable(element)) {
-        this.zone.run(() => {
-          this.selectOption.emit();
-        });
-      }
-    };
-
-    this.onPanStart = () => {
-      this.clearSelection();
-    };
-
-    this.onPan = (event) => {
-      this.panned(event);
-    };
-
-    this.onPanEnd = (event) => {
-      if (this.currentSelection.size) {
-        if (this.currentType === 'hour') {
-          this.fillSelection(Array.from(this.currentSelection));
-        }
-        this.zone.run(() => {
-          // this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
-          this.wheel.open(event);
-        });
-      }
-    };
-  }
-  fillSelection(elements: Array<HTMLElement>): void {
-    const data = new Map<string, Array<number>>();
-    // build map of all selected hour grouped by day
-    elements.forEach(element => {
-      const date = element.dataset.date.split(':');
-      const day = date[0];
-      const hour = parseInt(date[1], 10);
-      data.has(day) ? data.get(day).push(hour) : data.set(day, [hour]);
-    });
-
-    // fill in each day
-    data.forEach((hours, day) => {
-      const start = min(hours);
-      const end = max(hours);
-      if (start === end) {
-        // const previous = moment(day, dateFormat).subtract(1, 'day').format(dateFormat);
-        // const next = moment(day, dateFormat).add(1, 'day').format(dateFormat);
-        // console.log(day, previous, next);
-      }
-      for (let i = start + 1; i < end; i++) {
-        // hours from 0-9 have to be zero padded
-        const selector = `[data-date="${day}:${i > 9 ? i : String(i).padStart(2, '0')}"]`;
-        const element = document.querySelector(selector) as HTMLElement;
-        this.currentSelection.add(element);
-        this.mark(element);
-      }
-    });
-  }
-
-  categorize(elements: Array<DOMRect>): Shape {
-    const first = elements[0];
-    const last = elements[elements.length - 1];
-    const height = first.height;
-    const width = first.width;
-    if (this.inRadius(first.x, last.x, 4 * height) && this.inRadius(first.y, last.y, 4 * width)) {
-      return 'complex';
-    }
-    return 'line';
-  }
-
-  inRadius(a: number, b: number, threshold: number): boolean {
-    return Math.abs(b - a) <= threshold;
-  }
+  ) {}
 
   ngOnInit(): void {
     const now = moment();
@@ -169,26 +75,63 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
   }
   ngOnChanges(changes: SimpleChanges): void {
     const newMode = changes.mode;
-    if (newMode && this.scrollElement) {
-      const value = newMode.currentValue;
-      value === 'select' ? this.addListeners() : this.removeListeners();
+    if (newMode && this.scrollElement && newMode.currentValue === 'select') {
+      this.addListeners();
+    } else {
+      this.removeListeners();
+      this.clearSelection();
+    }
+  }
+
+  onTap(event): void {
+    const element = event.target as HTMLElement;
+    if (this.currentSelection.size) {
+      if (!this.currentSelection.has(element)) {
+        this.clearSelection();
+      }
+    } else {
+      if (this.isSelectable(element)) {
+        this.zone.run(() => {
+          this.wheel.open(event);
+          // this.selected.emit([element.dataset]);
+        });
+      }
+    }
+  }
+
+  onPanStart(): void {
+    this.wheel.close();
+    this.clearSelection();
+  }
+
+  onPan(event): void {
+    this.panned(event);
+  }
+
+  onPanEnd(event): void {
+    if (this.currentSelection.size) {
+      if (this.currentType === 'hour') {
+        this.fillSelection(Array.from(this.currentSelection));
+      }
+      this.zone.run(() => {
+        // this.selected.emit(Array.from(this.currentSelection).map(d => d.dataset));
+        this.wheel.open(event);
+      });
     }
   }
 
   addListeners(): void {
     this.zone.runOutsideAngular(() => {
       this.hammer = new Hammer(this.calendarElement);
-      this.hammer.on('tap', this.onTap);
-      // this.hammer.on('press', this.onPress);
-      this.hammer.on('pan', this.onPan);
-      this.hammer.on('panstart', this.onPanStart);
-      this.hammer.on('panend', this.onPanEnd);
+      this.hammer.on('tap', this.onTap.bind(this));
+      this.hammer.on('pan', this.onPan.bind(this));
+      this.hammer.on('panstart', this.onPanStart.bind(this));
+      this.hammer.on('panend', this.onPanEnd.bind(this));
     });
   }
   removeListeners(): void {
     if (this.hammer) {
-      this.hammer.off('tap', this.onPanEnd);
-      // this.hammer.on('press', this.onPress);
+      this.hammer.off('tap', this.onPanEnd.bind);
       this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onTap);
@@ -246,16 +189,22 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     });
     this.currentSelection.clear();
     this.currentType = null;
+    this.wheel.close();
   }
+
+  parseDate(data: string): {day: string, hour: string, month: string} {
+    const date = data.split(':');
+    const day = date[0];
+    const hour = date[1];
+    const month = day.slice(3);
+    return {day, hour, month};
+}
 
   trim(): void {
     if (this.currentSelection.size) {
       this.currentSelection.forEach(element => {
-        const date = element.dataset.date.split(':');
-        const day = date[0];
-        const hour = date[1];
-        const month = day.slice(3);
-        const hasObservations = this.dataSet.mappings.get(month)?.get(day)?.has(hour);
+        const date = this.parseDate(element.dataset.date);
+        const hasObservations = this.dataSet.mappings.get(date.month)?.get(date.day)?.has(date.hour);
         if (!hasObservations) {
           this.currentSelection.delete(element);
           this.unmark(element);
@@ -268,17 +217,35 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges {
     this.trim();
     const data = new Map<string, Array<{hour: string, observations: Array<Observation>}>>() as ObservationsMap;
     this.currentSelection.forEach(element => {
-      const date = element.dataset.date.split(':');
-      const day = date[0];
-      const hour = date[1];
-      const month = day.slice(3);
-      const observations = this.dataSet.mappings.get(month)?.get(day)?.get(hour);
-      data.has(day) ? data.get(day).push({hour, observations}) : data.set(day, [{hour, observations}]);
+      const date = this.parseDate(element.dataset.date);
+      const observations = this.dataSet.mappings.get(date.month)?.get(date.day)?.get(date.hour);
+      data.has(date.day) ?
+        data.get(date.day).push({hour: date.hour, observations}) :
+        data.set(date.day, [{hour: date.hour, observations}]);
     });
     return data;
   }
 
-  checked(): void {
-    console.log('checked');
+  fillSelection(elements: Array<HTMLElement>): void {
+    const data = new Map<string, Array<number>>();
+    // build map of all selected hour grouped by day
+    elements.forEach(element => {
+      const date = this.parseDate(element.dataset.date);
+      const hour = parseInt(date.hour, 10);
+      data.has(date.day) ? data.get(date.day).push(hour) : data.set(date.day, [hour]);
+    });
+
+    // fill in each day
+    data.forEach((hours, day) => {
+      const start = min(hours);
+      const end = max(hours);
+      for (let i = start + 1; i < end; i++) {
+        // hours from 0-9 have to be zero padded
+        const selector = `[data-date="${day}:${i > 9 ? i : String(i).padStart(2, '0')}"]`;
+        const element = document.querySelector(selector) as HTMLElement;
+        this.currentSelection.add(element);
+        this.mark(element);
+      }
+    });
   }
 }

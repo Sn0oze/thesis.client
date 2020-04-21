@@ -12,10 +12,11 @@ export class OptionsWheelService {
   constructor(private overlay: Overlay) {}
 
   open(event): void {
+    this.close();
     const origin = event.center;
     // Returns an OverlayRef (which is a PortalHost)
     this.overlayRef = this.overlay.create({
-      hasBackdrop: true,
+      hasBackdrop: false,
       backdropClass: 'invisible-backdrop',
       scrollStrategy: this.overlay.scrollStrategies.close(),
       positionStrategy: this.overlay.position().flexibleConnectedTo(origin).withPositions([
@@ -27,11 +28,9 @@ export class OptionsWheelService {
         }
       ])
     });
-    this.overlayRef.backdropClick().subscribe(e => this.close());
-
+    // this.overlayRef.backdropClick().subscribe(e => this.close());
     // Create ComponentPortal that can be attached to a PortalHost
     const portal = new ComponentPortal(OptionsWheelComponent);
-
     // Attach ComponentPortal to PortalHost
     this.overlayRef.attach(portal);
   }

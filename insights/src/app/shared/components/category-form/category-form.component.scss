@@ -7,16 +7,35 @@ $background-color: rgba(0, 0, 0, 0.04);
 
 .category-form-container{
   width: 160px;
+}
+.input-inline{
+  background-color: $background-color;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 1rem .5rem;
+
   input{
     width: 100%;
     border: none;
-    background-color: $background-color;
-    border-bottom: 1px solid $text-color;
-    padding: .25rem;
     border-radius: 0;
+    color: $text-color;
+    background-color: inherit;
     &:focus{
-      // outline: none;
+      outline: none;
+      box-shadow: 0 1px 0 0 $text-color;
+      .icon-handle{
+        opacity: 1;
+      }
     }
+    &::placeholder{
+      color: $text-color;
+    }
+  }
+
+  .icon-handle{
+    // opacity: 0;
+    transition: opacity 425ms ease-in-out;
   }
   label{
     margin: .25rem 0;

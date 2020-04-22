@@ -18,31 +18,15 @@ export class CategoryFormComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
         category: ['', Validators.required]
-      }, {updateOn: 'blur'});
-  }
-
-  toggle(): void {
-    this.expanded = !this.expanded;
-  }
-
-  toggleInput(event): void {
-    event.stopPropagation();
-    this.toggle();
-    if (this.expanded) {
-      setTimeout(() => {
-        const element = this.input.nativeElement;
-        element.focus();
-        element.select();
-        element.prompt();
-      }, 0);
-    }
-  }
-
-  log(event): void {
-    console.log('logged');
+      }
+    );
   }
 
   submit(): void {
-    console.log(this.form.valid, this.form.value);
+    const value = this.form.value;
+    if (this.form.valid) {
+      this.submitted.emit(value.category);
+      this.form.reset();
+    }
   }
 }

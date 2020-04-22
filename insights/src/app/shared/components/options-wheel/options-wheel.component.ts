@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {WheelActionService} from './wheel-action.service';
 import {WHEEL_CONFIG_DATA, WheelAction, WheelConfig} from './models';
+import {CategoryService} from '../../services/category.service';
 
 @Component({
   selector: 'app-options-wheel',
@@ -14,11 +15,12 @@ export class OptionsWheelComponent implements OnInit {
 
   constructor(
     private action: WheelActionService,
+    private categoryService: CategoryService,
     @Inject(WHEEL_CONFIG_DATA) public config: WheelConfig
   ) { }
 
   ngOnInit(): void {
-    this.categories = ['work', 'weekend', 'evening', 'holiday'];
+    this.categories = this.categoryService.getCategories();
   }
 
   selected(option: WheelAction): void {
@@ -26,5 +28,9 @@ export class OptionsWheelComponent implements OnInit {
     if (option === 'trim') {
       this.hasTrimmed = true;
     }
+  }
+
+  addCategory(category: string): void {
+    this.categories = this.categoryService.addCategory(category);
   }
 }

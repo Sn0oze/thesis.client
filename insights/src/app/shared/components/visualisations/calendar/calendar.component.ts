@@ -105,16 +105,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       if (!this.currentSelection.has(element)) {
         this.clearSelection();
       }
-    } else {
-      if (isSelectable(element)) {
-        this.zone.run(() => {
-          // only show the wheel if there actually are options to chose from
-          this.clearSelection();
-          this.panned(event);
-          const hasObservations = this.hasObservations();
-          this.wheel.open(event, {trim: false, filter: hasObservations});
-        });
-      }
     }
   }
 
@@ -126,6 +116,19 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
 
   onPan(event): void {
     this.panned(event);
+  }
+
+  onPress(event): void {
+    const element = event.target as HTMLElement;
+    if (isSelectable(element)) {
+      this.zone.run(() => {
+        // only show the wheel if there actually are options to chose from
+        this.clearSelection();
+        this.panned(event);
+        const hasObservations = this.hasObservations();
+        this.wheel.open(event, {trim: false, filter: hasObservations});
+      });
+    }
   }
 
   onPanEnd(event): void {
@@ -144,6 +147,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     this.zone.runOutsideAngular(() => {
       this.hammer = new Hammer(this.calendarElement);
       this.hammer.on('tap', this.onTap.bind(this));
+      this.hammer.on('press', this.onPress.bind(this));
       this.hammer.on('panstart', this.onPanStart.bind(this));
       this.hammer.on('pan', this.onPan.bind(this));
       this.hammer.on('panend', this.onPanEnd.bind(this));
@@ -152,6 +156,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   removeListeners(): void {
     if (this.hammer) {
       this.hammer.off('tap', this.onTap);
+      this.hammer.off('press', this.onTap);
       this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onPanEnd);

@@ -109,13 +109,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       if (isSelectable(element)) {
         this.zone.run(() => {
           // only show the wheel if there actually are options to chose from
-          if (this.hasObservations()) {
-            this.clearSelection();
-            this.panned(event);
-            this.wheel.open(event);
-          } else {
-            this.annotate.emit(element.dataset.date);
-          }
+          this.clearSelection();
+          this.panned(event);
+          const hasObservations = this.hasObservations();
+          this.wheel.open(event, {trim: false, filter: hasObservations});
         });
       }
     }
@@ -132,27 +129,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   onPanEnd(event): void {
-    if (this.currentSelection.size > 1) {
+    if (this.currentSelection.size) {
       if (this.currentType === 'hour') {
         this.fillSelection(Array.from(this.currentSelection));
       }
       this.zone.run(() => {
-        if (this.hasObservations()) {
-          this.wheel.open(event);
-        } else {
-          this.annotate.emit(Array.from(this.currentSelection));
-          this.clearSelection();
-        }
-      });
-    } else if (this.currentSelection.size === 1) {
-      const date = Array.from(this.currentSelection)[0].dataset.date;
-      const observations = this.getObservations(parseDate(date));
-      this.zone.run(() => {
-        if (observations) {
-          this.wheel.open(event);
-        } else {
-          this.annotate.emit(date);
-        }
+        const hasObservations = this.hasObservations();
+        this.wheel.open(event, {trim: hasObservations, filter: hasObservations});
       });
     }
   }

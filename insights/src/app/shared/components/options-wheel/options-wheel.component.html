@@ -1,15 +1,32 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="wheel-container">
   <div class="options-container">
-    <button class="option" mat-mini-fab (click)="selected('filter')" *ngIf="config.canFilter">
-      <mat-icon>list</mat-icon>
-    </button>
-    <button class="option" mat-mini-fab (click)="selected('annotate')" *ngIf="config.canAnnotate">
-      <mat-icon>chat</mat-icon>
-    </button>
-    <button class="option" mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed" *ngIf="config.canTrim">
-      <mat-icon>crop</mat-icon>
-    </button>
+    <div class="option">
+      <button mat-mini-fab (click)="selected('filter')" *ngIf="config.canFilter">
+        <mat-icon>list</mat-icon>
+      </button>
+    </div>
+    <div class="option">
+      <button mat-mini-fab (click)="selected('annotate')" *ngIf="config.canAnnotate">
+        <mat-icon>chat</mat-icon>
+      </button>
+    </div>
+    <div class="option">
+      <button mat-mini-fab [matMenuTriggerFor]="menu">
+        <mat-icon>category</mat-icon>
+        <mat-menu #menu="matMenu">
+          <app-category-form></app-category-form>
+          <button class="no-touch" mat-menu-item *ngFor="let category of categories">
+            <span>{{category}}</span>
+          </button>
+        </mat-menu>
+      </button>
+    </div>
+    <div class="option">
+      <button mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed" *ngIf="config.canTrim">
+        <mat-icon>crop</mat-icon>
+      </button>
+    </div>
   </div>
   <div class="anchor-container">
     <div class="anchor"></div>

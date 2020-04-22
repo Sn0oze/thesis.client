@@ -22,11 +22,11 @@ $outer-length: 2 * $line-length;
 }
 
 .option{
-  margin: .25rem;
   z-index: 2;
   position: relative;
-  &:nth-child(2){
-    margin-bottom: 1rem;
+  margin: .25rem .25rem 1.5rem;
+  &:first-child, &:last-child{
+    margin-bottom: 0;
   }
 }
 
@@ -43,4 +43,8 @@ $outer-length: 2 * $line-length;
   height: $anchor-size;
   background-color: gray;
   border-radius: $anchor-size;
+}
+
+.no-touch{
+  touch-action: none;
 }

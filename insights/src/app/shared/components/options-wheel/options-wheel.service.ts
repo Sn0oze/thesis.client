@@ -23,7 +23,7 @@ export class OptionsWheelService {
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
       backdropClass: 'invisible-backdrop',
-      scrollStrategy: this.overlay.scrollStrategies.close(),
+      scrollStrategy: this.overlay.scrollStrategies.noop(),
       positionStrategy: this.overlay.position().flexibleConnectedTo(origin).withPositions([
         {
           originX: 'center',

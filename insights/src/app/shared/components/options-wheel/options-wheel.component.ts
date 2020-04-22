@@ -10,12 +10,16 @@ import {WHEEL_CONFIG_DATA, WheelAction, WheelConfig} from './models';
 })
 export class OptionsWheelComponent implements OnInit {
   hasTrimmed: boolean;
+  categories: Array<string>;
+
   constructor(
     private action: WheelActionService,
     @Inject(WHEEL_CONFIG_DATA) public config: WheelConfig
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.categories = ['work', 'weekend', 'evening', 'holiday'];
+  }
 
   selected(option: WheelAction): void {
     this.action.next(option);

@@ -8,12 +8,15 @@ import { DrawCanvasComponent } from './components/visualisations/draw-canvas/dra
 import { CanvasToolbarComponent } from './components/visualisations/draw-canvas/canvas-toolbar/canvas-toolbar.component';
 import { ColorPatchComponent } from './components/color-patch/color-patch.component';
 import {MatRippleModule} from '@angular/material/core';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { TimelineComponent } from './components/visualisations/timeline/timeline.component';
 import { OptionsWheelComponent } from './components/options-wheel/options-wheel.component';
+import {MatMenuModule} from '@angular/material/menu';
+import { CategoryFormComponent } from './components/category-form/category-form.component';
+
 
 @NgModule({
   declarations: [
@@ -26,24 +29,28 @@ import { OptionsWheelComponent } from './components/options-wheel/options-wheel.
     ColorPatchComponent,
     TimelineComponent,
     OptionsWheelComponent,
+    CategoryFormComponent
   ],
-    exports: [
-        KeyboardAnnotationComponent,
-        StylusAnnotationComponent,
-        CalendarComponent,
-        SwipeCounterComponent,
-        DrawCanvasComponent,
-        CanvasToolbarComponent,
-        TimelineComponent,
-        OptionsWheelComponent
-    ],
   imports: [
     CommonModule,
     MatRippleModule,
     MatIconModule,
     MatButtonModule,
     MatButtonToggleModule,
-    FormsModule
-  ]
+    FormsModule,
+    MatMenuModule,
+    ReactiveFormsModule
+  ],
+  exports: [
+    KeyboardAnnotationComponent,
+    StylusAnnotationComponent,
+    CalendarComponent,
+    SwipeCounterComponent,
+    DrawCanvasComponent,
+    CanvasToolbarComponent,
+    TimelineComponent,
+    OptionsWheelComponent,
+    MatMenuModule
+  ],
 })
 export class SharedModule { }

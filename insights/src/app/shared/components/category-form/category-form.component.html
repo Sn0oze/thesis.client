@@ -1,0 +1,13 @@
+<div class="category-form-container user-select-none">
+  <button matRipple class="toggle-button" type="button" (click)="toggleInput($event)">
+    <mat-icon>{{expanded ? 'remove' : 'add'}}</mat-icon>
+    <span>Category</span>
+  </button>
+  <div *ngIf="expanded">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label (click)="$event.stopPropagation()">
+        <input placeholder="+ Category" type="text" formControlName="category" (blur)="submit()" #input>
+      </label>
+    </form>
+  </div>
+</div>

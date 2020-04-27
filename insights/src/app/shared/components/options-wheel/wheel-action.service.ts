@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {WheelAction} from './models';
+import {WheelAction, WheelData} from './models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WheelActionService {
-  action = new BehaviorSubject<WheelAction>('initial');
+  action = new BehaviorSubject<WheelData>({action: 'initial', data: ''});
 
   constructor() { }
-  next(action: WheelAction): void {
+  next(action: WheelData): void {
     this.action.next(action);
   }
 }

@@ -23,11 +23,19 @@ export class OptionsWheelComponent implements OnInit {
     this.categories = this.categoryService.getCategories();
   }
 
-  selected(option: WheelAction): void {
-    this.action.next(option);
-    if (option === 'trim') {
-      this.hasTrimmed = true;
+  selected(option: WheelAction, data?: any): void {
+    const action = {
+      action: option,
+      data: ''
+    };
+    switch (option) {
+      case 'trim':
+        this.hasTrimmed = true;
+        break;
+      case 'categorize':
+        action.data = data;
     }
+    this.action.next(action);
   }
 
   addCategory(category: string): void {

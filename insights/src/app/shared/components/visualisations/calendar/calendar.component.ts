@@ -50,8 +50,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     const totalMax = max(this.dataSet.days.map(day => day.total));
     this.totalScale.domain([1, totalMax]);
 
-    this.subscription = this.actions.action.subscribe(action => {
-      switch (action) {
+    this.subscription = this.actions.action.subscribe(next => {
+      switch (next.action) {
         case 'trim':
           this.trim();
           break;
@@ -63,6 +63,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.annotate.emit(this.currentSelection);
           this.clearSelection();
           break;
+        case 'categorize':
+          console.log(next.data);
       }
     });
   }

@@ -1,34 +1,29 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="wheel-container">
-  <div class="options-container">
-    <div class="option">
-      <button mat-mini-fab (click)="selected('filter')" [disabled]="!config.filter">
-        <mat-icon>list</mat-icon>
+  <button class="option" mat-mini-fab (click)="selected('filter')" [disabled]="!config.filter">
+    <mat-icon>list</mat-icon>
+  </button>
+  <button class="option" mat-mini-fab (click)="selected('annotate')" [disabled]="!config.annotate">
+    <mat-icon>chat</mat-icon>
+  </button>
+  <button class="option" mat-mini-fab [matMenuTriggerFor]="menu" [disabled]="!config.categorize">
+    <mat-icon>category</mat-icon>
+    <mat-menu #menu="matMenu">
+      <app-category-form (submitted)="addCategory($event)"></app-category-form>
+      <button
+        class="no-touch"
+        mat-menu-item
+        *ngFor="let category of categories"
+        (click)="selected('categorize', category)">
+        <span>{{category}}</span>
       </button>
-    </div>
-    <div class="option">
-      <button mat-mini-fab (click)="selected('annotate')" [disabled]="!config.annotate">
-        <mat-icon>chat</mat-icon>
-      </button>
-    </div>
-    <div class="option">
-      <button mat-mini-fab [matMenuTriggerFor]="menu" [disabled]="!config.categorize">
-        <mat-icon>category</mat-icon>
-        <mat-menu #menu="matMenu">
-          <app-category-form (submitted)="addCategory($event)"></app-category-form>
-          <button class="no-touch" mat-menu-item *ngFor="let category of categories">
-            <span>{{category}}</span>
-          </button>
-        </mat-menu>
-      </button>
-    </div>
-    <div class="option">
-      <button mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed || !config.trim">
-        <mat-icon>crop</mat-icon>
-      </button>
-    </div>
-  </div>
-  <div class="anchor-container">
-    <div class="anchor"></div>
-  </div>
+    </mat-menu>
+  </button>
+  <button class="option" mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed || !config.trim">
+    <mat-icon>crop</mat-icon>
+  </button>
+  <button class="option" mat-mini-fab [disabled]="true">
+    <mat-icon>visibility</mat-icon>
+  </button>
+  <div class="anchor"></div>
 </div>

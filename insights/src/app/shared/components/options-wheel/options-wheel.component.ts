@@ -3,7 +3,7 @@ import {WheelActionService} from './wheel-action.service';
 import {WHEEL_CONFIG_DATA, WheelAction, WheelConfig, WheelData} from './models';
 import {CategoryService} from '../../services/category.service';
 import {Category} from '../../models';
-import {readableFontColor} from '../../utils/color.utils';
+import {readableFontColor} from '../../utils';
 
 @Component({
   selector: 'app-options-wheel',

@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import {WheelActionService} from './wheel-action.service';
-import {WHEEL_CONFIG_DATA, WheelAction, WheelConfig} from './models';
+import {WHEEL_CONFIG_DATA, WheelAction, WheelConfig, WheelData} from './models';
 import {CategoryService} from '../../services/category.service';
+import {Category} from '../../models';
+import {readableFontColor} from '../../utils/color.utils';
 
 @Component({
   selector: 'app-options-wheel',
@@ -11,7 +13,7 @@ import {CategoryService} from '../../services/category.service';
 })
 export class OptionsWheelComponent implements OnInit {
   hasTrimmed: boolean;
-  categories: Array<string>;
+  categories: Array<Category>;
 
   constructor(
     private action: WheelActionService,
@@ -26,8 +28,7 @@ export class OptionsWheelComponent implements OnInit {
   selected(option: WheelAction, data?: any): void {
     const action = {
       action: option,
-      data: ''
-    };
+    } as WheelData;
     switch (option) {
       case 'trim':
         this.hasTrimmed = true;
@@ -38,7 +39,11 @@ export class OptionsWheelComponent implements OnInit {
     this.action.next(action);
   }
 
-  addCategory(category: string): void {
+  readable(hex: string): string {
+    return readableFontColor(hex);
+  }
+
+  addCategory(category: Category): void {
     this.categories = this.categoryService.addCategory(category);
   }
 }

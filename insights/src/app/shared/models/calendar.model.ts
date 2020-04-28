@@ -7,3 +7,9 @@ export interface DataDate {
   hour: string;
   month: string;
 }
+
+export interface CalendarSelection {
+  type: SelectionType;
+  entries: Array<string>;
+}
+

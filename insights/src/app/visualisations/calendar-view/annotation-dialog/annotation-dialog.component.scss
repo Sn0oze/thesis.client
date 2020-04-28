@@ -1,44 +1,37 @@
 $dialog-padding: 1.5rem;
-// this needs to be updated to the dialog hight that is provided when the dialog is crated
+// this needs to be updated to the dialog height that is provided when the dialog is crated
+$btn-height: 2.25rem;
 $dialog-height: 80vh;
 $dialog-inner-height: calc(#{$dialog-height} - #{ 2 * $dialog-padding});
 $top-padding: .5rem;
-$entries-height: calc(#{$dialog-inner-height} - #{$top-padding});
+$input-height: calc(100% - #{$btn-height});
+$border-radius: 5px;
 
 :host{
   display: block;
 }
 .dialog-container{
   height: $dialog-inner-height;
+  position: relative;
 }
 
 .fill-height{
-  height: $entries-height;
+  height: $dialog-inner-height;
 }
 
 .note-container{
-  border: 1px solid #cccccc;
-  border-radius: .25rem;
-}
-
-.entries-container{
-  overflow: auto;
-  user-select: none;
-  .entry{
-    border-radius: .25rem;
-    margin-bottom: .5rem;
-    padding: .25rem .25rem .25rem 1rem;
-    background-color: #4C81C1;
-    color: white;
+  textarea, label{
     width: 100%;
-    &:last-child{
-      margin-bottom: 0;
-    }
-    &:hover{
-      .delete-btn{
-        visibility: visible;
-        opacity: 1;
-      }
+    height: 100%;
+  }
+  label{
+    margin: 0;
+    height: $input-height;
+  }
+  textarea{
+    border-radius: $border-radius;
+    &:focus{
+      outline: none;
     }
   }
 }
@@ -51,10 +44,4 @@ $entries-height: calc(#{$dialog-inner-height} - #{$top-padding});
   position: absolute;
   top: -1.5rem;
   right: -1.5rem;
-}
-
-.delete-btn{
-  opacity: 0;
-  visibility: hidden;
-  // transition: opacity 250ms ease-in-out;
 }

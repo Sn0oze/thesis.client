@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import {Observation} from './observation.model';
 import {DateRange} from 'moment-range';
 import {Moment} from 'moment';
-import {DataMap} from '../services/data.service';
+import {Category} from './category.model';
 
 export interface DataSet {
   min: moment.Moment;
@@ -12,6 +12,7 @@ export interface DataSet {
   mappings: DataMap;
   days: Array<DayNest>;
   months: Array<MonthNest>;
+  annotations?: AnnotationMap;
 }
 
 export interface DayNest {
@@ -33,3 +34,18 @@ export interface MonthNest {
   date: Moment;
   values: Array<DayNest>;
 }
+
+export interface Annotation {
+  categories: Array<Category>;
+  notes: Array<Note>;
+}
+
+export interface Note {
+  crated: string;
+  body: string;
+}
+
+export type DataMap = Map<string, Map<string, Map<string, Array<Observation>>>>;
+
+export type AnnotationMap = Map<string, Map<string, Annotation>>;
+

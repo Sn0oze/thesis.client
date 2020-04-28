@@ -13,6 +13,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {FormsModule} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FilterDialogComponent } from './calendar-view/filter-dialog/filter-dialog.component';
+import {A11yModule} from '@angular/cdk/a11y';
 
 @NgModule({
     declarations: [
@@ -25,16 +26,17 @@ import { FilterDialogComponent } from './calendar-view/filter-dialog/filter-dial
     exports: [
       SharedModule
     ],
-  imports: [
-    CommonModule,
-    VisualisationsRoutingModule,
-    SharedModule,
-    MatIconModule,
-    MatButtonModule,
-    MatRippleModule,
-    MatSlideToggleModule,
-    FormsModule,
-    MatDialogModule
-  ]
+    imports: [
+        CommonModule,
+        VisualisationsRoutingModule,
+        SharedModule,
+        MatIconModule,
+        MatButtonModule,
+        MatRippleModule,
+        MatSlideToggleModule,
+        FormsModule,
+        MatDialogModule,
+        A11yModule
+    ]
 })
 export class VisualisationsModule { }

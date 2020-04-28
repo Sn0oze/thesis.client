@@ -1,5 +1,6 @@
 import {DataDate, marker} from '../models';
 import {ScaleSequential} from 'd3';
+import {timeFrameSeparator} from './extended-moment';
 
 export function mark(element: HTMLElement): void {
   element.classList.add(marker);
@@ -24,9 +25,10 @@ export function isSelectable(element: HTMLElement | DOMTokenList): boolean {
 }
 
 export function parseDate(data: string): DataDate {
-  const date = data.split(':');
-  const day = date[0];
-  const hour = date[1];
+  const timeFrame = data.split(timeFrameSeparator);
+  // TODO refactor day to date
+  const day = timeFrame[0];
+  const hour = timeFrame[1];
   const month = day.slice(3);
   return {day, hour, month};
 }

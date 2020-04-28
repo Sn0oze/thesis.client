@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {DataSet, DayNest, Observation} from '../models';
+import {DataMap, DataSet, DayNest, Observation} from '../models';
 import {dateFormat, hourFormat, moment, monthFormat} from '../utils';
 import {Moment} from 'moment';
-
-export type DataMap = Map<string, Map<string, Map<string, Array<Observation>>>>;
 
 @Injectable({
   providedIn: 'root'
@@ -106,7 +104,8 @@ export class DataService {
           daySpan,
           mappings: dataMap,
           days: dayNest,
-          months: calendarData
+          months: calendarData,
+          annotations: new Map()
         };
 
         observer.next(dataSet);

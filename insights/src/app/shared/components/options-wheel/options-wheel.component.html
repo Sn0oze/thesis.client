@@ -3,6 +3,9 @@
   <button class="option" mat-mini-fab (click)="selected('filter')" [disabled]="!config.filter">
     <mat-icon>list</mat-icon>
   </button>
+  <button class="option" mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed || !config.trim">
+    <mat-icon>crop</mat-icon>
+  </button>
   <button class="option" mat-mini-fab (click)="selected('annotate')" [disabled]="!config.annotate">
     <mat-icon>chat</mat-icon>
   </button>
@@ -20,9 +23,6 @@
         <span>{{category.name}}</span>
       </button>
     </mat-menu>
-  </button>
-  <button class="option" mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed || !config.trim">
-    <mat-icon>crop</mat-icon>
   </button>
   <button class="option" mat-mini-fab [disabled]="true">
     <mat-icon>visibility</mat-icon>

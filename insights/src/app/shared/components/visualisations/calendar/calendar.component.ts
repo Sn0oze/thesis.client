@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {DataDate, DataSet, Mode, Observation, ObservationsMap, SelectionType} from '../../../models';
+import {CalendarSelection, DataDate, DataSet, DayNest, Mode, Observation, ObservationsMap, SelectionType} from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
 import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
 import {CELL_WIDTH} from '../../../constants';
 import {WheelActionService} from '../../options-wheel/wheel-action.service';
 import {Subscription} from 'rxjs';
-import {getColor, getElement, getTextColor, isSelectable, mark, parseDate, unmark} from '../../../utils';
+import {dateFormat, getColor, getElement, getTextColor, isSelectable, mark, parseDate, unmark} from '../../../utils';
 
 @Component({
   selector: 'app-calendar',
@@ -15,7 +15,7 @@ import {getColor, getElement, getTextColor, isSelectable, mark, parseDate, unmar
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-  @Output() annotate = new EventEmitter<any>();
+  @Output() annotate = new EventEmitter<CalendarSelection>();
   @Output() filter = new EventEmitter<any>();
   @Output() selectOption = new EventEmitter<void>();
   @Input() dataSet: DataSet;
@@ -60,11 +60,15 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.clearSelection();
           break;
         case 'annotate':
-          this.annotate.emit(this.currentSelection);
+          this.annotate.emit({
+            type: this.currentType,
+            entries: Array.from(this.currentSelection).map(element => element.dataset.date)
+          });
           this.clearSelection();
           break;
         case 'categorize':
           console.log(next.data);
+          this.clearSelection();
       }
     });
   }
@@ -251,5 +255,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
         mark(element);
       }
     });
+  }
+  hasNotes(day: DayNest, hour: string): boolean {
+    const date = day.date.format(dateFormat);
+    return this.dataSet.annotations.get(date)?.get(hour)?.notes.length > 0;
   }
 }

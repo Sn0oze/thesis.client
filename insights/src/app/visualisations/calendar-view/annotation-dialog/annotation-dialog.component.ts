@@ -19,4 +19,8 @@ export class AnnotationDialogComponent implements OnInit {
   delete(index: number): void {
     this.data.values.splice(index, 1);
   }
+
+  save(): void {
+    this.dialogRef.close('test value');
+  }
 }

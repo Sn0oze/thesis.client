@@ -37,6 +37,10 @@
             [style.color]="colorText(hour.values.length, hourScale)"
             [style.background-color]="colorBackground(hour.values.length, hourScale)">
             {{hour.values.length > 0 ? hour.values.length : ''}}
+            <span
+              *ngIf="hasNotes(day, hour.key)"
+              class="annotation-marker"
+              [style.background-color]="colorText(hour.values.length, hourScale)"></span>
           </div>
           <div
             class="total-value">

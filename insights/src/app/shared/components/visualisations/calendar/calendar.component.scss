@@ -144,7 +144,29 @@ $padding-total: .75rem;
   justify-content: center;
   height: $cell-height;
   background: $cell-color-default;
+  &.notes:after{
+    position: absolute;
+    content: '';
+    height: .25rem;
+    width: .25rem;
+    border-radius: 50%;
+    top: 1px;
+    right: 1px;
+    background-color: #a5a5a5;
+  }
 }
+
+.annotation-marker{
+  position: absolute;
+  height: .25rem;
+  width: .25rem;
+  border-radius: 50%;
+  top: 1px;
+  right: 1px;
+  background-color: #a5a5a5;
+}
+
+
 
 .total-value{
   width: calc(#{$cell-width} - #{2 * $margin-total});

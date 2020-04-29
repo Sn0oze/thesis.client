@@ -15,6 +15,11 @@ export class AnnotationDialogComponent implements OnInit {
   }
 
   save(): void {
-    this.dialogRef.close('Real note from ' + moment().format('dddd, MMMM Do YYYY'));
+    const now = moment();
+    const message = `
+      Real note from ${now.format('dddd, MMMM Do YYYY')}.
+      This comment was made at ${now.format('HH:mm')}
+    `;
+    this.dialogRef.close(message);
   }
 }

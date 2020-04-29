@@ -8,7 +8,7 @@ export class CategoryService {
   private categories = [
     {
       name: 'Work',
-      color: '#30475e'
+      color: '#4c81c1'
     },
     {
       name: 'Weekend',
@@ -16,7 +16,7 @@ export class CategoryService {
     },
     {
       name: 'Evening',
-      color: '#9dc6a7'
+      color: '#95ba8a'
     },
     {
       name: 'Holiday',

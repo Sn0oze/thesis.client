@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ColorConstants, PEN_WIDTHS} from '../../../../constants';
+import {PEN_WIDTHS} from '../../../../constants';
 import {collapseHorizontal} from '../../../../animations';
 
 @Component({
@@ -12,13 +12,13 @@ import {collapseHorizontal} from '../../../../animations';
 export class CanvasToolbarComponent implements OnInit {
   @Input() width: string;
   @Input() color: string;
+  @Input() colors: Array<string>;
   @Input() isOpen: boolean;
   @Output() colorChange = new EventEmitter<string>();
   @Output() widthChange = new EventEmitter<string>();
   @Output() opened = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
   @Output() undo = new EventEmitter<void>();
-  colors = ColorConstants;
   widths = PEN_WIDTHS;
 
   constructor() { }

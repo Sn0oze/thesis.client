@@ -7,6 +7,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {AnnotationDialogComponent} from './annotation-dialog/annotation-dialog.component';
 import {FilterDialogComponent} from './filter-dialog/filter-dialog.component';
 import {dateFormat, hourFormat, moment, timeFrameFormat} from '../../shared/utils';
+import {CategoryService} from '../../shared/services/category.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -19,14 +20,21 @@ export class CalendarViewComponent implements OnInit {
   modes = ['select', 'draw'] as Mode[];
   mode = this.modes[0] as Mode;
   color: string;
+  colors: Array<string>;
   width: string;
   dataSet: DataSet;
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog) { }
+  constructor(
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private categories: CategoryService
+  ) { }
 
   ngOnInit(): void {
     this.width = PEN_WIDTHS[0];
     this.color = ColorConstants[0];
+    this.colors = this.categories.getCategories().map(category => category.color);
+    this.colors.unshift(this.color);
     this.dataSet = this.route.parent.snapshot.data.dataSet;
   }
 

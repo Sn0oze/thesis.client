@@ -1,4 +1,6 @@
 import {Category} from './category.model';
+import {Moment} from 'moment';
+import {Annotation} from './data-set.model';
 
 export const marker = 'marked';
 
@@ -19,4 +21,21 @@ export interface CategorizeSelection {
   selection: CalendarSelection;
   category: Category;
 }
+
+export interface DateGroup {
+  date: Moment;
+  dateString: string;
+}
+export interface AnnotatedHour {
+  value: string;
+  annotation: Annotation;
+}
+
+export interface AnnotatedDay {
+  value: string;
+  annotations: Array<AnnotatedHour>;
+}
+
+export type AnnotationDetails = Array<AnnotatedDay>;
+
 

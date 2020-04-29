@@ -1,13 +1,24 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Annotation, CalendarSelection, CategorizeSelection, DataSet, Mode, Note, ObservationsMap} from '../../shared/models';
+import {
+  Annotation,
+  AnnotationDetails,
+  CalendarSelection,
+  CategorizeSelection,
+  DataSet,
+  DateGroup,
+  Mode,
+  Note,
+  ObservationsMap
+} from '../../shared/models';
 import {ColorConstants, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {AnnotationDialogComponent} from './annotation-dialog/annotation-dialog.component';
 import {FilterDialogComponent} from './filter-dialog/filter-dialog.component';
-import {moment, parseDate} from '../../shared/utils';
+import {moment, parseDate, timeFrameFormat} from '../../shared/utils';
 import {CategoryService} from '../../shared/services/category.service';
+import {ViewDialogComponent} from './view-dialog/view-dialog.component';
 
 @Component({
   selector: 'app-calendar-view',
@@ -71,9 +82,32 @@ export class CalendarViewComponent implements OnInit {
     this.dataSet.save(this.dataSet);
   }
 
-  view(timeFrame: CalendarSelection) {
-    console.log(timeFrame);
+  view(selection: CalendarSelection) {
+    const dialogRef = this.dialog.open(ViewDialogComponent, {
+      width: '80vw',
+      height: '80vh',
+      data: this.getAnnotations(selection)
+    });
   }
+
+  getAnnotations(selection: CalendarSelection): AnnotationDetails {
+    const map = new Map();
+    const momentList = selection.entries.map(dateString => ({date: moment(dateString, timeFrameFormat), dateString} as DateGroup));
+    momentList.sort((a: DateGroup, b: DateGroup) => a.date.valueOf() - b.date.valueOf());
+    momentList.forEach(dateGroup => {
+      const date = parseDate(dateGroup.dateString);
+      const annotations = this.dataSet.annotations.get(date.day).get(date.hour);
+      map.has(date.day) ? map.get(date.day).set(date.hour, annotations) : map.set(date.day, new Map().set(date.hour, annotations));
+    });
+    return Array.from(map.entries()).map(
+      ([day, annotations]) => (
+        {
+          value: day,
+          annotations: Array.from(annotations).map(([hour, annotation]) => ({value: hour, annotation}))
+        })
+    );
+  }
+
 
   filter(observations: ObservationsMap) {
     if (observations.size) {

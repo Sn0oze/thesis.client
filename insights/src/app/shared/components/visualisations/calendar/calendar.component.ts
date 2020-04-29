@@ -273,9 +273,16 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       }
     });
   }
-  hasNotes(day: DayNest, hour: string): boolean {
+
+  hasAnnotationType(day: DayNest, hour: string, type: 'categories' | 'notes'): boolean {
     const date = day.date.format(dateFormat);
-    return this.dataSet.annotations.get(date)?.get(hour)?.notes.length > 0;
+    const annotation = this.dataSet.annotations.get(date)?.get(hour);
+    return annotation ? annotation[type]?.length > 0 : false;
+  }
+
+  categoryColor(day: DayNest, hour: string): string {
+    const date = day.date.format(dateFormat);
+    return this.dataSet.annotations.get(date).get(hour).categories[0].color;
   }
 
   selectedDays(): Array<string> {

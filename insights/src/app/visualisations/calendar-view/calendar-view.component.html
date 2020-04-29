@@ -17,6 +17,8 @@
         [mode]="mode"
         [dataSet]="dataSet"
         (annotate)="annotate($event)"
+        (categorize)="categorize($event)"
+        (view)="view($event)"
         (filter)="filter($event)"></app-calendar>
       <app-draw-canvas #canvas [color]="color" [width]="width" *ngIf="isDrawMode()" class="draw-canvas"></app-draw-canvas>
     </div>

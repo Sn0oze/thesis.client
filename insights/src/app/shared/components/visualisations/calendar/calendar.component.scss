@@ -156,13 +156,24 @@ $padding-total: .75rem;
   }
 }
 
-.annotation-marker{
+$marker-offset: 2px;
+
+.note-marker{
   position: absolute;
   height: .25rem;
   width: .25rem;
   border-radius: 50%;
-  top: 1px;
-  right: 1px;
+  top: $marker-offset;
+  right: $marker-offset;
+  background-color: #a5a5a5;
+}
+
+.category-marker{
+  position: absolute;
+  height: 100%;
+  width: 4px;
+  bottom: 0;
+  left: 0;
   background-color: #a5a5a5;
 }
 

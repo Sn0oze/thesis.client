@@ -1,12 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Annotation, CalendarSelection, DataSet, Mode, Note, ObservationsMap} from '../../shared/models';
+import {Annotation, CalendarSelection, CategorizeSelection, DataSet, Mode, Note, ObservationsMap} from '../../shared/models';
 import {ColorConstants, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {AnnotationDialogComponent} from './annotation-dialog/annotation-dialog.component';
 import {FilterDialogComponent} from './filter-dialog/filter-dialog.component';
-import {dateFormat, hourFormat, moment, timeFrameFormat} from '../../shared/utils';
+import {moment, parseDate} from '../../shared/utils';
 import {CategoryService} from '../../shared/services/category.service';
 
 @Component({
@@ -48,33 +48,31 @@ export class CalendarViewComponent implements OnInit {
     }
   }
 
-  annotate(timeFrame: CalendarSelection): void {
+  annotate(selection: CalendarSelection): void {
     const dialogRef = this.dialog.open(AnnotationDialogComponent, {
       width: '80vw',
       height: '80vh',
-      data: timeFrame
+      data: selection
     });
     dialogRef.afterClosed().subscribe((body: string) => {
-      console.log(body);
-      timeFrame.entries.forEach(time => {
-        const annotations = this.dataSet.annotations;
+      if (body) {
         const note = {
           crated: moment().utc().format(),
           body
         } as Note;
-        const annotation = {notes: [note], categories: []} as Annotation;
-        const date = moment(time, timeFrameFormat);
-        const day = date.format(dateFormat);
-        const hour = date.format(hourFormat);
-        if (annotations.has(day)) {
-          annotations.get(day).has(hour) ?
-            annotations.get(day).get(hour).notes.push(note) : annotations.get(day).set(hour, annotation);
-        } else {
-          annotations.set(day, new Map().set(hour, annotation));
-        }
-      });
-      this.dataSet.save(this.dataSet);
+        this.addAnnotations(selection.entries, note, 'notes');
+        this.dataSet.save(this.dataSet);
+      }
     });
+  }
+
+  categorize(selected: CategorizeSelection): void {
+    this.addAnnotations(selected.selection.entries, selected.category, 'categories');
+    this.dataSet.save(this.dataSet);
+  }
+
+  view(timeFrame: CalendarSelection) {
+    console.log(timeFrame);
   }
 
   filter(observations: ObservationsMap) {
@@ -88,5 +86,21 @@ export class CalendarViewComponent implements OnInit {
         console.log('The dialog was closed', result);
       });
     }
+  }
+
+  addAnnotations(entries, data, type: 'notes' | 'categories'): void {
+    entries.forEach(time => {
+      const annotations = this.dataSet.annotations;
+      const firstAnnotation = {notes: [], categories: []} as Annotation;
+      firstAnnotation[type].push(data);
+      const date = parseDate(time);
+      const day = date.day;
+      const hour = date.hour;
+      if (annotations.has(day)) {
+        annotations.get(day).has(hour) ? annotations.get(day).get(hour)[type].push(data) : annotations.get(day).set(hour, firstAnnotation);
+      } else {
+        annotations.set(day, new Map().set(hour, firstAnnotation));
+      }
+    });
   }
 }

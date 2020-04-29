@@ -13,6 +13,7 @@ export interface DataSet {
   days: Array<DayNest>;
   months: Array<MonthNest>;
   annotations?: AnnotationMap;
+  save: (dataset: DataSet) => void;
 }
 
 export interface DayNest {

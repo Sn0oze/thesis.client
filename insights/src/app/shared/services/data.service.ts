@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {DataMap, DataSet, DayNest, Observation} from '../models';
+import {AnnotationMap, DataMap, DataSet, DayNest, Observation} from '../models';
 import {dateFormat, hourFormat, moment, monthFormat} from '../utils';
 import {Moment} from 'moment';
+import {ANNOTATIONS_KEY} from '../constants';
 
 @Injectable({
   providedIn: 'root'
@@ -105,12 +106,32 @@ export class DataService {
           mappings: dataMap,
           days: dayNest,
           months: calendarData,
-          annotations: new Map()
+          annotations: this.loadAnnotations(),
+          save: this.saveAnnotations.bind(this)
         };
 
         observer.next(dataSet);
         observer.complete();
       }, error => observer.next(error));
     });
+  }
+
+  saveAnnotations(dataset: DataSet): void {
+    const stringified = this.mapToJson(dataset.annotations);
+    localStorage.setItem(ANNOTATIONS_KEY, stringified);
+  }
+
+  mapToJson(map: Map<any, any>) {
+    const res = Array.from(map.entries()).map(([k, v]) => [k, [...v]]);
+    return JSON.stringify([...res]);
+  }
+  jsonToMap(jsonStr): Map<any, any> {
+    const res = JSON.parse(jsonStr).map(([k, v]) => [k, new Map(v)]);
+    return new Map(res);
+  }
+
+  loadAnnotations(): AnnotationMap {
+    const existing = localStorage.getItem(ANNOTATIONS_KEY);
+    return existing ? this.jsonToMap(existing) : new Map();
   }
 }

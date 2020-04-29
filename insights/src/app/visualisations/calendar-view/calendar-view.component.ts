@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Annotation, CalendarSelection, DataSet, Mode, Note, ObservationsMap} from '../../shared/models';
-import {COLORS, PEN_WIDTHS} from '../../shared/constants';
+import {ColorConstants, PEN_WIDTHS} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
@@ -26,7 +26,7 @@ export class CalendarViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.width = PEN_WIDTHS[0];
-    this.color = COLORS[0];
+    this.color = ColorConstants[0];
     this.dataSet = this.route.parent.snapshot.data.dataSet;
   }
 
@@ -64,6 +64,7 @@ export class CalendarViewComponent implements OnInit {
           annotations.set(day, new Map().set(hour, annotation));
         }
       });
+      this.dataSet.save(this.dataSet);
     });
   }
 

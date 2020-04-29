@@ -1,1 +1,1 @@
-export const ANNOTATIONS_KEY = '';
+export const ANNOTATIONS_KEY = 'thesis-annotations';

@@ -1,7 +1,17 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {CalendarSelection, DataDate, DataSet, DayNest, Mode, Observation, ObservationsMap, SelectionType} from '../../../models';
+import {
+  CalendarSelection,
+  CategorizeSelection, Category,
+  DataDate,
+  DataSet,
+  DayNest,
+  Mode,
+  Observation,
+  ObservationsMap,
+  SelectionType
+} from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
 import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
 import {CELL_WIDTH} from '../../../constants';
@@ -16,7 +26,7 @@ import {dateFormat, getColor, getElement, getTextColor, isSelectable, mark, pars
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Output() annotate = new EventEmitter<CalendarSelection>();
-  @Output() categorize = new EventEmitter<CalendarSelection>();
+  @Output() categorize = new EventEmitter<CategorizeSelection>();
   @Output() view = new EventEmitter<CalendarSelection>();
   @Output() filter = new EventEmitter<any>();
   @Output() selectOption = new EventEmitter<void>();
@@ -66,7 +76,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.clearSelection();
           break;
         case 'categorize':
-          this.categorize.emit(this.selectionResult(this.selectedDays()));
+          this.categorize.emit(
+            {
+              selection: this.selectionResult(this.selectedDays()),
+              category: next.data as Category
+            }
+          );
           this.clearSelection();
           break;
         case 'view':

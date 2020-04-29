@@ -1,4 +1,5 @@
 import {InjectionToken} from '@angular/core';
+import {Category} from '../../models';
 
 export type WheelAction = 'annotate' | 'filter' | 'trim' | 'initial' | 'categorize' | 'view';
 
@@ -14,5 +15,5 @@ export interface WheelConfig {
 
 export interface WheelData {
   action: WheelAction;
-  data?: string | any;
+  data?: Category | string | any;
 }

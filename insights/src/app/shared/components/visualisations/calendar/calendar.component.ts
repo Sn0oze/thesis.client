@@ -86,6 +86,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           break;
         case 'view':
           this.view.emit(this.selectionResult(this.selectedWithAnnotations()));
+          this.clearSelection();
           break;
       }
     });

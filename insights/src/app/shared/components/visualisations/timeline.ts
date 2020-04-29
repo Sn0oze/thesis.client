@@ -132,7 +132,7 @@ export class Timeline {
     const start = this.xScale(this.xScale.domain()[index]);
     const max = index + this.span;
     const end = this.xScale(this.xScale.domain()[max]);
-    console.log(index + this.span, this.xScale.domain()[1], end);
+    // console.log(index + this.span, this.xScale.domain()[1], end);
     this.brushArea
       .call(this.brush)
       .call(this.brush.move, [start, end])

@@ -24,7 +24,7 @@
       </button>
     </mat-menu>
   </button>
-  <button class="option" mat-mini-fab [disabled]="true">
+  <button class="option" mat-mini-fab [disabled]="!config.view" (click)="selected('view')">
     <mat-icon>visibility</mat-icon>
   </button>
   <div class="anchor"></div>

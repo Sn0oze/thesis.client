@@ -16,6 +16,8 @@ import {dateFormat, getColor, getElement, getTextColor, isSelectable, mark, pars
 })
 export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Output() annotate = new EventEmitter<CalendarSelection>();
+  @Output() categorize = new EventEmitter<CalendarSelection>();
+  @Output() view = new EventEmitter<CalendarSelection>();
   @Output() filter = new EventEmitter<any>();
   @Output() selectOption = new EventEmitter<void>();
   @Input() dataSet: DataSet;
@@ -56,19 +58,20 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.trim();
           break;
         case 'filter':
-          this.filter.emit(this.getObservationsFromSelection());
+          this.filter.emit(this.selectedObservations());
           this.clearSelection();
           break;
         case 'annotate':
-          this.annotate.emit({
-            type: this.currentType,
-            entries: Array.from(this.currentSelection).map(element => element.dataset.date)
-          });
+          this.annotate.emit(this.selectionResult(this.selectedDays()));
           this.clearSelection();
           break;
         case 'categorize':
-          console.log(next.data);
+          this.categorize.emit(this.selectionResult(this.selectedDays()));
           this.clearSelection();
+          break;
+        case 'view':
+          this.view.emit(this.selectionResult(this.selectedWithAnnotations()));
+          break;
       }
     });
   }
@@ -131,8 +134,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
         // only show the wheel if there actually are options to chose from
         this.clearSelection();
         this.panned(event);
-        const hasObservations = this.hasObservations();
-        this.wheel.open(event, {trim: false, filter: hasObservations});
+        this.wheel.open(event, {trim: false, filter: this.hasObservations(), view: this.hasAnnotations()});
       });
     }
   }
@@ -144,7 +146,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       }
       this.zone.run(() => {
         const hasObservations = this.hasObservations();
-        this.wheel.open(event, {trim: hasObservations, filter: hasObservations});
+        this.wheel.open(event, {trim: hasObservations, filter: hasObservations, view: this.hasAnnotations()});
       });
     }
   }
@@ -214,7 +216,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     }
   }
 
-  getObservationsFromSelection(): ObservationsMap {
+  selectedObservations(): ObservationsMap {
     this.trim();
     const data = new Map<string, Array<{hour: string, observations: Array<Observation>}>>() as ObservationsMap;
     this.currentSelection.forEach(element => {
@@ -259,5 +261,31 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   hasNotes(day: DayNest, hour: string): boolean {
     const date = day.date.format(dateFormat);
     return this.dataSet.annotations.get(date)?.get(hour)?.notes.length > 0;
+  }
+
+  selectedDays(): Array<string> {
+    return Array.from(this.currentSelection).map(element => element.dataset.date);
+  }
+
+  selectedWithAnnotations(): Array<string> {
+    const days = this.selectedDays();
+    return days.filter(dateString => {
+      const date = parseDate(dateString);
+      return this.dataSet.annotations.get(date.day)?.has(date.hour);
+    });
+  }
+
+  selectionResult(entries: Array<string>): CalendarSelection {
+    return {
+      type: this.currentType,
+      entries
+    } as CalendarSelection;
+  }
+
+  hasAnnotations(): boolean {
+    return Array.from(this.currentSelection).some(element => {
+      const date = parseDate(element.dataset.date);
+      return this.dataSet.annotations.get(date.day)?.has(date.hour);
+    });
   }
 }

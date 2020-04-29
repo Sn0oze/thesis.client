@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {moment} from '../../../shared/utils';
 @Component({
   selector: 'app-annotation-dialog',
   templateUrl: './annotation-dialog.component.html',
@@ -13,14 +14,7 @@ export class AnnotationDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  close(): void {
-    this.dialogRef.close();
-  }
-  delete(index: number): void {
-    this.data.values.splice(index, 1);
-  }
-
   save(): void {
-    this.dialogRef.close('test value');
+    this.dialogRef.close('Real note from ' + moment().format('dddd, MMMM Do YYYY'));
   }
 }

@@ -35,7 +35,7 @@ export class OptionsWheelService {
     });
     // this.overlayRef.backdropClick().subscribe(e => this.close());
     // Create ComponentPortal that can be attached to a PortalHost
-    const wheelConfig = {annotate: true, filter: true, trim: true, categorize: true} as WheelConfig;
+    const wheelConfig = {annotate: true, filter: true, trim: true, categorize: true, view: true} as WheelConfig;
     if (config) {
       Object.keys(config).forEach(property => wheelConfig[property] = config[property]);
     }

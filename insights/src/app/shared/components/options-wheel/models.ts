@@ -9,6 +9,7 @@ export interface WheelConfig {
   filter?: boolean;
   trim?: boolean;
   categorize?: boolean;
+  view?: boolean;
 }
 
 export interface WheelData {

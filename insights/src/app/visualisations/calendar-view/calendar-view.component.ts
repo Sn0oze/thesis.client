@@ -55,6 +55,7 @@ export class CalendarViewComponent implements OnInit {
       data: timeFrame
     });
     dialogRef.afterClosed().subscribe((body: string) => {
+      console.log(body);
       timeFrame.entries.forEach(time => {
         const annotations = this.dataSet.annotations;
         const note = {

@@ -14,6 +14,7 @@ import {FormsModule} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FilterDialogComponent } from './calendar-view/filter-dialog/filter-dialog.component';
 import {A11yModule} from '@angular/cdk/a11y';
+import { ViewDialogComponent } from './calendar-view/view-dialog/view-dialog.component';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import {A11yModule} from '@angular/cdk/a11y';
       VisualisationsComponent,
       AnnotationDialogComponent,
       GesturesViewComponent,
-      FilterDialogComponent
+      FilterDialogComponent,
+      ViewDialogComponent
     ],
     exports: [
       SharedModule

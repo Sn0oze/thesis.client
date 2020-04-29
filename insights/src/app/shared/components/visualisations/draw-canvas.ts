@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import * as simplify from 'simplify-js';
-import {COLORS, PEN_WIDTHS} from '../../constants';
+import {ColorConstants, PEN_WIDTHS} from '../../constants';
 
 export class DrawCanvas {
   private svg: any;
@@ -15,7 +15,7 @@ export class DrawCanvas {
 
   constructor(
     private container: HTMLElement,
-    public color = COLORS[0], // 'rgba(50,130,250, .6)'
+    public color = ColorConstants[0], // 'rgba(50,130,250, .6)'
     public strokeWidth = PEN_WIDTHS[0]) {
     this.init();
   }

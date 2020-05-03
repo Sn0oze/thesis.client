@@ -163,3 +163,98 @@ $grid-color: rgba(#cccccc, .7);
     background: transparent;
   }
 }
+
+//zoomed calendar styling shared by view and filter dialog
+$zoomed-border: 1px solid #dee2e6;
+$hour-label-size: .75rem;
+$hour-label-height: 20px;
+$hour-label-width: 40px;
+$hour-cell-width: 60px;
+.zoomed-calendar{
+  .day-of-the-week{
+    font-size: 1.5rem;
+    margin-bottom: .5rem;
+    font-weight: normal;
+  }
+
+  .day-of-the-month{
+    font-size: 1rem;
+    font-weight: normal;
+  }
+  .hour-label-header{
+    // padding: .5rem 0;
+    // vertical-align: bottom;
+    padding: 0;
+    width: $hour-cell-width;
+  }
+
+  .day-label-header {
+    padding: .125rem 1rem;
+    position: relative;
+    &:before{
+      content: '';
+      width: 1px;
+      background-color: white;
+      position: absolute;
+      top:0;
+      left: -1px;
+      height: 2rem
+    }
+  }
+
+  .hour-label-padding{
+    display: inline-block;
+    width: $hour-cell-width;
+  }
+
+  .hour-label{
+    vertical-align: bottom;
+    position: relative;
+    padding: 0;
+    span{
+      position: absolute;
+      top: calc(-#{$hour-label-height} / 2);
+      left: 0;
+      background-color: white;
+      font-size: $hour-label-size;
+      padding: 0 .25rem;
+      display: block;
+      text-align: center;
+      width: $hour-label-width;
+    }
+  }
+  tr:first-child{
+    th {
+      border-top: none;
+    }
+  }
+  th{
+    border-left: $zoomed-border;
+    border-right: $zoomed-border;
+    text-align: center;
+    &:first-child {
+      border-left: none;
+      text-align: left;
+    }
+    &:last-child{
+      border-right: none;
+    }
+  }
+  td{
+    border-left: $zoomed-border;
+    border-right: $zoomed-border;
+    &:first-child {
+      border-left: none;
+    }
+    &:last-child{
+      border-right: none;
+    }
+  }
+  tr:last-child{
+    td{
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+

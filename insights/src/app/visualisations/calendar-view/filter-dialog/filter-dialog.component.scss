@@ -28,14 +28,11 @@ $dialog-padding: 1.5rem;
   height: $entries-height;
 }
 
-.note-container{
-  border: 1px solid #cccccc;
-  border-radius: .25rem;
-}
-
 .entries-container{
   overflow: auto;
   user-select: none;
+  display: flex;
+  flex-direction: row;
   .entry{
     border-radius: .25rem;
     margin-bottom: .5rem;
@@ -50,6 +47,11 @@ $dialog-padding: 1.5rem;
       }
     }
   }
+}
+
+.milliseconds{
+  font-size: .75rem;
+  color: rgba(0,0,0, .4)
 }
 
 .close-container{

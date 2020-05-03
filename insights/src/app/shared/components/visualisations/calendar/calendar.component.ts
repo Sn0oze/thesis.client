@@ -72,13 +72,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.clearSelection();
           break;
         case 'annotate':
-          this.annotate.emit(this.selectionResult(this.selectedDays()));
+          this.annotate.emit(this.selectionResult(this.selectedDates()));
           this.clearSelection();
           break;
         case 'categorize':
           this.categorize.emit(
             {
-              selection: this.selectionResult(this.selectedDays()),
+              selection: this.selectionResult(this.selectedDates()),
               category: next.data as Category
             }
           );
@@ -90,6 +90,20 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           break;
       }
     });
+    const d = ['06-09-2016:08', '05-09-2016:18', '07-09-2016:19', '09-09-2016:17', '09-09-2016:16', '08-09-2016:10', '08-09-2016:09',
+      '06-09-2016:09', '06-09-2016:11', '06-09-2016:12', '06-09-2016:14', '06-09-2016:18', '05-09-2016:14', '05-09-2016:15',
+      '05-09-2016:16', '07-09-2016:11', '07-09-2016:12', '07-09-2016:15', '08-09-2016:18'
+    ];
+
+    const map = new Map() as ObservationsMap;
+    d.forEach(dateString => {
+      const date = parseDate(dateString);
+      const observations = this.getObservations(date);
+      map.has(date.day) ?
+        map.get(date.day).set(date.hour, observations) :
+        map.set(date.day, new Map().set(date.hour, observations));
+    });
+    this.filter.emit(map);
   }
 
   ngAfterViewInit(): void {
@@ -235,8 +249,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   selectedObservations(): ObservationsMap {
     this.trim();
     const data = new Map() as ObservationsMap;
-    this.currentSelection.forEach(element => {
-      const date = parseDate(element.dataset.date);
+    this.selectedDates().forEach(dateString => {
+      const date = parseDate(dateString);
       const observations = this.getObservations(date);
       data.has(date.day) ?
         data.get(date.day).set(date.hour, observations) :
@@ -286,12 +300,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     return this.dataSet.annotations.get(date).get(hour).categories[0].color;
   }
 
-  selectedDays(): Array<string> {
+  selectedDates(): Array<string> {
     return Array.from(this.currentSelection).map(element => element.dataset.date);
   }
 
   selectedWithAnnotations(): Array<string> {
-    const days = this.selectedDays();
+    const days = this.selectedDates();
     return days.filter(dateString => {
       const date = parseDate(dateString);
       return this.dataSet.annotations.get(date.day)?.has(date.hour);
@@ -306,8 +320,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   hasAnnotations(): boolean {
-    return Array.from(this.currentSelection).some(element => {
-      const date = parseDate(element.dataset.date);
+    return this.selectedDates().some(dateString => {
+      const date = parseDate(dateString);
       return this.dataSet.annotations.get(date.day)?.has(date.hour);
     });
   }

@@ -38,13 +38,14 @@
             [style.background-color]="colorBackground(hour.values.length, hourScale)">
             {{hour.values.length > 0 ? hour.values.length : ''}}
             <span
+              *ngIf="hasAnnotationType(day, hour.key, 'categories')"
+              class="category-marker"
+              [ngClass]="{'full': !hour.values.length}"
+              [style.background-color]="categoryColor(day, hour.key)"></span>
+            <span
               *ngIf="hasAnnotationType(day, hour.key, 'notes')"
               class="note-marker"
               [style.background-color]="colorText(hour.values.length, hourScale)"></span>
-            <span
-              *ngIf="hasAnnotationType(day, hour.key, 'categories')"
-              class="category-marker"
-              [style.background-color]="categoryColor(day, hour.key)"></span>
           </div>
           <div
             class="total-value">

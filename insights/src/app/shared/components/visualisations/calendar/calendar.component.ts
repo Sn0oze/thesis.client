@@ -234,13 +234,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
 
   selectedObservations(): ObservationsMap {
     this.trim();
-    const data = new Map<string, Array<{hour: string, observations: Array<Observation>}>>() as ObservationsMap;
+    const data = new Map() as ObservationsMap;
     this.currentSelection.forEach(element => {
       const date = parseDate(element.dataset.date);
       const observations = this.getObservations(date);
       data.has(date.day) ?
-        data.get(date.day).push({hour: date.hour, observations}) :
-        data.set(date.day, [{hour: date.hour, observations}]);
+        data.get(date.day).set(date.hour, observations) :
+        data.set(date.day, new Map().set(date.hour, observations));
     });
     return data;
   }

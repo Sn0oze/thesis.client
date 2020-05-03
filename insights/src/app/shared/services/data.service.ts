@@ -17,7 +17,8 @@ export class DataService {
     return {
       timeStamp: row[0],
       date: moment(row[0]).utcOffset(row[1]),
-      offset: row[1]
+      offset: row[1],
+      exclude: false
     };
   }
 

@@ -19,6 +19,7 @@ import { CategoryFormComponent } from './components/category-form/category-form.
 import { ObservationToggleComponent } from './components/observation-toggle/observation-toggle.component';
 import { DialogHeaderComponent } from './components/dialog-header/dialog-header.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { NoteComponent } from './components/note/note.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     OptionsWheelComponent,
     CategoryFormComponent,
     ObservationToggleComponent,
-    DialogHeaderComponent
+    DialogHeaderComponent,
+    NoteComponent
   ],
   imports: [
     CommonModule,

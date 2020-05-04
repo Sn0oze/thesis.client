@@ -170,7 +170,13 @@ $hour-label-size: .75rem;
 $hour-label-height: 20px;
 $hour-label-width: 40px;
 $hour-cell-width: 60px;
+.table-container{
+  width: 100%;
+}
 .zoomed-calendar{
+  thead th {
+    border-bottom: $zoomed-border;
+  }
   .day-of-the-week{
     font-size: 1.5rem;
     margin-bottom: .5rem;

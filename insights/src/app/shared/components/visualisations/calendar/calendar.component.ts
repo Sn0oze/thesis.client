@@ -101,20 +101,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           break;
       }
     });
-    const d = ['06-09-2016:08', '05-09-2016:18', '07-09-2016:19', '09-09-2016:17', '09-09-2016:16', '08-09-2016:10', '08-09-2016:09',
-      '06-09-2016:09', '06-09-2016:11', '06-09-2016:12', '06-09-2016:14', '06-09-2016:18', '05-09-2016:14', '05-09-2016:15',
-      '05-09-2016:16', '07-09-2016:11', '07-09-2016:12', '07-09-2016:15', '08-09-2016:18'
-    ].sort((a, b) => moment(a, timeFrameFormat).unix() - moment(b, timeFrameFormat).unix());
-
-    const map = new Map() as ObservationsMap;
-    d.forEach(dateString => {
-      const date = parseDate(dateString);
-      const observations = this.getObservations(date);
-      map.has(date.day) ?
-        map.get(date.day).set(date.hour, observations) :
-        map.set(date.day, new Map().set(date.hour, observations));
-    });
-    this.filter.emit(map);
   }
 
   ngAfterViewInit(): void {

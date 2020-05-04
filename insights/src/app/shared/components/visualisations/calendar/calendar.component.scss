@@ -177,6 +177,7 @@ $marker-offset: 2px;
   background-color: #a5a5a5;
   &.full{
     width: 100%;
+    pointer-events: none;
   }
 }
 

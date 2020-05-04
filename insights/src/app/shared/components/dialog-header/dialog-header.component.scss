@@ -1,0 +1,13 @@
+$top-padding: .5rem;
+:host{
+  display: block;
+}
+.close-container{
+  position: relative;
+  height: $top-padding;
+}
+.close-btn{
+  position: absolute;
+  top: (-1.5rem);
+  right: -1.5rem;
+}

@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Category} from '../../models';
+import {readableFontColor} from '../../utils';
 
 @Component({
   selector: 'app-category',
@@ -6,10 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit {
+  @Input() category: Category;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  readable(hex: string): string {
+    return readableFontColor(hex);
+  }
 }

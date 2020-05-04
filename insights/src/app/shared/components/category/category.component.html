@@ -1,1 +1,6 @@
-<p>category works!</p>
+<div
+  [style.color]="readable(category.color)"
+  [style.background-color]="category.color"
+  class="category">
+  {{category.name}}
+</div>

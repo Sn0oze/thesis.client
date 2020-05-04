@@ -1,46 +1,24 @@
 <div class="dialog-container">
-  <div class="close-container">
-    <button tabindex="-1" class="close-btn" mat-icon-button [mat-dialog-close]>
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="entries-container fill-height p-2">
-    <!--
-   <div class="mx-2 d-flex flex-column" *ngFor="let day of days">
-     <h2 *ngIf="hasObservations(data.get(day))">{{day}}</h2>
-     <div class="ml-5 my-3" *ngFor="let hour of data.get(day); let hourIndex = index">
-       <ng-container *ngIf="hour.observations.length">
-         <h3>{{hour.hour + ':00'}}</h3>
-         <div class="group">
-           <div class="entry" *ngFor="let observation of hour.observations; let observationIndex = index">
-             <div class="d-flex align-items-center">
-               <strong class="mr-2">{{observation.date.format('HH:mm:SSSS')}}</strong>
-               <span>{{observation.timeStamp}}</span>
-               <button class="delete-btn" mat-icon-button (click)="delete(day, hourIndex, observationIndex)">
-                 <mat-icon>delete</mat-icon>
-               </button>
-             </div>
-           </div>
-         </div>
-       </ng-container>
-     </div>
-   </div>
-   -->
-    <div class="table-responsive">
-      <table class="table zoomed-calendar">
+  <app-dialog-header></app-dialog-header>
+  <div class="content-container fill-height">
+    <div class="table-container">
+      <table class="table zoomed-calendar" [style.table-layout]="days.length > 10 ? 'auto' : 'fixed'">
+        <thead>
         <tr>
           <th class="hour-label-header">
             <div class="hour-label-padding">&nbsp;</div>
           </th>
           <th *ngFor="let day of days" class="day-label-header">
             <div class="day-of-the-week">
-              {{format(day, 'dddd')}}
+              {{format(day, 'ddd')}}
             </div>
             <div class="day-of-the-month">
               {{format(day, 'MMM do')}}
             </div>
           </th>
         </tr>
+        </thead>
+        <tbody>
         <tr *ngFor="let hour of hours">
           <td class="hour-label">
             <span>{{hour + ':00'}}</span>
@@ -48,13 +26,12 @@
           </td>
           <td *ngFor="let day of days">
             <div class="empty-cell" *ngIf="!data.get(day).has(hour)">&nbsp;</div>
-            <div class="timespan" *ngFor="let observation of data.get(day).get(hour)">
-              <span class="time">{{observation.date.format('HH:mm')}}</span>
-              <span class="milliseconds">{{observation.date.format(':SSS')}}</span>
-
-            </div>
+            <app-observation-toggle
+              *ngFor="let observation of data.get(day).get(hour)"
+              [observation]="observation"></app-observation-toggle>
           </td>
         </tr>
+        </tbody>
       </table>
     </div>
   </div>

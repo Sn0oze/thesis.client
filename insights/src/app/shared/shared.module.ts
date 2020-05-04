@@ -20,6 +20,7 @@ import { ObservationToggleComponent } from './components/observation-toggle/obse
 import { DialogHeaderComponent } from './components/dialog-header/dialog-header.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { NoteComponent } from './components/note/note.component';
+import { CategoryComponent } from './components/category/category.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { NoteComponent } from './components/note/note.component';
     CategoryFormComponent,
     ObservationToggleComponent,
     DialogHeaderComponent,
-    NoteComponent
+    NoteComponent,
+    CategoryComponent
   ],
   imports: [
     CommonModule,

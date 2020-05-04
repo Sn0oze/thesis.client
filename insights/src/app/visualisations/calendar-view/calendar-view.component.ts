@@ -5,7 +5,6 @@ import {
   CalendarSelection,
   CategorizeSelection,
   DataSet,
-  DateGroup,
   Mode,
   Note,
   ObservationsMap
@@ -16,7 +15,7 @@ import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {AnnotationDialogComponent} from './annotation-dialog/annotation-dialog.component';
 import {FilterDialogComponent} from './filter-dialog/filter-dialog.component';
-import {moment, parseDate, timeFrameFormat} from '../../shared/utils';
+import {moment, parseDate} from '../../shared/utils';
 import {CategoryService} from '../../shared/services/category.service';
 import {ViewDialogComponent} from './view-dialog/view-dialog.component';
 
@@ -92,20 +91,12 @@ export class CalendarViewComponent implements OnInit {
 
   getAnnotations(selection: CalendarSelection): AnnotationDetails {
     const map = new Map();
-    const momentList = selection.entries.map(dateString => ({date: moment(dateString, timeFrameFormat), dateString} as DateGroup));
-    momentList.sort((a: DateGroup, b: DateGroup) => a.date.valueOf() - b.date.valueOf());
-    momentList.forEach(dateGroup => {
-      const date = parseDate(dateGroup.dateString);
+    selection.entries.forEach(dateString => {
+      const date = parseDate(dateString);
       const annotations = this.dataSet.annotations.get(date.day).get(date.hour);
       map.has(date.day) ? map.get(date.day).set(date.hour, annotations) : map.set(date.day, new Map().set(date.hour, annotations));
     });
-    return Array.from(map.entries()).map(
-      ([day, annotations]) => (
-        {
-          value: day,
-          annotations: Array.from(annotations).map(([hour, annotation]) => ({value: hour, annotation}))
-        })
-    );
+    return map;
   }
 
 

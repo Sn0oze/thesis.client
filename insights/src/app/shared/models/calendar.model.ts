@@ -26,16 +26,7 @@ export interface DateGroup {
   date: Moment;
   dateString: string;
 }
-export interface AnnotatedHour {
-  value: string;
-  annotation: Annotation;
-}
 
-export interface AnnotatedDay {
-  value: string;
-  annotations: Array<AnnotatedHour>;
-}
-
-export type AnnotationDetails = Array<AnnotatedDay>;
+export type AnnotationDetails = Map<string, Map<string, Annotation>>;
 
 

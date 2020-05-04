@@ -1,0 +1,10 @@
+<div
+  class="observation"
+  (swipeleft)="include()"
+  (swiperight)="exclude()"
+  (tap)="toggle()">
+  <div class="content" [ngClass]="{'excluded': observation.exclude}">
+    <span class="time">{{observation.date.format('HH:mm')}}</span>
+    <span class="milliseconds">{{observation.date.format(':SSS')}}</span>
+  </div>
+</div>

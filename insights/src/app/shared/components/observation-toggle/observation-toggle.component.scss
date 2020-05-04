@@ -1,0 +1,31 @@
+$strike-trough-width: 2px;
+
+:host{
+  display: block;
+}
+
+.milliseconds{
+  font-size: .75rem;
+  color: rgba(0,0,0, .4)
+}
+
+.observation{
+  margin: .25rem;
+  cursor: pointer;
+}
+
+.content{
+  display: inline-block;
+  position: relative;
+  padding: .25rem;
+  &.excluded{
+    &:before{
+      content: '';
+      position: absolute;
+      left: 0;
+      top: calc(50% - #{$strike-trough-width / 2});
+      width: 100%;
+      border-bottom: $strike-trough-width solid black;
+    }
+  }
+}

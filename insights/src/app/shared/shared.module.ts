@@ -16,6 +16,9 @@ import { TimelineComponent } from './components/visualisations/timeline/timeline
 import { OptionsWheelComponent } from './components/options-wheel/options-wheel.component';
 import {MatMenuModule} from '@angular/material/menu';
 import { CategoryFormComponent } from './components/category-form/category-form.component';
+import { ObservationToggleComponent } from './components/observation-toggle/observation-toggle.component';
+import { DialogHeaderComponent } from './components/dialog-header/dialog-header.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -29,7 +32,9 @@ import { CategoryFormComponent } from './components/category-form/category-form.
     ColorPatchComponent,
     TimelineComponent,
     OptionsWheelComponent,
-    CategoryFormComponent
+    CategoryFormComponent,
+    ObservationToggleComponent,
+    DialogHeaderComponent
   ],
   imports: [
     CommonModule,
@@ -39,18 +44,20 @@ import { CategoryFormComponent } from './components/category-form/category-form.
     MatButtonToggleModule,
     FormsModule,
     MatMenuModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDialogModule
   ],
-  exports: [
-    KeyboardAnnotationComponent,
-    StylusAnnotationComponent,
-    CalendarComponent,
-    SwipeCounterComponent,
-    DrawCanvasComponent,
-    CanvasToolbarComponent,
-    TimelineComponent,
-    OptionsWheelComponent,
-    MatMenuModule
-  ],
+    exports: [
+        KeyboardAnnotationComponent,
+        StylusAnnotationComponent,
+        CalendarComponent,
+        SwipeCounterComponent,
+        DrawCanvasComponent,
+        CanvasToolbarComponent,
+        TimelineComponent,
+        OptionsWheelComponent,
+        MatMenuModule,
+        DialogHeaderComponent
+    ],
 })
 export class SharedModule { }

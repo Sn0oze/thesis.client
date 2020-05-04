@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AnnotationDetails} from '../../../shared/models';
-import {dateFormat, hourMinuteFormat, moment, readableFontColor} from '../../../shared/utils';
+import {dateFormat, moment} from '../../../shared/utils';
 
 @Component({
   selector: 'app-view-dialog',
@@ -9,23 +9,15 @@ import {dateFormat, hourMinuteFormat, moment, readableFontColor} from '../../../
   styleUrls: ['./view-dialog.component.scss']
 })
 export class ViewDialogComponent implements OnInit {
-
+  days: Array<string>;
+  hours = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21',
+    '22', '23', '00'
+  ];
   constructor(public dialogRef: MatDialogRef<any>,
-              @Inject(MAT_DIALOG_DATA) public days: AnnotationDetails) { }
+              @Inject(MAT_DIALOG_DATA) public data: AnnotationDetails) { }
 
   ngOnInit(): void {
-  }
-
-  readable(hex: string): string {
-    return readableFontColor(hex);
-  }
-
-  formatHour(hour: string): string {
-    const now = moment();
-    now.set('hour', parseInt(hour, 10));
-    now.set('minutes', 0);
-    const end = now.clone().add(1, 'hour');
-    return `${now.format(hourMinuteFormat)} - ${end.format(hourMinuteFormat)}`;
+    this.days = Array.from(this.data.keys());
   }
 
   format(date: string, format: string): string {

@@ -1,40 +1,48 @@
 <div class="dialog-container">
-  <button tabindex="-1" class="close-btn" mat-icon-button [mat-dialog-close]>
-    <mat-icon>close</mat-icon>
-  </button>
-  <div class="fill-height note-container p-2">
-    <div class="annotations-container fill-height no-touch">
-      <div *ngFor="let day of days" class="annotation-day">
-        <div>
-          <div>
-            <div class="day-title">{{format(day.value, 'dddd')}}</div>
-            <div class="day-subtitle">{{format(day.value, 'MMM do')}}</div>
-          </div>
-          <div class="timespan" *ngFor="let hour of day.annotations">
-            <div class="timespan-label">
-              <h3>{{formatHour(hour.value)}}</h3>
+  <app-dialog-header></app-dialog-header>
+  <div class="content-container fill-height">
+    <div class="table-container">
+      <table class="table zoomed-calendar" [style.table-layout]="days.length > 10 ? 'auto' : 'fixed'">
+        <thead>
+        <tr>
+          <th class="hour-label-header">
+            <div class="hour-label-padding">&nbsp;</div>
+          </th>
+          <th *ngFor="let day of days" class="day-label-header">
+            <div class="day-of-the-week">
+              {{format(day, 'ddd')}}
             </div>
-            <div class="timespan-content">
-              <div class="categories" *ngIf="hour.annotation.categories.length">
-                <div
-                  *ngFor="let category of hour.annotation.categories"
-                  [style.color]="readable(category.color)"
-                  [style.background-color]="category.color"
-                  class="category">
-                  {{category.name}}</div>
-              </div>
-              <div class="notes">
-                <div
-                  class="note"
-                  *ngFor="let note of hour.annotation.notes">
-                  <div class="note-created">{{note.crated | date: 'MM/dd/yy, HH:mm'}}</div>
-                  <div class="note-body">{{note.body}}</div>
-                </div>
-              </div>
+            <div class="day-of-the-month">
+              {{format(day, 'MMM do')}}
             </div>
-          </div>
-        </div>
-      </div>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let hour of hours">
+          <td class="hour-label">
+            <span>{{hour + ':00'}}</span>
+            <div class="hour-label-padding">&nbsp;</div>
+          </td>
+          <td *ngFor="let day of days">
+            <div class="empty-cell" *ngIf="!data.get(day).has(hour)">&nbsp;</div>
+            <div class="annotation-row">
+              <app-category
+                class="p-1"
+                *ngFor="let category of data.get(day).get(hour)?.categories"
+                [category]="category"></app-category>
+            </div>
+            <div class="annotation-row">
+              <app-note
+                class="p-1"
+                *ngFor="let note of data.get(day).get(hour)?.notes"
+                [note]="note">
+              </app-note>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

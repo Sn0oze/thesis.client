@@ -17,7 +17,18 @@ import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
 import {CELL_WIDTH} from '../../../constants';
 import {WheelActionService} from '../../options-wheel/wheel-action.service';
 import {Subscription} from 'rxjs';
-import {dateFormat, getColor, getElement, getTextColor, isSelectable, mark, parseDate, unmark} from '../../../utils';
+import {
+  dateFormat,
+  getColor,
+  getElement,
+  getTextColor,
+  isSelectable,
+  mark,
+  moment,
+  parseDate,
+  timeFrameFormat,
+  unmark
+} from '../../../utils';
 
 @Component({
   selector: 'app-calendar',
@@ -72,7 +83,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           this.clearSelection();
           break;
         case 'annotate':
-          this.annotate.emit(this.selectionResult(this.selectedDates()));
+          this.annotate.emit(this.selectionResult(this.selectedDates(false)));
           this.clearSelection();
           break;
         case 'categorize':
@@ -93,7 +104,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     const d = ['06-09-2016:08', '05-09-2016:18', '07-09-2016:19', '09-09-2016:17', '09-09-2016:16', '08-09-2016:10', '08-09-2016:09',
       '06-09-2016:09', '06-09-2016:11', '06-09-2016:12', '06-09-2016:14', '06-09-2016:18', '05-09-2016:14', '05-09-2016:15',
       '05-09-2016:16', '07-09-2016:11', '07-09-2016:12', '07-09-2016:15', '08-09-2016:18'
-    ];
+    ].sort((a, b) => moment(a, timeFrameFormat).unix() - moment(b, timeFrameFormat).unix());
 
     const map = new Map() as ObservationsMap;
     d.forEach(dateString => {
@@ -300,8 +311,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     return this.dataSet.annotations.get(date).get(hour).categories[0].color;
   }
 
-  selectedDates(): Array<string> {
-    return Array.from(this.currentSelection).map(element => element.dataset.date);
+  selectedDates(sorted= true): Array<string> {
+    const dates = Array.from(this.currentSelection).map(element => element.dataset.date);
+    if (sorted) {
+      dates.sort((a, b) => moment(a, timeFrameFormat).unix() - moment(b, timeFrameFormat).unix());
+    }
+    return dates;
   }
 
   selectedWithAnnotations(): Array<string> {

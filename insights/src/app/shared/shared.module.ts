@@ -47,17 +47,18 @@ import {MatDialogModule} from '@angular/material/dialog';
     ReactiveFormsModule,
     MatDialogModule
   ],
-    exports: [
-        KeyboardAnnotationComponent,
-        StylusAnnotationComponent,
-        CalendarComponent,
-        SwipeCounterComponent,
-        DrawCanvasComponent,
-        CanvasToolbarComponent,
-        TimelineComponent,
-        OptionsWheelComponent,
-        MatMenuModule,
-        DialogHeaderComponent
-    ],
+  exports: [
+    KeyboardAnnotationComponent,
+    StylusAnnotationComponent,
+    CalendarComponent,
+    SwipeCounterComponent,
+    DrawCanvasComponent,
+    CanvasToolbarComponent,
+    TimelineComponent,
+    OptionsWheelComponent,
+    MatMenuModule,
+    DialogHeaderComponent,
+    ObservationToggleComponent
+  ],
 })
 export class SharedModule { }

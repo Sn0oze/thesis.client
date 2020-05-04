@@ -1,0 +1,30 @@
+$note-background: #fff3cd;
+$note-padding: .25rem;
+
+:host{
+  display: flex;
+}
+
+.note{
+  width: 115px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background: $note-background;
+  color: #313131;
+  display: flex;
+  flex-direction: column;
+}
+.note-created{
+  text-align: right;
+  font-size: .75rem;
+  font-weight: bold;
+  background-color: darken($note-background, 10);
+  padding: $note-padding;
+}
+
+.note-body{
+  padding: $note-padding;
+}
+.no-touch{
+  touch-action: manipulation;
+  pointer-events: all;
+}

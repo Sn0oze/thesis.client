@@ -62,7 +62,9 @@ import { CategoryComponent } from './components/category/category.component';
     OptionsWheelComponent,
     MatMenuModule,
     DialogHeaderComponent,
-    ObservationToggleComponent
+    ObservationToggleComponent,
+    NoteComponent,
+    CategoryComponent
   ],
 })
 export class SharedModule { }

@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ObservationsMap} from '../../../shared/models';
-import {dateFormat, moment} from '../../../shared/utils';
+import {dateFormat, hoursFromDetails, moment} from '../../../shared/utils';
 
 @Component({
   selector: 'app-filter-dialog',
@@ -17,6 +17,7 @@ export class FilterDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.days = Array.from(this.data.keys());
+    this.hours = hoursFromDetails(this.data);
   }
 
   format(date: string, format: string): string {

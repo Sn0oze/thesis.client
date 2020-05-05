@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {AnnotationDetails} from '../../../shared/models';
-import {dateFormat, moment} from '../../../shared/utils';
+import {dateFormat, hoursFromDetails, moment} from '../../../shared/utils';
 
 @Component({
   selector: 'app-view-dialog',
@@ -13,11 +13,12 @@ export class ViewDialogComponent implements OnInit {
   hours = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21',
     '22', '23', '00'
   ];
-  constructor(public dialogRef: MatDialogRef<any>,
-              @Inject(MAT_DIALOG_DATA) public data: AnnotationDetails) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: AnnotationDetails) { }
 
   ngOnInit(): void {
     this.days = Array.from(this.data.keys());
+    this.hours = hoursFromDetails(this.data);
+
   }
 
   format(date: string, format: string): string {

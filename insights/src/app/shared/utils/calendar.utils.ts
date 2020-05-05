@@ -1,5 +1,5 @@
-import {DataDate, marker} from '../models';
-import {ScaleSequential} from 'd3';
+import {CalendarDetails, DataDate, marker} from '../models';
+import {ScaleSequential, min, max} from 'd3';
 import {timeFrameSeparator} from './extended-moment';
 
 export function mark(element: HTMLElement): void {
@@ -31,4 +31,22 @@ export function parseDate(data: string): DataDate {
   const hour = timeFrame[1];
   const month = day.slice(3);
   return {day, hour, month};
+}
+
+export function pad(value: number): string {
+  return value > 9 ? value.toString() : String(value).padStart(2, '0');
+}
+
+export function hoursFromDetails(map: CalendarDetails): Array<string> {
+  const days = Array.from(map.keys()) as Array<string>;
+  const unique = days.reduce((hours, day) => {
+    Array.from(map.get(day).keys()).map(hour => {
+      hours.add(parseInt(hour, 10));
+    });
+    return hours;
+  }, new Set()) as Set<number>;
+  const result = Array.from(unique);
+  const start = min(result);
+  const end = max(result);
+  return Array(end - start + 1).fill(0).map((_, index) => pad(start + index));
 }

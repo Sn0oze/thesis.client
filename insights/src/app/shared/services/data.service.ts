@@ -134,7 +134,6 @@ export class DataService {
         dataset.hourlyAnnotationsTotal[parseInt(hour, 10)] += total;
       });
     });
-    console.log(dataset.dailyAnnotationsTotal.map((v, i) => moment().set('day', i).format('DDDD') + ' value: ' + v));
   }
 
   updateTotals(timeFrames: Array<string>, dataset: DataSet): void {
@@ -143,7 +142,6 @@ export class DataService {
       dataset.dailyAnnotationsTotal[date.day()] += 1;
       dataset.hourlyAnnotationsTotal[date.hour()] += 1;
     });
-    console.log(dataset.dailyAnnotationsTotal.map((v, i) => moment().set('day', i).format('DDDD') + ' value: ' + v));
   }
 
   saveAnnotations(dataset: DataSet): void {

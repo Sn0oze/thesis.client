@@ -14,7 +14,7 @@ import {
 } from '../../../models';
 import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
 import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
-import {CELL_HEIGHT, CELL_WIDTH} from '../../../constants';
+import {CELL_WIDTH} from '../../../constants';
 import {WheelActionService} from '../../options-wheel/wheel-action.service';
 import {Subscription} from 'rxjs';
 import {
@@ -59,8 +59,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   hammer: HammerManager;
   hourScale = scaleSequential(interpolateOrRd);
   totalScale = scaleSequential(interpolateOrRd);
-  pinchTarget: any;
-  distance: number;
 
   constructor(
     private zone: NgZone,
@@ -153,14 +151,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   onPan(event): void {
-    if (!this.pinchTarget) {
-      this.panned(event);
-    }
+    this.panned(event);
   }
 
   onPress(event): void {
     const element = event.target as HTMLElement;
-    console.log('press', this.pinchTarget);
     if (isSelectable(element)) {
       this.zone.run(() => {
         // only show the wheel if there actually are options to chose from
@@ -172,7 +167,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   onPanEnd(event): void {
-    if (this.currentSelection.size && !this.pinchTarget) {
+    if (this.currentSelection.size) {
       if (this.currentType === 'hour') {
         this.fillSelection(Array.from(this.currentSelection));
       }
@@ -182,43 +177,15 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       });
     }
   }
-  onPinchStart(event): void {
-    const data = event.target.dataset;
-    if (data.type === 'hour') {
-      this.pinchTarget = event.target.dataset.date;
-      this.panned(event);
-    }
-  }
-
-  onPinchEnd(event): void {
-    // console.log('pinch end', event.target.dataset.date);
-    const height = Math.ceil(this.distance / 2);
-    const date = moment(this.pinchTarget, timeFrameFormat);
-    console.log(date.hour() - height, date.hour(), date.hour() + height);
-    setTimeout(() => this.pinchTarget = null, 100);
-  }
-
-  onPinchIn(event): void {
-    this.distance = event.distance;
-  }
-
-  onPinchOut(event): void {
-    this.distance = event.distance;
-  }
 
   addListeners(): void {
     this.zone.runOutsideAngular(() => {
       this.hammer = new Hammer(this.calendarElement);
-      this.hammer.get('pinch').set({ enable: true });
       this.hammer.on('tap', this.onTap.bind(this));
       this.hammer.on('press', this.onPress.bind(this));
       this.hammer.on('panstart', this.onPanStart.bind(this));
       this.hammer.on('pan', this.onPan.bind(this));
       this.hammer.on('panend', this.onPanEnd.bind(this));
-      this.hammer.on('pinchstart', this.onPinchStart.bind(this));
-      this.hammer.on('pinchin', this.onPinchIn.bind(this));
-      this.hammer.on('pinchout', this.onPinchOut.bind(this));
-      this.hammer.on('pinchend', this.onPinchEnd.bind(this));
     });
   }
   removeListeners(): void {
@@ -228,10 +195,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onPanEnd);
-      this.hammer.off('pinchstart', this.onPinchStart);
-      this.hammer.off('pinchin', this.onPinchIn);
-      this.hammer.off('pinchout', this.onPinchOut);
-      this.hammer.off('pinchend', this.onPinchEnd);
     }
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {AnnotationMap, DataMap, DataSet, DayNest, Observation} from '../models';
+import {AnnotationMap, AnnotationSummary, DataMap, DataSet, DayNest, Observation} from '../models';
 import {dateFormat, hourFormat, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
@@ -108,8 +108,8 @@ export class DataService {
           days: dayNest,
           months: calendarData,
           annotations: this.loadAnnotations(),
-          dailyAnnotationsTotal: Array(7).fill(0),
-          hourlyAnnotationsTotal: Array(24).fill(0),
+          dailySummary: {max: 0, values: Array(7).fill(0)} as AnnotationSummary,
+          hourlySummary: {max: 0, values: Array(24).fill(0)} as AnnotationSummary,
           save: this.saveAnnotations.bind(this),
           updateTotals: this.updateTotals.bind(this)
         };
@@ -130,18 +130,25 @@ export class DataService {
       hours.forEach(hour => {
         const annotation = annotationsMap.get(day).get(hour);
         const total = annotation.categories.length + annotation.notes.length;
-        dataset.dailyAnnotationsTotal[dayIndex] += total;
-        dataset.hourlyAnnotationsTotal[parseInt(hour, 10)] += total;
+        dataset.dailySummary.values[dayIndex] += total;
+        dataset.hourlySummary.values[parseInt(hour, 10)] += total;
       });
     });
+    this.updateMax(dataset);
   }
 
   updateTotals(timeFrames: Array<string>, dataset: DataSet): void {
     timeFrames.forEach(dateString => {
       const date = moment(dateString, timeFrameFormat);
-      dataset.dailyAnnotationsTotal[date.day()] += 1;
-      dataset.hourlyAnnotationsTotal[date.hour()] += 1;
+      dataset.dailySummary.values[date.day()] += 1;
+      dataset.hourlySummary.values[date.hour()] += 1;
     });
+    this.updateMax(dataset);
+  }
+
+  updateMax(dataset: DataSet): void {
+    dataset.dailySummary.max = d3.max(dataset.dailySummary.values);
+    dataset.hourlySummary.max = d3.max(dataset.hourlySummary.values);
   }
 
   saveAnnotations(dataset: DataSet): void {

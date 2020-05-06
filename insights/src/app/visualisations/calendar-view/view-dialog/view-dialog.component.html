@@ -26,14 +26,27 @@
           </td>
           <td *ngFor="let day of days">
             <div class="empty-cell" *ngIf="!data.get(day).has(hour)">&nbsp;</div>
-            <div class="annotation-row">
+            <div class="annotation-row category-list"
+                 cdkDropList cdkDropListOrientation="horizontal"
+                 (cdkDropListDropped)="drop($event, data.get(day).get(hour)?.categories)">
               <app-category
+                cdkDrag
+                (cdkDragStarted)="dragStart($event)"
+                (cdkDragEnded)="dragEnd($event)"
                 class="p-1"
                 *ngFor="let category of data.get(day).get(hour)?.categories"
                 [category]="category"></app-category>
             </div>
-            <div class="annotation-row">
+            <div class="annotation-row"
+                 [cdkDropListData]="data.get(day).get(hour)?.notes"
+                 cdkDropListConnectedTo="toDelete"
+                 [cdkDropListEnterPredicate]="noReturnPredicate"
+                 cdkDropList
+                 cdkDropListOrientation="horizontal">
               <app-note
+                cdkDrag
+                (cdkDragStarted)="dragStart($event)"
+                (cdkDragEnded)="dragEnd($event)"
                 class="p-1"
                 *ngFor="let note of data.get(day).get(hour)?.notes"
                 [note]="note">
@@ -45,4 +58,15 @@
       </table>
     </div>
   </div>
+</div>
+<div class="trash-container" *ngIf="delete">
+  <!--
+  <div
+    class="delete-list"
+    cdkDropList
+    [cdkDropListData]="toDelete"
+    cdkDropListConnectedTo="toDelete"
+    (cdkDropListDropped)="deleteItem($event)"></div>
+    -->
+  <mat-icon>delete</mat-icon>
 </div>

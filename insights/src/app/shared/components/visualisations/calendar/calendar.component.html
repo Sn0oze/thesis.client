@@ -6,6 +6,9 @@
         class="selectable"
         [attr.data-date]="label"
         [attr.data-type]="'hours'">{{label}}</span>
+      <div
+        class="annotation-mask"
+        [style.width]="barHeight(dataSet.hourlySummary.values[parseLabel(label)],dataSet.hourlySummary.max)"></div>
     </div>
     <div class="total-label">Total</div>
   </div>
@@ -28,6 +31,9 @@
             [attr.data-type]="'day'">
             <div class="day-of-week">{{day.date.format('ddd')}}</div>
             <div class="day-of-month">{{day.date.format('DD')}}</div>
+            <div
+              class="annotation-mask"
+              [style.height]="barHeight(dataSet.dailySummary.values[day.date.day()], dataSet.dailySummary.max)"></div>
           </div>
           <div
             class="hour selectable"

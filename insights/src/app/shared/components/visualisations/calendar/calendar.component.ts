@@ -326,4 +326,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
       return this.dataSet.annotations.get(date.day)?.has(date.hour);
     });
   }
+
+  barHeight(fraction: number, total: number): string {
+    const res = total > 0 ? Math.round(((fraction || 0) / total) * 100) : 0;
+    return `${Math.ceil(res)}%`;
+  }
+
+  parseLabel(label: string): number {
+    return parseInt(label, 10);
+  }
 }

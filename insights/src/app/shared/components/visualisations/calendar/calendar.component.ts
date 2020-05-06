@@ -101,15 +101,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
           break;
       }
     });
-    const d = ['06-09-2016:08', '05-09-2016:18', '07-09-2016:19', '09-09-2016:17', '09-09-2016:16', '08-09-2016:10', '08-09-2016:09',
-      '06-09-2016:09', '06-09-2016:11', '06-09-2016:12', '06-09-2016:14', '06-09-2016:18', '05-09-2016:14', '05-09-2016:15',
-      '05-09-2016:16', '07-09-2016:11', '07-09-2016:12', '07-09-2016:15', '08-09-2016:18'
-    ].sort((a, b) => moment(a, timeFrameFormat).unix() - moment(b, timeFrameFormat).unix());
-    const filtered = d.filter(dateString => {
-      const date = parseDate(dateString);
-      return this.dataSet.annotations.get(date.day)?.has(date.hour);
-    });
-    this.view.emit(this.selectionResult(filtered));
   }
 
   ngAfterViewInit(): void {

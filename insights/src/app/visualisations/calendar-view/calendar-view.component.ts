@@ -71,6 +71,7 @@ export class CalendarViewComponent implements OnInit {
           body
         } as Note;
         this.addAnnotations(selection.entries, note, 'notes');
+        this.dataSet.updateTotals(selection.entries, this.dataSet);
         this.dataSet.save(this.dataSet);
       }
     });
@@ -78,6 +79,7 @@ export class CalendarViewComponent implements OnInit {
 
   categorize(selected: CategorizeSelection): void {
     this.addAnnotations(selected.selection.entries, selected.category, 'categories');
+    this.dataSet.updateTotals(selected.selection.entries, this.dataSet);
     this.dataSet.save(this.dataSet);
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
 import {AnnotationMap, DataMap, DataSet, DayNest, Observation} from '../models';
-import {dateFormat, hourFormat, moment, monthFormat} from '../utils';
+import {dateFormat, hourFormat, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
 
@@ -108,13 +108,42 @@ export class DataService {
           days: dayNest,
           months: calendarData,
           annotations: this.loadAnnotations(),
-          save: this.saveAnnotations.bind(this)
+          dailyAnnotationsTotal: Array(7).fill(0),
+          hourlyAnnotationsTotal: Array(24).fill(0),
+          save: this.saveAnnotations.bind(this),
+          updateTotals: this.updateTotals.bind(this)
         };
-
+        this.buildHeatmap(dataSet);
         observer.next(dataSet);
         observer.complete();
       }, error => observer.next(error));
     });
+  }
+
+  buildHeatmap(dataset: DataSet): void {
+    const annotationsMap = dataset.annotations;
+    const days = Array.from(annotationsMap.keys());
+    days.forEach(day => {
+      const date = moment(day, dateFormat);
+      const dayIndex = date.day();
+      const hours = Array.from(annotationsMap.get(day).keys());
+      hours.forEach(hour => {
+        const annotation = annotationsMap.get(day).get(hour);
+        const total = annotation.categories.length + annotation.notes.length;
+        dataset.dailyAnnotationsTotal[dayIndex] += total;
+        dataset.hourlyAnnotationsTotal[parseInt(hour, 10)] += total;
+      });
+    });
+    console.log(dataset.dailyAnnotationsTotal.map((v, i) => moment().set('day', i).format('DDDD') + ' value: ' + v));
+  }
+
+  updateTotals(timeFrames: Array<string>, dataset: DataSet): void {
+    timeFrames.forEach(dateString => {
+      const date = moment(dateString, timeFrameFormat);
+      dataset.dailyAnnotationsTotal[date.day()] += 1;
+      dataset.hourlyAnnotationsTotal[date.hour()] += 1;
+    });
+    console.log(dataset.dailyAnnotationsTotal.map((v, i) => moment().set('day', i).format('DDDD') + ' value: ' + v));
   }
 
   saveAnnotations(dataset: DataSet): void {

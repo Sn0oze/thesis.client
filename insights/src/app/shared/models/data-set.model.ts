@@ -13,7 +13,10 @@ export interface DataSet {
   days: Array<DayNest>;
   months: Array<MonthNest>;
   annotations?: AnnotationMap;
+  dailyAnnotationsTotal: Array<number>;
+  hourlyAnnotationsTotal: Array<number>;
   save: (dataset: DataSet) => void;
+  updateTotals: (timeFrames: Array<string>, dataset: DataSet) => void;
 }
 
 export interface DayNest {

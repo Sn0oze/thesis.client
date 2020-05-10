@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ANNOTATIONS_KEY} from '../../constants';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {DataService} from '../../services/data.service';
 
 @Component({
   selector: 'app-annotation-import',
@@ -8,35 +9,39 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./annotation-import.component.scss']
 })
 export class AnnotationImportComponent implements OnInit {
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private snackbar: MatSnackBar,
+    private data: DataService
+  ) { }
   form: FormGroup;
+  hasAnnotations: boolean;
+  annotations: string;
+
   ngOnInit(): void {
+    this.annotations = this.data.loadFromStorage();
+    this.hasAnnotations = !!this.annotations;
     this.form = this.fb.group({
       json: ['', Validators.required]
     });
   }
 
-  getAnnotations(): string {
-    return localStorage.getItem(ANNOTATIONS_KEY);
+  copied(copied: boolean): void {
+    if (copied) {
+      this.snackbar.open('Coped to clipboard', 'close');
+    }
   }
 
-  hasAnnotations(): boolean {
-    return !this.getAnnotations();
-  }
-
-  reset(): void {
-    this.form.reset();
-  }
   submit(): void {
     if (this.form.valid) {
-      const stringified = this.form.value.json;
+      const stringified = this.data.decompress(this.form.value.json);
       try {
         JSON.parse(stringified);
-        localStorage.setItem(ANNOTATIONS_KEY, stringified);
-        console.log('imported successfully');
+        this.data.saveToStorage(stringified);
         window.location.reload();
       } catch {
-        console.log('invalid data');
+        this.form.reset();
+        this.snackbar.open('Annotations couldn\'t be imported', 'close');
       }
     }
   }

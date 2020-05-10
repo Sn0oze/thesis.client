@@ -23,6 +23,7 @@ import { NoteComponent } from './components/note/note.component';
 import { CategoryComponent } from './components/category/category.component';
 import { AnnotationImportComponent } from './components/annotation-import/annotation-import.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     MatMenuModule,
     ReactiveFormsModule,
     MatDialogModule,
-    ClipboardModule
+    ClipboardModule,
+    MatSnackBarModule
   ],
   exports: [
     KeyboardAnnotationComponent,

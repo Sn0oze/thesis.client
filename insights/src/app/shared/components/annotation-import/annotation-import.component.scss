@@ -1,0 +1,55 @@
+:host{
+  display: block;
+}
+$text-color: rgba(0,0,0,.86);
+$hover-color: rgba(0, 0, 0, 0.04);
+.import-form-container{
+  color: rgba(0,0,0,.54);
+  user-select: none;
+  border-radius: 5px;
+  button{
+    border: none;
+    color: $text-color;
+    background-color: inherit;
+    font-weight: 500;
+    &:disabled{
+      color: #cccccc;
+    }
+  }
+}
+
+.input-wrapper{
+  display: flex;
+  align-items: center;
+  height: 48px;
+  &:hover{
+    background-color: $hover-color;
+  }
+}
+
+.import-form{
+  label{
+    padding: 0 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0;
+    input{
+      width: 100%;
+      border: none;
+      background-color: inherit;
+      &:focus{
+        outline: none;
+        box-shadow: 0 1px 0 0 black ;
+      }
+    }
+    mat-icon{
+      margin-right: 1rem;
+    }
+  }
+  .btn-row{
+    padding: 0 1rem;
+    height: 22px;
+  }
+}

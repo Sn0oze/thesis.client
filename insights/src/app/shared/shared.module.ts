@@ -21,6 +21,8 @@ import { DialogHeaderComponent } from './components/dialog-header/dialog-header.
 import {MatDialogModule} from '@angular/material/dialog';
 import { NoteComponent } from './components/note/note.component';
 import { CategoryComponent } from './components/category/category.component';
+import { AnnotationImportComponent } from './components/annotation-import/annotation-import.component';
+import {ClipboardModule} from '@angular/cdk/clipboard';
 
 
 @NgModule({
@@ -38,7 +40,8 @@ import { CategoryComponent } from './components/category/category.component';
     ObservationToggleComponent,
     DialogHeaderComponent,
     NoteComponent,
-    CategoryComponent
+    CategoryComponent,
+    AnnotationImportComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +52,8 @@ import { CategoryComponent } from './components/category/category.component';
     FormsModule,
     MatMenuModule,
     ReactiveFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    ClipboardModule
   ],
   exports: [
     KeyboardAnnotationComponent,
@@ -64,7 +68,8 @@ import { CategoryComponent } from './components/category/category.component';
     DialogHeaderComponent,
     ObservationToggleComponent,
     NoteComponent,
-    CategoryComponent
+    CategoryComponent,
+    AnnotationImportComponent
   ],
 })
 export class SharedModule { }

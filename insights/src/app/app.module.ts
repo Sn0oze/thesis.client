@@ -9,6 +9,7 @@ import {VisualisationsModule} from './visualisations/visualisations.module';
 import * as hammer from 'hammerjs';
 import {MatButtonModule} from '@angular/material/button';
 import {HttpClientModule} from '@angular/common/http';
+import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig} from '@angular/material/snack-bar';
 
 @Injectable()
 class HammerConfig extends HammerGestureConfig {
@@ -34,7 +35,15 @@ class HammerConfig extends HammerGestureConfig {
   providers: [
     {
       provide: HAMMER_GESTURE_CONFIG,
-      useClass: HammerConfig,
+      useClass: HammerConfig
+    },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {
+        duration: 2500,
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      } as MatSnackBarConfig
     }
   ],
   bootstrap: [AppComponent]

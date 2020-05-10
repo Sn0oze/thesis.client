@@ -1,15 +1,15 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="wheel-container">
-  <button class="option" mat-mini-fab (click)="selected('filter')" [disabled]="!config.filter">
+  <button class="option" mat-mini-fab color="primary" (click)="selected('filter')" [disabled]="!config.filter">
     <mat-icon>list</mat-icon>
   </button>
-  <button class="option" mat-mini-fab (click)="selected('trim')" [disabled]=" hasTrimmed || !config.trim">
+  <button class="option" mat-mini-fab color="primary" (click)="selected('trim')" [disabled]=" hasTrimmed || !config.trim">
     <mat-icon>crop</mat-icon>
   </button>
-  <button class="option" mat-mini-fab (click)="selected('annotate')" [disabled]="!config.annotate">
+  <button class="option" mat-mini-fab color="primary" (click)="selected('annotate')" [disabled]="!config.annotate">
     <mat-icon>chat</mat-icon>
   </button>
-  <button class="option" mat-mini-fab [matMenuTriggerFor]="menu" [disabled]="!config.categorize">
+  <button class="option" mat-mini-fab color="primary" [matMenuTriggerFor]="menu" [disabled]="!config.categorize">
     <mat-icon>category</mat-icon>
     <mat-menu #menu="matMenu">
       <!-- <app-category-form (submitted)="addCategory($event)"></app-category-form> -->
@@ -24,7 +24,7 @@
       </button>
     </mat-menu>
   </button>
-  <button class="option" mat-mini-fab [disabled]="!config.view" (click)="selected('view')">
+  <button class="option" mat-mini-fab color="primary" [disabled]="!config.view" (click)="selected('view')">
     <mat-icon>visibility</mat-icon>
   </button>
   <div class="anchor"></div>

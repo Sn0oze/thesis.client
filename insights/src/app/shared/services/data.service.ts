@@ -5,6 +5,8 @@ import {AnnotationMap, AnnotationSummary, DataMap, DataSet, DayNest, Observation
 import {dateFormat, hourFormat, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
+import * as compression from 'lz-string';
+
 
 @Injectable({
   providedIn: 'root'
@@ -107,7 +109,7 @@ export class DataService {
           mappings: dataMap,
           days: dayNest,
           months: calendarData,
-          annotations: this.loadAnnotations(),
+          annotations: this.initAnnotations(),
           dailySummary: {max: 0, values: Array(7).fill(0)} as AnnotationSummary,
           hourlySummary: {max: 0, values: Array(24).fill(0)} as AnnotationSummary,
           save: this.saveAnnotations.bind(this),
@@ -153,7 +155,30 @@ export class DataService {
 
   saveAnnotations(dataset: DataSet): void {
     const stringified = this.mapToJson(dataset.annotations);
-    localStorage.setItem(ANNOTATIONS_KEY, stringified);
+    this.saveToStorage(stringified);
+  }
+
+  initAnnotations(): AnnotationMap {
+    const existing = this.loadFromStorage(false);
+    return existing ? this.jsonToMap(existing) : new Map();
+  }
+  saveToStorage(stringified: string, compressed = true): void {
+    const trimmed = stringified.replace(/\s/g, '');
+    const value = compressed ? this.compress(trimmed) : trimmed;
+    localStorage.setItem(ANNOTATIONS_KEY, value);
+  }
+
+  loadFromStorage(compressed = true): string {
+    const value = localStorage.getItem(ANNOTATIONS_KEY);
+    return  compressed ? value : this.decompress(localStorage.getItem(ANNOTATIONS_KEY));
+  }
+
+  decompress(value: string): string {
+    return compression.decompressFromUTF16(value);
+  }
+
+  compress(value: string): string {
+    return compression.compressToUTF16(value);
   }
 
   mapToJson(map: Map<any, any>) {
@@ -163,10 +188,5 @@ export class DataService {
   jsonToMap(jsonStr): Map<any, any> {
     const res = JSON.parse(jsonStr).map(([k, v]) => [k, new Map(v)]);
     return new Map(res);
-  }
-
-  loadAnnotations(): AnnotationMap {
-    const existing = localStorage.getItem(ANNOTATIONS_KEY);
-    return existing ? this.jsonToMap(existing) : new Map();
   }
 }

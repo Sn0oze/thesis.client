@@ -12,12 +12,12 @@
   </div>
   <div>
     <button
+      (click)="copy()"
       mat-menu-item
-      [cdkCopyToClipboard]="annotations"
-      (cdkCopyToClipboardCopied)="copied($event)"
       [disabled]="!hasAnnotations">
       <mat-icon svgIcon="content-copy"></mat-icon>
       <span>Copy Annotations</span>
     </button>
   </div>
 </mat-menu>
+

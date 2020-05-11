@@ -170,7 +170,14 @@ export class DataService {
 
   loadFromStorage(compressed = true): string {
     const value = localStorage.getItem(ANNOTATIONS_KEY);
-    return  compressed ? value : this.decompress(localStorage.getItem(ANNOTATIONS_KEY));
+    try {
+      // this only succeeds if the stored value is an uncompressed json string
+      JSON.parse(value);
+      this.saveToStorage(value);
+      return  compressed ? this.compress(value) : value;
+    } catch {
+      return  compressed ? value : this.decompress(value);
+    }
   }
 
   decompress(value: string): string {
@@ -186,7 +193,7 @@ export class DataService {
     return JSON.stringify([...res]);
   }
   jsonToMap(jsonStr): Map<any, any> {
-    const res = JSON.parse(jsonStr).map(([k, v]) => [k, new Map(v)]);
-    return new Map(res);
+    const nested = JSON.parse(jsonStr).map(([k, v]) => [k, new Map(v)]);
+    return new Map(nested);
   }
 }

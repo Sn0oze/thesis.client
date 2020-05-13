@@ -24,12 +24,19 @@ export class CategoryService {
     }
   ] as Array<Category>;
 
-  constructor() { }
+  private mappings = {};
+
+  constructor() {
+    this.categories.forEach(category => this.mappings[category.name] = category.color);
+  }
    getCategories(): Array<Category> {
     return this.categories;
    }
   addCategory(category: Category): Array<Category> {
     this.categories.unshift(category);
     return this.categories;
+  }
+  colorByName(name: string): string {
+    return this.mappings[name];
   }
 }

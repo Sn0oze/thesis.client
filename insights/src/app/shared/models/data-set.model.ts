@@ -52,6 +52,7 @@ export interface Note {
 export interface AnnotationSummary {
   max: number;
   values: Array<number>;
+  stacked?: Array<Map<string, number>>;
 }
 
 export interface ObservationSummary {

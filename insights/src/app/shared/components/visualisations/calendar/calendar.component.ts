@@ -2,8 +2,9 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnCha
   ViewChild
 } from '@angular/core';
 import {
+  AnnotationSummary,
   CalendarSelection,
-  CategorizeSelection, Category,
+  CategorizeSelection, Category, CategoryBar,
   DataDate,
   DataSet,
   DayNest,
@@ -29,6 +30,7 @@ import {
   timeFrameFormat,
   unmark
 } from '../../../utils';
+import {CategoryService} from '../../../services/category.service';
 
 @Component({
   selector: 'app-calendar',
@@ -63,7 +65,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   constructor(
     private zone: NgZone,
     private wheel: OptionsWheelService,
-    private actions: WheelActionService
+    private actions: WheelActionService,
+    private categories: CategoryService
   ) {}
 
   ngOnInit(): void {
@@ -328,11 +331,32 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   barHeight(fraction: number, total: number): string {
-    const res = total > 0 ? Math.round(((fraction || 0) / total) * 100) : 0;
+    const res = Math.round(this.frac(fraction, total) * 100);
     return `${Math.ceil(res)}%`;
   }
 
   parseLabel(label: string): number {
     return parseInt(label, 10);
+  }
+
+  frac(fraction: number, total: number): number {
+    return total > 0 ? ((fraction || 0) / total) : 0;
+  }
+
+  toList(summary: AnnotationSummary, index: number): Array<CategoryBar> {
+    const total = summary.max;
+    const stacked = Array.from(summary.stacked[index]).map(
+      ([k, v]) => ({color: this.categories.colorByName(k), value: v})
+    ).sort((a, b) => b.value - a.value) as Array<CategoryBar>;
+    const sum = stacked.reduce((accumulator, current) => accumulator + current.value, 0);
+    const totalHeight = this.frac(sum, total);
+    let position = 0;
+    stacked.forEach((item) => {
+      const height = (totalHeight * this.frac(item.value, sum) * 100);
+      item.position =  `${position}%`;
+      item.height = `${height}%`;
+      position += height;
+    });
+    return stacked;
   }
 }

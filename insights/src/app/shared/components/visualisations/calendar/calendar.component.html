@@ -4,9 +4,11 @@
     <div class="hour-label-group" *ngFor="let label of labels; let bottom = last">
       <div class="hour-label-bar">
         <div
+          *ngFor="let item of toList(dataSet.hourlySummary.annotations, parseLabel(label))"
           class="annotation-mask"
-          [style.width]="barHeight(dataSet.hourlySummary.annotations.values[parseLabel(label)]
-          ,dataSet.hourlySummary.annotations.max)"></div>
+          [style.background-color]="item.color"
+          [style.right]="item.position"
+          [style.width]="item.height"></div>
       </div>
       <div class="hour-label">
       <span
@@ -48,10 +50,11 @@
             <div class="day-of-month">{{day.date.format('DD')}}</div>
             <div class="day-label-bar">
               <div
+                *ngFor="let item of toList(dataSet.dailySummary.annotations, day.date.day())"
                 class="annotation-mask"
-                [style.height]="barHeight(
-              dataSet.dailySummary.annotations.values[day.date.day()],
-              dataSet.dailySummary.annotations.max)"></div>
+                [style.background-color]="item.color"
+                [style.bottom]="item.position"
+                [style.height]="item.height"></div>
             </div>
             <div
               class="observation-mask"

@@ -6,6 +6,7 @@ import {dateFormat, hourFormat, isWeekEnd, moment, monthFormat, timeFrameFormat}
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
 import * as compression from 'lz-string';
+import {CategoryService} from './category.service';
 
 export const HOURS_PER_DAY = 24;
 export const DAYS_PER_WEEK = 7;
@@ -14,7 +15,7 @@ export const DAYS_PER_WEEK = 7;
 })
 export class DataService {
 
-  constructor() { }
+  constructor(private categories: CategoryService) { }
 
   rowConverter(row): Observation {
     return {
@@ -112,24 +113,32 @@ export class DataService {
           months: calendarData,
           annotations: this.initAnnotations(),
           dailySummary: {
-            annotations: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)},
+            annotations: {
+              max: 0,
+              values: Array(DAYS_PER_WEEK).fill(0),
+              stacked: Array(DAYS_PER_WEEK).fill(null).map(() => this.initStackedCategories())
+            },
             observations: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)}
           } as Summary,
           hourlySummary: {
-            annotations: {max: 0, values: Array(HOURS_PER_DAY).fill(0)},
+            annotations: {
+              max: 0,
+              values: Array(HOURS_PER_DAY).fill(0),
+              stacked: Array(HOURS_PER_DAY).fill(null).map(() => this.initStackedCategories())
+            },
             observations: {max: 0, values: Array(HOURS_PER_DAY).fill(0)}
           } as Summary,
           save: this.saveAnnotations.bind(this),
           updateTotals: this.updateTotals.bind(this)
         };
-        this.buildHeatmap(dataSet);
+        this.summarize(dataSet);
         observer.next(dataSet);
         observer.complete();
       }, error => observer.next(error));
     });
   }
 
-  buildHeatmap(dataset: DataSet): void {
+  summarize(dataset: DataSet): void {
     const observationsMap = dataset.mappings;
     const observedMonths = Array.from(observationsMap.keys());
     const annotationsMap = dataset.annotations;
@@ -139,10 +148,17 @@ export class DataService {
       const dayIndex = date.day();
       const hours = Array.from(annotationsMap.get(day).keys());
       hours.forEach(hour => {
+        const hourIndex = parseInt(hour, 10);
         const annotation = annotationsMap.get(day).get(hour);
-        const total = annotation.categories.length + annotation.notes.length;
+        const total = annotation.categories.length; // + annotation.notes.length;
+        annotation.categories.forEach(category => {
+          const dayMap = dataset.dailySummary.annotations.stacked[dayIndex];
+          dayMap.set(category.name, dayMap.get(category.name) + 1);
+          const hourMap = dataset.hourlySummary.annotations.stacked[hourIndex];
+          hourMap.set(category.name, hourMap.get(category.name) + 1);
+        });
         dataset.dailySummary.annotations.values[dayIndex] += total;
-        dataset.hourlySummary.annotations.values[parseInt(hour, 10)] += total;
+        dataset.hourlySummary.annotations.values[hourIndex] += total;
       });
     });
     observedMonths.forEach(month => {
@@ -158,6 +174,12 @@ export class DataService {
     this.updateAnnotationMax(dataset);
     dataset.dailySummary.observations.max = d3.max(dataset.dailySummary.observations.values);
     dataset.hourlySummary.observations.max = d3.max(dataset.hourlySummary.observations.values);
+  }
+
+  initStackedCategories(): Map<string, number> {
+    const stackedCategories = new Map();
+    this.categories.getCategories().forEach(category => stackedCategories.set(category.name, 0));
+    return stackedCategories;
   }
 
   updateTotals(timeFrames: Array<string>, dataset: DataSet): void {

@@ -25,4 +25,12 @@ export type AnnotationDetails = Map<string, Map<string, Annotation>>;
 
 export type CalendarDetails = Map<string, Map<string, any>>;
 
+export interface CategoryBar {
+  color: string;
+  value: number;
+  position?: string;
+  height?: string;
+}
+
+
 

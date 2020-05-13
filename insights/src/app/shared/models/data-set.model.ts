@@ -16,7 +16,7 @@ export interface DataSet {
   dailySummary: Summary;
   hourlySummary: Summary;
   save: (dataset: DataSet) => void;
-  updateTotals: (timeFrames: Array<string>, dataset: DataSet) => void;
+  updateTotals: (timeFrames: Array<string>, dataset: DataSet, category?: Category) => void;
 }
 
 export interface DayNest {

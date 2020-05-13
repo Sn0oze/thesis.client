@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {AnnotationMap, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
+import {AnnotationMap, Category, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
 import {dateFormat, hourFormat, isWeekEnd, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
@@ -182,11 +182,19 @@ export class DataService {
     return stackedCategories;
   }
 
-  updateTotals(timeFrames: Array<string>, dataset: DataSet): void {
+  updateTotals(timeFrames: Array<string>, dataset: DataSet, category: Category): void {
     timeFrames.forEach(dateString => {
       const date = moment(dateString, timeFrameFormat);
-      dataset.dailySummary.annotations.values[date.day()] += 1;
-      dataset.hourlySummary.annotations.values[date.hour()] += 1;
+      const dayIndex = date.day();
+      const hourIndex = date.hour();
+      dataset.dailySummary.annotations.values[dayIndex] += 1;
+      dataset.hourlySummary.annotations.values[hourIndex] += 1;
+      if (category) {
+        const dayMap = dataset.dailySummary.annotations.stacked[dayIndex];
+        dayMap.set(category.name, dayMap.get(category.name) + 1);
+        const hourMap = dataset.hourlySummary.annotations.stacked[hourIndex];
+        hourMap.set(category.name, dayMap.get(category.name) + 1);
+      }
     });
     this.updateAnnotationMax(dataset);
   }

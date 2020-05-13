@@ -158,7 +158,6 @@ export class DataService {
     this.updateAnnotationMax(dataset);
     dataset.dailySummary.observations.max = d3.max(dataset.dailySummary.observations.values);
     dataset.hourlySummary.observations.max = d3.max(dataset.hourlySummary.observations.values);
-    console.log(dataset);
   }
 
   updateTotals(timeFrames: Array<string>, dataset: DataSet): void {

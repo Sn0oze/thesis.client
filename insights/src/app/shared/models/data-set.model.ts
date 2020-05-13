@@ -13,8 +13,8 @@ export interface DataSet {
   days: Array<DayNest>;
   months: Array<MonthNest>;
   annotations?: AnnotationMap;
-  dailySummary: AnnotationSummary;
-  hourlySummary: AnnotationSummary;
+  dailySummary: Summary;
+  hourlySummary: Summary;
   save: (dataset: DataSet) => void;
   updateTotals: (timeFrames: Array<string>, dataset: DataSet) => void;
 }
@@ -52,6 +52,16 @@ export interface Note {
 export interface AnnotationSummary {
   max: number;
   values: Array<number>;
+}
+
+export interface ObservationSummary {
+  max: number;
+  values: Array<number>;
+}
+
+export interface Summary {
+  annotations: AnnotationSummary;
+  observations: ObservationSummary;
 }
 
 export type DataMap = Map<string, Map<string, Map<string, Array<Observation>>>>;

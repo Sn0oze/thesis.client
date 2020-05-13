@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {AnnotationMap, AnnotationSummary, DataMap, DataSet, DayNest, Observation} from '../models';
-import {dateFormat, hourFormat, moment, monthFormat, timeFrameFormat} from '../utils';
+import {AnnotationMap, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
+import {dateFormat, hourFormat, isWeekEnd, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
 import * as compression from 'lz-string';
 
-
+export const HOURS_PER_DAY = 24;
+export const DAYS_PER_WEEK = 7;
 @Injectable({
   providedIn: 'root'
 })
@@ -69,7 +70,7 @@ export class DataService {
         dayNest.map((d) => {
           const day = moment(d.key, dateFormat);
           d.total = d.values.reduce((total, hour) => total + hour.values.length, 0);
-          d.isWeekend = day.weekday() === 0 || day.weekday() === 6;
+          d.isWeekend = isWeekEnd(day);
           d.date = day;
         });
 
@@ -86,7 +87,7 @@ export class DataService {
               return {
                 key: dayKey,
                 date: day,
-                isWeekend: day.weekday() === 0 || day.weekday() === 6,
+                isWeekend: isWeekEnd(day),
                 total: dayNest.find(nest => nest.key === dayKey)?.total,
                 values: Array.from((moment(day)).range('day').by('hour')).map(hour => {
                   const hourKey = hour.format(hourFormat);
@@ -110,8 +111,14 @@ export class DataService {
           days: dayNest,
           months: calendarData,
           annotations: this.initAnnotations(),
-          dailySummary: {max: 0, values: Array(7).fill(0)} as AnnotationSummary,
-          hourlySummary: {max: 0, values: Array(24).fill(0)} as AnnotationSummary,
+          dailySummary: {
+            annotations: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)},
+            observations: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)}
+          } as Summary,
+          hourlySummary: {
+            annotations: {max: 0, values: Array(HOURS_PER_DAY).fill(0)},
+            observations: {max: 0, values: Array(HOURS_PER_DAY).fill(0)}
+          } as Summary,
           save: this.saveAnnotations.bind(this),
           updateTotals: this.updateTotals.bind(this)
         };
@@ -123,34 +130,49 @@ export class DataService {
   }
 
   buildHeatmap(dataset: DataSet): void {
+    const observationsMap = dataset.mappings;
+    const observedMonths = Array.from(observationsMap.keys());
     const annotationsMap = dataset.annotations;
-    const days = Array.from(annotationsMap.keys());
-    days.forEach(day => {
+    const annotatedDays = Array.from(annotationsMap.keys());
+    annotatedDays.forEach(day => {
       const date = moment(day, dateFormat);
       const dayIndex = date.day();
       const hours = Array.from(annotationsMap.get(day).keys());
       hours.forEach(hour => {
         const annotation = annotationsMap.get(day).get(hour);
         const total = annotation.categories.length + annotation.notes.length;
-        dataset.dailySummary.values[dayIndex] += total;
-        dataset.hourlySummary.values[parseInt(hour, 10)] += total;
+        dataset.dailySummary.annotations.values[dayIndex] += total;
+        dataset.hourlySummary.annotations.values[parseInt(hour, 10)] += total;
       });
     });
-    this.updateMax(dataset);
+    observedMonths.forEach(month => {
+      Array.from(dataset.mappings.get(month).keys()).forEach(day => {
+        Array.from(dataset.mappings.get(month).get(day).keys()).forEach(hour => {
+          const total = dataset.mappings.get(month).get(day).get(hour).length;
+          dataset.hourlySummary.observations.values[parseInt(hour, 10)] += total;
+          const date = moment(day, dateFormat);
+          dataset.dailySummary.observations.values[date.day()] += total;
+        });
+      });
+    });
+    this.updateAnnotationMax(dataset);
+    dataset.dailySummary.observations.max = d3.max(dataset.dailySummary.observations.values);
+    dataset.hourlySummary.observations.max = d3.max(dataset.hourlySummary.observations.values);
+    console.log(dataset);
   }
 
   updateTotals(timeFrames: Array<string>, dataset: DataSet): void {
     timeFrames.forEach(dateString => {
       const date = moment(dateString, timeFrameFormat);
-      dataset.dailySummary.values[date.day()] += 1;
-      dataset.hourlySummary.values[date.hour()] += 1;
+      dataset.dailySummary.annotations.values[date.day()] += 1;
+      dataset.hourlySummary.annotations.values[date.hour()] += 1;
     });
-    this.updateMax(dataset);
+    this.updateAnnotationMax(dataset);
   }
 
-  updateMax(dataset: DataSet): void {
-    dataset.dailySummary.max = d3.max(dataset.dailySummary.values);
-    dataset.hourlySummary.max = d3.max(dataset.hourlySummary.values);
+  updateAnnotationMax(dataset: DataSet): void {
+    dataset.dailySummary.annotations.max = d3.max(dataset.dailySummary.annotations.values);
+    dataset.hourlySummary.annotations.max = d3.max(dataset.hourlySummary.annotations.values);
   }
 
   saveAnnotations(dataset: DataSet): void {

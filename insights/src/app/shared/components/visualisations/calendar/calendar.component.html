@@ -8,7 +8,9 @@
         [attr.data-type]="'hours'">{{label}}</span>
       <div
         class="annotation-mask"
-        [style.width]="barHeight(dataSet.hourlySummary.values[parseLabel(label)],dataSet.hourlySummary.max)"></div>
+        [style.width]="barHeight(
+        dataSet.hourlySummary.annotations.values[parseLabel(label)]
+        ,dataSet.hourlySummary.annotations.max)"></div>
     </div>
     <div class="total-label">Total</div>
   </div>
@@ -33,7 +35,9 @@
             <div class="day-of-month">{{day.date.format('DD')}}</div>
             <div
               class="annotation-mask"
-              [style.height]="barHeight(dataSet.dailySummary.values[day.date.day()], dataSet.dailySummary.max)"></div>
+              [style.height]="barHeight(
+              dataSet.dailySummary.annotations.values[day.date.day()],
+              dataSet.dailySummary.annotations.max)"></div>
           </div>
           <div
             class="hour selectable"

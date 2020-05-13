@@ -1,6 +1,7 @@
 import {CalendarDetails, DataDate, marker} from '../models';
 import {ScaleSequential, min, max} from 'd3';
 import {timeFrameSeparator} from './extended-moment';
+import {Moment} from 'moment';
 
 export function mark(element: HTMLElement): void {
   element.classList.add(marker);
@@ -50,3 +51,9 @@ export function hoursFromDetails(map: CalendarDetails): Array<string> {
   const end = max(result);
   return Array(end - start + 1).fill(0).map((_, index) => pad(start + index));
 }
+
+export function  isWeekEnd(day: Moment): boolean {
+  return day.weekday() === 0 || day.weekday() === 6;
+}
+
+

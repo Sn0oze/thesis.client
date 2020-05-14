@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {AnnotationMap, Category, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
+import {AnnotationMap, AnnotationSummary, Category, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
 import {dateFormat, hourFormat, isWeekEnd, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {ANNOTATIONS_KEY} from '../constants';
@@ -185,18 +185,18 @@ export class DataService {
   updateTotals(timeFrames: Array<string>, dataset: DataSet, category: Category): void {
     timeFrames.forEach(dateString => {
       const date = moment(dateString, timeFrameFormat);
-      const dayIndex = date.day();
-      const hourIndex = date.hour();
-      dataset.dailySummary.annotations.values[dayIndex] += 1;
-      dataset.hourlySummary.annotations.values[hourIndex] += 1;
-      if (category) {
-        const dayMap = dataset.dailySummary.annotations.stacked[dayIndex];
-        dayMap.set(category.name, dayMap.get(category.name) + 1);
-        const hourMap = dataset.hourlySummary.annotations.stacked[hourIndex];
-        hourMap.set(category.name, dayMap.get(category.name) + 1);
-      }
+      this.incrementAnnotation(dataset.dailySummary.annotations, date.day(), category);
+      this.incrementAnnotation(dataset.hourlySummary.annotations, date.hour(), category);
     });
     this.updateAnnotationMax(dataset);
+  }
+
+  incrementAnnotation(summary: AnnotationSummary, index: number, category: Category): void {
+    summary.values[index] += 1;
+    if (category) {
+      const map = summary.stacked[index];
+      map.set(category.name, map.get(category.name) + 1);
+    }
   }
 
   updateAnnotationMax(dataset: DataSet): void {

@@ -3,5 +3,8 @@
   <a mat-button routerLink="calendar">Calendar</a>
   <a mat-button routerLink="gestures">Gestures</a>
   <app-annotation-import></app-annotation-import>
+  <button mat-icon-button (click)="toggleBars()">
+    <mat-icon>bar_chart</mat-icon>
+  </button>
 </mat-toolbar>
 <router-outlet></router-outlet>

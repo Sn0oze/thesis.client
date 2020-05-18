@@ -10,6 +10,7 @@ import * as hammer from 'hammerjs';
 import {MatButtonModule} from '@angular/material/button';
 import {HttpClientModule} from '@angular/common/http';
 import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig} from '@angular/material/snack-bar';
+import {MatIconModule} from '@angular/material/icon';
 
 @Injectable()
 class HammerConfig extends HammerGestureConfig {
@@ -22,16 +23,17 @@ class HammerConfig extends HammerGestureConfig {
   declarations: [
     AppComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    VisualisationsModule,
-    HammerModule,
-    MatButtonModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        VisualisationsModule,
+        HammerModule,
+        MatButtonModule,
+        HttpClientModule,
+        MatIconModule
+    ],
   providers: [
     {
       provide: HAMMER_GESTURE_CONFIG,

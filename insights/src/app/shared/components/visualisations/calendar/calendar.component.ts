@@ -13,24 +13,23 @@ import {
   ObservationsMap,
   SelectionType
 } from '../../../models';
-import {scaleSequential, interpolateOrRd, min, max, ScaleSequential} from 'd3';
+import {scaleSequential, interpolateOrRd, max, ScaleSequential} from 'd3';
 import {OptionsWheelService} from '../../options-wheel/options-wheel.service';
 import {CELL_WIDTH} from '../../../constants';
 import {WheelActionService} from '../../options-wheel/wheel-action.service';
 import {Subscription} from 'rxjs';
 import {
+  CurrentSelection,
   dateFormat,
   getColor,
   getElement,
   getTextColor,
   isSelectable,
   mark,
-  moment, pad,
   parseDate,
-  timeFrameFormat,
-  unmark
 } from '../../../utils';
 import {CategoryService} from '../../../services/category.service';
+import {SettingsService} from '../../../services/settings.service';
 
 @Component({
   selector: 'app-calendar',
@@ -47,7 +46,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   @Input() mode: Mode;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
   @ViewChild('calendar') calendarRef: ElementRef<HTMLElement>;
-  subscription: Subscription;
+  radialActions: Subscription;
+  settings: Subscription;
+  showBars: boolean;
   scrollElement: HTMLElement;
   calendarElement: HTMLElement;
   labels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00',
@@ -56,7 +57,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   max: number;
   readonly cellWidth = CELL_WIDTH;
   readonly min = 0;
-  currentSelection = new Set<HTMLElement>();
+  current = new CurrentSelection();
   currentType: SelectionType;
   hammer: HammerManager;
   hourScale = scaleSequential(interpolateOrRd);
@@ -66,7 +67,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     private zone: NgZone,
     private wheel: OptionsWheelService,
     private actions: WheelActionService,
-    private categories: CategoryService
+    private categories: CategoryService,
+    private appSettings: SettingsService,
   ) {}
 
   ngOnInit(): void {
@@ -76,7 +78,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     const totalMax = max(this.dataSet.days.map(day => day.total));
     this.totalScale.domain([1, totalMax]);
 
-    this.subscription = this.actions.action.subscribe(next => {
+    this.settings = this.appSettings.bars.subscribe(value => this.showBars = value);
+
+    this.radialActions = this.actions.action.subscribe(next => {
       switch (next.action) {
         case 'trim':
           this.trim();
@@ -128,7 +132,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.radialActions.unsubscribe();
+    this.settings.unsubscribe();
   }
 
   colorBackground(value: number, scale: ScaleSequential<string>): string {
@@ -140,8 +145,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
 
   onTap(event): void {
     const element = event.target as HTMLElement;
-    if (this.currentSelection.size) {
-      if (!this.currentSelection.has(element)) {
+    if (this.current.selection.size) {
+      if (!this.current.selection.has(element)) {
         this.clearSelection();
       }
     }
@@ -170,9 +175,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   onPanEnd(event): void {
-    if (this.currentSelection.size) {
+    if (this.current.selection.size) {
       if (this.currentType === 'hour') {
-        this.fillSelection(Array.from(this.currentSelection));
+        this.fillSelection(Array.from(this.current.selection));
       }
       this.zone.run(() => {
         const hasObservations = this.hasObservations();
@@ -212,12 +217,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     const element = getElement(event);
     if (element && isSelectable(element)) {
       const type = element.dataset.type as SelectionType;
-      if (!this.currentSelection.size) {
+      if (!this.current.selection.size) {
         this.currentType = type;
       }
       if (type === this.currentType) {
-        if (!this.currentSelection.has(element)) {
-          this.currentSelection.add(element);
+        if (!this.current.selection.has(element)) {
+          this.current.selection.add(element);
           mark(element);
         }
       }
@@ -225,25 +230,13 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   clearSelection(): void {
-    this.currentSelection.forEach(element => {
-     unmark(element);
-    });
-    this.currentSelection.clear();
+    this.current.clear();
     this.currentType = null;
     this.wheel.close();
   }
 
   trim(): void {
-    if (this.currentSelection.size) {
-      this.currentSelection.forEach(element => {
-        const date = parseDate(element.dataset.date);
-        const hasObservations = this.dataSet.mappings.get(date.month)?.get(date.day)?.has(date.hour);
-        if (!hasObservations) {
-          this.currentSelection.delete(element);
-          unmark(element);
-        }
-      });
-    }
+    this.current.trim(this.dataSet);
   }
 
   selectedObservations(): ObservationsMap {
@@ -259,7 +252,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     return data;
   }
   hasObservations(): boolean {
-    return Array.from(this.currentSelection).some(element => this.getObservations(parseDate(element.dataset.date))?.length);
+    return Array.from(this.current.selection).some(element => this.getObservations(parseDate(element.dataset.date))?.length);
   }
 
   getObservations(date: DataDate): Array<Observation> {
@@ -267,26 +260,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   fillSelection(elements: Array<HTMLElement>): void {
-    const data = new Map<string, Array<number>>();
-    // build map of all selected hour grouped by day
-    elements.forEach(element => {
-      const date = parseDate(element.dataset.date);
-      const hour = parseInt(date.hour, 10);
-      data.has(date.day) ? data.get(date.day).push(hour) : data.set(date.day, [hour]);
-    });
-
-    // fill in each day
-    data.forEach((hours, day) => {
-      const start = min(hours);
-      const end = max(hours);
-      for (let i = start + 1; i < end; i++) {
-        // hours from 0-9 have to be zero padded
-        const selector = `[data-date="${day}:${pad(i)}"]`;
-        const element = document.querySelector(selector) as HTMLElement;
-        this.currentSelection.add(element);
-        mark(element);
-      }
-    });
+    this.current.fillSelection(elements);
   }
 
   hasAnnotationType(day: DayNest, hour: string, type: 'categories' | 'notes'): boolean {
@@ -301,11 +275,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
 
   selectedDates(sorted= true): Array<string> {
-    const dates = Array.from(this.currentSelection).map(element => element.dataset.date);
-    if (sorted) {
-      dates.sort((a, b) => moment(a, timeFrameFormat).unix() - moment(b, timeFrameFormat).unix());
-    }
-    return dates;
+    return this.current.selectedDates(sorted);
   }
 
   selectedWithAnnotations(): Array<string> {

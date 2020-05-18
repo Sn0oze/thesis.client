@@ -54,6 +54,7 @@ $padding-total: .75rem;
     width: $hour-label-width * 2;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
   }
   .hour-label-bar{
     width: $hour-label-width;

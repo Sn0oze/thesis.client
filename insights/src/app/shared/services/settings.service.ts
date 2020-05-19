@@ -6,8 +6,8 @@ import {BARS_KEY} from '../constants';
   providedIn: 'root'
 })
 export class SettingsService {
-  bars = new BehaviorSubject<boolean>(!!localStorage.getItem(BARS_KEY));
-  constructor() { }
+  bars = new BehaviorSubject<boolean>(localStorage.getItem(BARS_KEY) === 'true');
+  constructor() {}
 
   toggle(): void {
     const value = !this.bars.value;

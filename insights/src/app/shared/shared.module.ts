@@ -24,6 +24,7 @@ import { CategoryComponent } from './components/category/category.component';
 import { AnnotationImportComponent } from './components/annotation-import/annotation-import.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { SummaryCalendarComponent } from './components/visualisations/summary-calendar/summary-calendar.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     DialogHeaderComponent,
     NoteComponent,
     CategoryComponent,
-    AnnotationImportComponent
+    AnnotationImportComponent,
+    SummaryCalendarComponent
   ],
   imports: [
     CommonModule,
@@ -71,7 +73,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     ObservationToggleComponent,
     NoteComponent,
     CategoryComponent,
-    AnnotationImportComponent
+    AnnotationImportComponent,
+    SummaryCalendarComponent
   ],
 })
 export class SharedModule { }

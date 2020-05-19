@@ -1,0 +1,69 @@
+<!--suppress AngularUndefinedBinding -->
+<div class="summary-calendar" #summaryCalendar>
+  <div class="hour-labels">
+    <div class="hour-label-row" *ngFor="let label of hours; let bottom = last">
+      <div class="annotation-bar-container">
+        <div
+          *ngFor="let item of toList(dataSet.hourlySummary.annotations, parseLabel(label))"
+          class="bar"
+          [style.background-color]="item.color"
+          [style.right]="item.position"
+          [style.width]="item.height"></div>
+      </div>
+      <div class="observation-bar-container">
+        <div
+          class="bar"
+          [style.width]="barHeight(
+          dataSet.hourlySummary.observations.values[parseLabel(label)]
+          ,dataSet.hourlySummary.observations.max)"></div>
+      </div>
+      <div class="hour-label">
+        <span
+          class="selectable2"
+          [attr.data-date]="label"
+          [attr.data-type]="'hours'">{{label + ':00'}}</span>
+        <span
+          *ngIf="bottom"
+          class="selectable2"
+          [attr.data-date]="label"
+          [attr.data-type]="'hours'">00:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="calendar-content">
+    <div class="days">
+      <div class="day" *ngFor="let day of week" [ngClass]="{'weekend': day.isWeekend}">
+        <div class="day-label-bar">
+          <div class="annotation-bar-container">
+            <div
+              *ngFor="let item of toList(dataSet.dailySummary.annotations, day.date.day())"
+              class="bar"
+              [style.background-color]="item.color"
+              [style.bottom]="item.position"
+              [style.height]="item.height"></div>
+          </div>
+          <div class="observation-bar-container">
+            <div
+              class="bar"
+              [style.height]="barHeight(
+                dataSet.dailySummary.observations.values[day.date.day()],
+                dataSet.dailySummary.observations.max)"></div>
+          </div>
+        </div>
+        <div
+          class="day-label selectable2"
+          [ngClass]="{'weekend': day.isWeekend}"
+          [attr.data-date]="day.date.format('DD-MM-YYYY')"
+          [attr.data-type]="'day'">
+          <div class="day-of-week">{{day.date.format('ddd')}}</div>
+        </div>
+        <div
+          class="hour selectable2"
+          *ngFor="let hour of hours"
+          [attr.data-date]="day.date.format('DD-MM-YYYY') + ':' + hour"
+          [attr.data-type]="'hour'">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -29,7 +29,6 @@ import {
   parseDate,
 } from '../../../utils';
 import {CategoryService} from '../../../services/category.service';
-import {SettingsService} from '../../../services/settings.service';
 
 @Component({
   selector: 'app-calendar',
@@ -44,11 +43,10 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   @Output() selectOption = new EventEmitter<void>();
   @Input() dataSet: DataSet;
   @Input() mode: Mode;
+  @Input() showBars: boolean;
   @ViewChild('scroll') scrollRef: ElementRef<HTMLElement>;
   @ViewChild('calendar') calendarRef: ElementRef<HTMLElement>;
   radialActions: Subscription;
-  settings: Subscription;
-  showBars: boolean;
   scrollElement: HTMLElement;
   calendarElement: HTMLElement;
   labels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00',
@@ -67,8 +65,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
     private zone: NgZone,
     private wheel: OptionsWheelService,
     private actions: WheelActionService,
-    private categories: CategoryService,
-    private appSettings: SettingsService,
+    private categories: CategoryService
   ) {}
 
   ngOnInit(): void {
@@ -77,8 +74,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
 
     const totalMax = max(this.dataSet.days.map(day => day.total));
     this.totalScale.domain([1, totalMax]);
-
-    this.settings = this.appSettings.bars.subscribe(value => this.showBars = value);
 
     this.radialActions = this.actions.action.subscribe(next => {
       switch (next.action) {
@@ -133,7 +128,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
 
   ngOnDestroy(): void {
     this.radialActions.unsubscribe();
-    this.settings.unsubscribe();
   }
 
   colorBackground(value: number, scale: ScaleSequential<string>): string {

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   Annotation,
   AnnotationDetails,
@@ -18,6 +18,8 @@ import {FilterDialogComponent} from './filter-dialog/filter-dialog.component';
 import {moment, parseDate} from '../../shared/utils';
 import {CategoryService} from '../../shared/services/category.service';
 import {ViewDialogComponent} from './view-dialog/view-dialog.component';
+import {Subscription} from 'rxjs';
+import {SettingsService} from '../../shared/services/settings.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -25,7 +27,7 @@ import {ViewDialogComponent} from './view-dialog/view-dialog.component';
   styleUrls: ['./calendar-view.component.scss'],
 })
 
-export class CalendarViewComponent implements OnInit {
+export class CalendarViewComponent implements OnInit, OnDestroy {
   @ViewChild('canvas') canvas: DrawCanvasComponent;
   modes = ['select', 'draw'] as Mode[];
   mode = this.modes[0] as Mode;
@@ -33,11 +35,14 @@ export class CalendarViewComponent implements OnInit {
   colors: Array<string>;
   width: string;
   dataSet: DataSet;
+  settings: Subscription;
+  showBars: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private categories: CategoryService
+    private categories: CategoryService,
+    private appSettings: SettingsService,
   ) { }
 
   ngOnInit(): void {
@@ -46,6 +51,11 @@ export class CalendarViewComponent implements OnInit {
     this.colors = this.categories.getCategories().map(category => category.color);
     this.colors.unshift(this.color);
     this.dataSet = this.route.parent.snapshot.data.dataSet;
+    this.settings = this.appSettings.bars.subscribe(value => this.showBars = value);
+  }
+
+  ngOnDestroy() {
+    this.settings.unsubscribe();
   }
 
   isDrawMode(): boolean {

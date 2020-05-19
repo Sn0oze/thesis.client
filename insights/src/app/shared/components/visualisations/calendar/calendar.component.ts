@@ -118,9 +118,9 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   }
   ngOnChanges(changes: SimpleChanges): void {
     const newMode = changes.mode;
-    if (newMode && this.scrollElement && newMode.currentValue === 'select') {
+    if (newMode && this.scrollElement && newMode.currentValue as Mode === 'select' ) {
       this.addListeners();
-    } else {
+    } else if (newMode && newMode.currentValue as Mode === 'draw') {
       this.removeListeners();
       this.clearSelection();
     }

@@ -199,7 +199,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnChanges, OnDe
   removeListeners(): void {
     if (this.hammer) {
       this.hammer.off('tap', this.onTap);
-      this.hammer.off('press', this.onTap);
+      this.hammer.off('press', this.onPress);
       this.hammer.off('panstart', this.onPanStart);
       this.hammer.off('pan', this.onPan);
       this.hammer.off('panend', this.onPanEnd);

@@ -214,8 +214,7 @@ export class DataService {
     return existing ? this.jsonToMap(existing) : new Map();
   }
   saveToStorage(stringified: string, compressed = true): void {
-    const trimmed = stringified.replace(/\s/g, '');
-    const value = compressed ? this.compress(trimmed) : trimmed;
+    const value = compressed ? this.compress(stringified) : stringified;
     localStorage.setItem(ANNOTATIONS_KEY, value);
   }
 

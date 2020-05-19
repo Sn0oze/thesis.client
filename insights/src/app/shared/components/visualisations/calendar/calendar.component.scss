@@ -46,7 +46,7 @@ $padding-total: .75rem;
   touch-action: none;
   padding-top: calc(#{$month-label-height +  $cell-height * 2} + #{$border-width});
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
   flex-direction: column;
   width: $hour-label-width * 2;

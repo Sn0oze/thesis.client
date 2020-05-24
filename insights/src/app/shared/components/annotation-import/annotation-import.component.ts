@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {DataService} from '../../services/data.service';
 import {Clipboard} from '@angular/cdk/clipboard';
+import {AnnotationService} from '../../services/annotation.service';
 
 @Component({
   selector: 'app-annotation-import',
@@ -13,33 +13,33 @@ export class AnnotationImportComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
-    private data: DataService,
+    private annotations: AnnotationService,
     private clipboard: Clipboard
   ) { }
   form: FormGroup;
   hasAnnotations: boolean;
-  annotations: string;
+  stringified: string;
 
   ngOnInit(): void {
-    this.annotations = this.data.loadFromStorage();
-    this.hasAnnotations = !!this.annotations;
+    this.stringified = this.annotations.loadFromStorage();
+    this.hasAnnotations = !!this.stringified;
     this.form = this.fb.group({
       json: ['', Validators.required]
     });
   }
 
   copy(): void {
-    this.clipboard.copy(this.annotations);
+    this.clipboard.copy(this.stringified);
     this.snackbar.open('Copied to clipboard', 'close');
   }
 
   submit(): void {
     if (this.form.valid) {
-      const stringified = this.data.decompress(this.form.value.json);
+      const stringified = this.annotations.decompress(this.form.value.json);
       try {
         JSON.parse(stringified);
-        this.data.saveToStorage(stringified);
-        const snackRef = this.snackbar.open('Imported data ...', 'close', {duration: 500});
+        this.annotations.saveToStorage(stringified);
+        const snackRef = this.snackbar.open('Data imported! ...', 'close');
         snackRef.afterDismissed().subscribe(() => window.location.reload());
       } catch {
         this.form.reset();

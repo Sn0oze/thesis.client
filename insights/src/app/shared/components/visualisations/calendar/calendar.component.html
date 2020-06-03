@@ -2,14 +2,6 @@
 <div class="calendar" #calendar>
   <div class="hour-labels">
     <div class="hour-label-group" *ngFor="let label of labels; let bottom = last">
-      <div class="hour-label-bar" *ngIf="showBars">
-        <div
-          *ngFor="let item of toList(dataSet.hourlySummary.annotations, parseLabel(label))"
-          class="annotation-mask"
-          [style.background-color]="item.color"
-          [style.right]="item.position"
-          [style.width]="item.height"></div>
-      </div>
       <div class="hour-label">
       <span
         class="selectable"
@@ -20,12 +12,6 @@
           class="selectable"
           [attr.data-date]="label"
           [attr.data-type]="'hours'">00:00</span>
-        <div
-          *ngIf="showBars"
-          class="observation-mask"
-          [style.width]="barHeight(
-          dataSet.hourlySummary.observations.values[parseLabel(label)]
-          ,dataSet.hourlySummary.observations.max)"></div>
       </div>
     </div>
     <div class="total-label">Total</div>
@@ -49,20 +35,6 @@
             [attr.data-type]="'day'">
             <div class="day-of-week">{{day.date.format('ddd')}}</div>
             <div class="day-of-month">{{day.date.format('DD')}}</div>
-            <div class="day-label-bar" *ngIf="showBars">
-              <div
-                *ngFor="let item of toList(dataSet.dailySummary.annotations, day.date.day())"
-                class="annotation-mask"
-                [style.background-color]="item.color"
-                [style.bottom]="item.position"
-                [style.height]="item.height"></div>
-            </div>
-            <div
-              *ngIf="showBars"
-              class="observation-mask"
-              [style.height]="barHeight(
-              dataSet.dailySummary.observations.values[day.date.day()],
-              dataSet.dailySummary.observations.max)"></div>
           </div>
           <div
             class="hour selectable"

@@ -25,15 +25,6 @@ $padding-total: .75rem;
   width: $cell-width;
 }
 
-.bar{
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background-color: #2a3f6c;
-  pointer-events: none;
-  opacity: .35;
-}
-
 .calendar{
   display: flex;
   flex-direction: row;
@@ -49,22 +40,11 @@ $padding-total: .75rem;
   align-items: flex-end;
   justify-content: flex-start;
   flex-direction: column;
-  width: $hour-label-width * 2;
+  width: $hour-label-width;
   .hour-label-group{
-    width: $hour-label-width * 2;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-  }
-  .hour-label-bar{
-    width: $hour-label-width;
-    position: relative;
-    border: 1px solid transparent;
-    .annotation-mask{
-      @extend .bar;
-      top: 0;
-      right: 0;
-    }
   }
   .hour-label{
     width: $hour-label-width;
@@ -86,11 +66,6 @@ $padding-total: .75rem;
       &:nth-child(2){
         top: $cell-height - $hour-label-size / 2;
       }
-    }
-    .observation-mask{
-      @extend .bar;
-      top: 0;
-      left: 0;
     }
   }
 }
@@ -157,23 +132,6 @@ $padding-total: .75rem;
     .day-of-month{
       font-weight: 100;
       pointer-events: none;
-    }
-    .day-label-bar{
-      height: 42px;
-      position: absolute;
-      top: -42px;
-      border-bottom: 2px solid transparent;
-      width: 100%;
-      .annotation-mask{
-        @extend .bar;
-        bottom: 0;
-        left: 0;
-      }
-    }
-    .observation-mask{
-      @extend .bar;
-      top: 0;
-      left: 0;
     }
   }
   &.weekend{

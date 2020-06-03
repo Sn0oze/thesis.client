@@ -9,13 +9,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  AnnotationSummary,
+  CategorySummary,
   CalendarSelection,
   CategoryBar,
   DataDate,
   DataSet, DayNest,
   Observation,
-  SelectionType
+  SelectionType, BaseSummary
 } from '../../../models';
 import {
   CurrentSelection,
@@ -156,6 +156,11 @@ export class SummaryCalendarComponent implements OnInit, AfterViewInit {
     return annotation ? annotation[type]?.length > 0 : false;
   }
 
+  hasCategories(day: number, hour: string): boolean {
+    return this.dataSet.hourlySummary.categories.values[this.parseLabel(hour)] > 0 &&
+      this.dataSet.dailySummary.categories.values[day] > 0;
+  }
+
   categoryColor(day: DayNest, hour: string): string {
     const date = day.date.format(dateFormat);
     return this.dataSet.annotations.get(date).get(hour).categories[0].color;
@@ -193,7 +198,7 @@ export class SummaryCalendarComponent implements OnInit, AfterViewInit {
     return total > 0 ? ((fraction || 0) / total) : 0;
   }
 
-  toList(summary: AnnotationSummary, index: number): Array<CategoryBar> {
+  toList(summary: CategorySummary, index: number): Array<CategoryBar> {
     const total = summary.max;
     const stacked = Array.from(summary.stacked[index]).map(
       ([k, v]) => ({color: this.categories.colorByName(k), value: v})
@@ -208,5 +213,10 @@ export class SummaryCalendarComponent implements OnInit, AfterViewInit {
       position += height;
     });
     return stacked;
+  }
+
+  bubbleSize(data: BaseSummary, key: number): string {
+    const size = data.values[key] / data.max;
+    return `${size}rem`;
   }
 }

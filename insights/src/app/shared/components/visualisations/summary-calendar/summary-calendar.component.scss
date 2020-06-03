@@ -45,12 +45,14 @@ $marker-offset: 2px;
   user-select: none;
   touch-action: none;
   overflow: hidden;
-  padding: 1rem;
+  padding: .5rem;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
   .hour-labels{
     touch-action: none;
-    padding-top: calc(#{$cell-height} + #{$border-width} + #{$day-label-padding * 2} + #{$hour-label-width * 2});
+    padding-top: calc(
+      #{$cell-height} + #{$border-width} + #{$day-label-padding * 2} + #{$hour-label-width * 2} + #{$cell-width}
+    );
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -181,7 +183,7 @@ $marker-offset: 2px;
     width: 8px;
     bottom: 0;
     left: 0;
-    background-color: #a5a5a5;
+    // background-color: red;
     opacity: .6;
     &.full{
       width: 100%;
@@ -193,5 +195,26 @@ $marker-offset: 2px;
     position: relative;
   }
 }
+.bubble-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &.horizontal{
+    height: $cell-width;
+    width: $cell-width;
+  }
+  &.vertical{
+    height: $cell-height;
+    width: $cell-height;
+  }
+}
 
+$bubble-width: .5rem;
+.bubble{
+  width: $bubble-width;
+  height: $bubble-width;
+  display: inline-block;
+  border-radius: 50%;
+  background-color: black;
+}
 

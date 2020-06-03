@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import {Observable} from 'rxjs';
-import {AnnotationMap, AnnotationSummary, Category, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
+import {AnnotationMap, CategorySummary, Category, DataMap, DataSet, DayNest, Observation, Summary} from '../models';
 import {dateFormat, hourFormat, isWeekEnd, moment, monthFormat, timeFrameFormat} from '../utils';
 import {Moment} from 'moment';
 import {CategoryService} from './category.service';
@@ -115,23 +115,26 @@ export class DataService {
           months: calendarData,
           annotations: this.initAnnotations(),
           dailySummary: {
-            annotations: {
+            categories: {
               max: 0,
               values: Array(DAYS_PER_WEEK).fill(0),
               stacked: Array(DAYS_PER_WEEK).fill(null).map(() => this.initStackedCategories())
             },
-            observations: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)}
+            observations: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)},
+            notes: {max: 0, values: Array(DAYS_PER_WEEK).fill(0)}
           } as Summary,
           hourlySummary: {
-            annotations: {
+            categories: {
               max: 0,
               values: Array(HOURS_PER_DAY).fill(0),
               stacked: Array(HOURS_PER_DAY).fill(null).map(() => this.initStackedCategories())
             },
-            observations: {max: 0, values: Array(HOURS_PER_DAY).fill(0)}
+            observations: {max: 0, values: Array(HOURS_PER_DAY).fill(0)},
+            notes: {max: 0, values: Array(HOURS_PER_DAY).fill(0)}
           } as Summary,
           save: this.saveAnnotations.bind(this),
-          updateTotals: this.updateTotals.bind(this)
+          updateTotals: this.updateTotals.bind(this),
+          updateNoteTotals: this.updateNoteTotals.bind(this)
         };
         this.summarize(dataSet);
         observer.next(dataSet);
@@ -153,14 +156,17 @@ export class DataService {
         const hourIndex = parseInt(hour, 10);
         const annotation = annotationsMap.get(day).get(hour);
         const total = annotation.categories.length; // + annotation.notes.length;
+        const noteCount = annotation.notes.length; // + annotation.notes.length;
         annotation.categories.forEach(category => {
-          const dayMap = dataset.dailySummary.annotations.stacked[dayIndex];
+          const dayMap = dataset.dailySummary.categories.stacked[dayIndex];
           dayMap.set(category.name, dayMap.get(category.name) + 1);
-          const hourMap = dataset.hourlySummary.annotations.stacked[hourIndex];
+          const hourMap = dataset.hourlySummary.categories.stacked[hourIndex];
           hourMap.set(category.name, hourMap.get(category.name) + 1);
         });
-        dataset.dailySummary.annotations.values[dayIndex] += total;
-        dataset.hourlySummary.annotations.values[hourIndex] += total;
+        dataset.dailySummary.categories.values[dayIndex] += total;
+        dataset.hourlySummary.categories.values[hourIndex] += total;
+        dataset.dailySummary.notes.values[dayIndex] += noteCount;
+        dataset.hourlySummary.notes.values[hourIndex] += noteCount;
       });
     });
     observedMonths.forEach(month => {
@@ -174,8 +180,10 @@ export class DataService {
       });
     });
     this.updateAnnotationMax(dataset);
+    this.updateNoteMax(dataset);
     dataset.dailySummary.observations.max = d3.max(dataset.dailySummary.observations.values);
     dataset.hourlySummary.observations.max = d3.max(dataset.hourlySummary.observations.values);
+    console.log(dataset);
   }
 
   initStackedCategories(): Map<string, number> {
@@ -187,13 +195,22 @@ export class DataService {
   updateTotals(timeFrames: Array<string>, dataset: DataSet, category: Category): void {
     timeFrames.forEach(dateString => {
       const date = moment(dateString, timeFrameFormat);
-      this.incrementAnnotation(dataset.dailySummary.annotations, date.day(), category);
-      this.incrementAnnotation(dataset.hourlySummary.annotations, date.hour(), category);
+      this.incrementAnnotation(dataset.dailySummary.categories, date.day(), category);
+      this.incrementAnnotation(dataset.hourlySummary.categories, date.hour(), category);
     });
     this.updateAnnotationMax(dataset);
   }
 
-  incrementAnnotation(summary: AnnotationSummary, index: number, category: Category): void {
+  updateNoteTotals(timeFrames: Array<string>, dataset: DataSet): void {
+    timeFrames.forEach(dateString => {
+      const date = moment(dateString, timeFrameFormat);
+      dataset.dailySummary.notes.values[date.day()] += 1;
+      dataset.hourlySummary.notes.values[date.hour()] += 1;
+    });
+    this.updateNoteMax(dataset);
+  }
+
+  incrementAnnotation(summary: CategorySummary, index: number, category: Category): void {
     summary.values[index] += 1;
     if (category) {
       const map = summary.stacked[index];
@@ -201,9 +218,14 @@ export class DataService {
     }
   }
 
+  updateNoteMax(dataset: DataSet): void {
+    dataset.dailySummary.notes.max = d3.max(dataset.dailySummary.notes.values);
+    dataset.hourlySummary.notes.max = d3.max(dataset.hourlySummary.notes.values);
+  }
+
   updateAnnotationMax(dataset: DataSet): void {
-    dataset.dailySummary.annotations.max = d3.max(dataset.dailySummary.annotations.values);
-    dataset.hourlySummary.annotations.max = d3.max(dataset.hourlySummary.annotations.values);
+    dataset.dailySummary.categories.max = d3.max(dataset.dailySummary.categories.values);
+    dataset.hourlySummary.categories.max = d3.max(dataset.hourlySummary.categories.values);
   }
 
   saveAnnotations(dataset: DataSet): void {

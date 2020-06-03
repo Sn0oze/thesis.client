@@ -17,6 +17,7 @@ export interface DataSet {
   hourlySummary: Summary;
   save: (dataset: DataSet) => void;
   updateTotals: (timeFrames: Array<string>, dataset: DataSet, category?: Category) => void;
+  updateNoteTotals: (timeFrames: Array<string>, dataset: DataSet) => void;
 }
 
 export interface DayNest {
@@ -49,20 +50,19 @@ export interface Note {
   body: string;
 }
 
-export interface AnnotationSummary {
-  max: number;
-  values: Array<number>;
+export interface CategorySummary extends BaseSummary {
   stacked?: Array<Map<string, number>>;
 }
 
-export interface ObservationSummary {
+export interface BaseSummary {
   max: number;
   values: Array<number>;
 }
 
 export interface Summary {
-  annotations: AnnotationSummary;
-  observations: ObservationSummary;
+  categories: CategorySummary;
+  notes: BaseSummary;
+  observations: BaseSummary;
 }
 
 export type DataMap = Map<string, Map<string, Map<string, Array<Observation>>>>;

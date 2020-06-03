@@ -81,7 +81,7 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
           body
         } as Note;
         this.addAnnotations(selection.entries, note, 'notes');
-        // this.dataSet.updateTotals(selection.entries, this.dataSet);
+        this.dataSet.updateNoteTotals(selection.entries, this.dataSet);
         this.dataSet.save(this.dataSet);
       }
     });

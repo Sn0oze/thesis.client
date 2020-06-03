@@ -1,10 +1,16 @@
 <!--suppress AngularUndefinedBinding -->
-<div class="summary-calendar" #summaryCalendar>
+<div class="summary-calendar mr-3" #summaryCalendar>
   <div class="hour-labels">
     <div class="hour-label-row" *ngFor="let label of hours; let bottom = last">
+      <div class="bubble-container vertical">
+        <div
+          [style.width]="bubbleSize(dataSet.hourlySummary.notes, parseLabel(label))"
+          [style.height]="bubbleSize(dataSet.hourlySummary.notes, parseLabel(label))"
+          class="bubble"></div>
+      </div>
       <div class="annotation-bar-container">
         <div
-          *ngFor="let item of toList(dataSet.hourlySummary.annotations, parseLabel(label))"
+          *ngFor="let item of toList(dataSet.hourlySummary.categories, parseLabel(label))"
           class="bar"
           [style.background-color]="item.color"
           [style.right]="item.position"
@@ -32,11 +38,17 @@
   </div>
   <div class="calendar-content">
     <div class="days">
-      <div class="day" *ngFor="let day of week" [ngClass]="{'weekend': day.isWeekend}">
+      <div class="day" *ngFor="let day of week">
         <div class="day-label-bar">
+          <div class="bubble-container horizontal">
+            <div
+              class="bubble"
+              [style.width]="bubbleSize(dataSet.dailySummary.notes, day.date.day())"
+              [style.height]="bubbleSize(dataSet.dailySummary.notes, day.date.day())"></div>
+          </div>
           <div class="annotation-bar-container">
             <div
-              *ngFor="let item of toList(dataSet.dailySummary.annotations, day.date.day())"
+              *ngFor="let item of toList(dataSet.dailySummary.categories, day.date.day())"
               class="bar"
               [style.background-color]="item.color"
               [style.bottom]="item.position"
@@ -62,6 +74,7 @@
           *ngFor="let hour of hours"
           [attr.data-date]="day.date.format('DD-MM-YYYY') + ':' + hour"
           [attr.data-type]="'hour'">
+          <div *ngIf="hasCategories(day.date.day(), hour)" class="category-marker full"></div>
         </div>
       </div>
     </div>

@@ -139,7 +139,6 @@ export class Timeline {
       dailyTotals.set(day, dailyTotal);
       dailyMax = dailyTotal > dailyMax ? dailyTotal : dailyMax;
     });
-    console.log(dailyTotals);
     this.svg.selectAll('.bubble')
       .data(annotatedDays)
       .enter().append('circle')

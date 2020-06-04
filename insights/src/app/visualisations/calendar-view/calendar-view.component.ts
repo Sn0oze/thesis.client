@@ -20,6 +20,7 @@ import {CategoryService} from '../../shared/services/category.service';
 import {ViewDialogComponent} from './view-dialog/view-dialog.component';
 import {Subscription} from 'rxjs';
 import {SettingsService} from '../../shared/services/settings.service';
+import {cloneDeep} from 'lodash';
 
 @Component({
   selector: 'app-calendar-view',
@@ -83,6 +84,7 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
         this.addAnnotations(selection.entries, note, 'notes');
         this.dataSet.updateNoteTotals(selection.entries, this.dataSet);
         this.dataSet.save(this.dataSet);
+        this.dataSet = cloneDeep(this.dataSet);
       }
     });
   }
@@ -91,6 +93,7 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
     this.addAnnotations(selected.selection.entries, selected.category, 'categories');
     this.dataSet.updateTotals(selected.selection.entries, this.dataSet, selected.category);
     this.dataSet.save(this.dataSet);
+    this.dataSet = cloneDeep(this.dataSet);
   }
 
   view(selection: CalendarSelection) {

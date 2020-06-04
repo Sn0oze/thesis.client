@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {DataSet, DayNest} from '../../models';
+import {DataSet} from '../../models';
 import {moment, dateFormat} from '../../utils';
 import {BehaviorSubject} from 'rxjs';
 import {CELL_WIDTH, SPACING_LEFT, SPACING_RIGHT} from '../../constants';
@@ -34,6 +34,7 @@ export class Timeline {
 
   constructor(private container: HTMLElement, private dataSet: DataSet) {
     this.init();
+    this.update.bind(this);
   }
 
   init(): void {
@@ -81,7 +82,7 @@ export class Timeline {
     const svgHeight = 150;
     const svgWidth = this.container.offsetWidth;
     this.span = Math.floor((svgWidth - SPACING_LEFT - SPACING_RIGHT) / CELL_WIDTH);
-    this.margin = {top: 8, right: 38, bottom: 20, left: 38};
+    this.margin = {top: 20, right: 38, bottom: 20, left: 38};
     this.width = svgWidth - this.margin.left - this.margin.right;
     this.height = svgHeight - this.margin.top - this.margin.bottom;
     this.svg
@@ -128,6 +129,25 @@ export class Timeline {
       .attr('y', d => this.yScale(d.total) + this.margin.top)
       .attr('height', d => this.height - this.yScale(d.total));
 
+    const annotatedDays = Array.from(this.dataSet.annotations.keys());
+    const dailyTotals = new Map<string, number>();
+    let dailyMax = 0;
+    annotatedDays.forEach(day => {
+      const dailyTotal = Array.from(this.dataSet.annotations.get(day).values()).reduce((total, hour) => {
+        return total + hour.categories.length + hour.notes.length;
+      }, 0);
+      dailyTotals.set(day, dailyTotal);
+      dailyMax = dailyTotal > dailyMax ? dailyTotal : dailyMax;
+    });
+    console.log(dailyTotals);
+    this.svg.selectAll('.bubble')
+      .data(annotatedDays)
+      .enter().append('circle')
+      .attr('class', 'bubble')
+      .attr('cx', d => this.xScale(d) + this.margin.left + this.scaleBubble(dailyTotals.get(d), dailyMax))
+      .attr('cy', this.margin.top / 2)
+      .attr('r', d => this.scaleBubble(dailyTotals.get(d), dailyMax));
+
     this.brushWidth = this.xScale(this.xScale.domain()[this.span]) -  this.xScale(this.xScale.domain()[0]);
     const start = this.xScale(this.xScale.domain()[index]);
     const max = index + this.span;
@@ -167,5 +187,15 @@ export class Timeline {
       .call(this.brush.move, x1 > X1 ? [X1 - dx, X1]
         : x0 < X0 ? [X0, X0 + dx]
           : [x0, x1]);
+  }
+
+  scaleBubble(daily: number, max: number): number {
+    const scaled = (this.xScale.bandwidth() / 2) * (daily / max);
+    return scaled > 1 ? scaled : 1;
+  }
+
+  update(data: DataSet): void {
+    this.dataSet = data;
+    this.draw();
   }
 }

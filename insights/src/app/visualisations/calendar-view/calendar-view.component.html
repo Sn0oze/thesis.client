@@ -1,7 +1,10 @@
 <!--suppress AngularUndefinedBinding -->
 <div class="container">
   <div class="mt-2">
-    <app-timeline [dataSet]="dataSet" (selected)="calendar.scrollTo($event.position)"></app-timeline>
+    <app-timeline
+      [dataSet]="dataSet"
+      [updatedAt]="updatedAt"
+      (selected)="calendar.scrollTo($event.position)"></app-timeline>
     <app-canvas-toolbar
       class="my-2"
       [isOpen]="isDrawMode()"

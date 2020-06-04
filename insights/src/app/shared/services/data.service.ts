@@ -183,7 +183,6 @@ export class DataService {
     this.updateNoteMax(dataset);
     dataset.dailySummary.observations.max = d3.max(dataset.dailySummary.observations.values);
     dataset.hourlySummary.observations.max = d3.max(dataset.hourlySummary.observations.values);
-    console.log(dataset);
   }
 
   initStackedCategories(): Map<string, number> {

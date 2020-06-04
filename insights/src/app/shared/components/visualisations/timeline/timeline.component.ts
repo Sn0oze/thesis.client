@@ -23,6 +23,7 @@ export class TimelineComponent implements OnInit, AfterViewInit, OnDestroy, OnCh
   @ViewChild('container') containerRef: ElementRef;
   @Input() dataSet: DataSet;
   @Output() selected = new EventEmitter<TimeSpan>();
+  @Input() updatedAt: number;
   container: HTMLElement;
   timeline: Timeline;
   subscription: Subscription;

@@ -27,9 +27,9 @@ export class CanvasSessionService {
   }
 
   loadFromStorage(): Array<Shape> {
-    const compressed = localStorage.getItem(CANVAS_SESSION_KEY);
+    const compressed = this.export();
     if (compressed) {
-      const stringified = compression.decompressFromUTF16(compressed);
+      const stringified = this.decompress(compressed);
       return JSON.parse(stringified) as Array<Shape>;
     } else {
       return [];
@@ -38,7 +38,27 @@ export class CanvasSessionService {
 
   saveToStorage(session: Array<Shape>): void {
     const stringified = JSON.stringify(session);
-    const compressed = compression.compressToUTF16(stringified);
+    const compressed = this.compress(stringified);
+    this.import(compressed);
+  }
+
+  compress(stringified: string): string {
+    return compression.compressToUTF16(stringified);
+  }
+
+  decompress(compressed: string): string {
+    return compression.decompressFromUTF16(compressed);
+  }
+
+  export(): string {
+    return localStorage.getItem(CANVAS_SESSION_KEY);
+  }
+
+  import(compressed: string): void {
     localStorage.setItem(CANVAS_SESSION_KEY, compressed);
+  }
+
+  clear(): void {
+    localStorage.removeItem(CANVAS_SESSION_KEY);
   }
 }

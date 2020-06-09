@@ -1,12 +1,12 @@
 <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-  <mat-icon>chat</mat-icon>
+  <mat-icon>gestures</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
   <div class="import-form-container" (click)="$event.stopPropagation()">
     <form class="import-form" [formGroup]="form" (ngSubmit)="submit()">
       <label>
         <mat-icon>publish</mat-icon>
-        <input formControlName="json" type="text" placeholder="Import Annotations" (blur)="submit()">
+        <input formControlName="compressed" type="text" placeholder="Import Shapes" (blur)="submit()">
       </label>
     </form>
   </div>
@@ -15,8 +15,7 @@
       (click)="copy()"
       mat-menu-item>
       <mat-icon svgIcon="content-copy"></mat-icon>
-      <span>Copy Annotations</span>
+      <span>Copy Shapes</span>
     </button>
   </div>
 </mat-menu>
-

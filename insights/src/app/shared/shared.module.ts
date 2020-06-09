@@ -26,6 +26,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { SummaryCalendarComponent } from './components/visualisations/summary-calendar/summary-calendar.component';
 import { AnnotationResetComponent } from './components/annotation-reset/annotation-reset.component';
+import { CanvasImportComponent } from './components/canvas-import/canvas-import.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { AnnotationResetComponent } from './components/annotation-reset/annotati
     CategoryComponent,
     AnnotationImportComponent,
     SummaryCalendarComponent,
-    AnnotationResetComponent
+    AnnotationResetComponent,
+    CanvasImportComponent
   ],
   imports: [
     CommonModule,
@@ -61,23 +63,24 @@ import { AnnotationResetComponent } from './components/annotation-reset/annotati
     ClipboardModule,
     MatSnackBarModule
   ],
-    exports: [
-        KeyboardAnnotationComponent,
-        StylusAnnotationComponent,
-        CalendarComponent,
-        SwipeCounterComponent,
-        DrawCanvasComponent,
-        CanvasToolbarComponent,
-        TimelineComponent,
-        OptionsWheelComponent,
-        MatMenuModule,
-        DialogHeaderComponent,
-        ObservationToggleComponent,
-        NoteComponent,
-        CategoryComponent,
-        AnnotationImportComponent,
-        SummaryCalendarComponent,
-        AnnotationResetComponent
-    ],
+  exports: [
+    KeyboardAnnotationComponent,
+    StylusAnnotationComponent,
+    CalendarComponent,
+    SwipeCounterComponent,
+    DrawCanvasComponent,
+    CanvasToolbarComponent,
+    TimelineComponent,
+    OptionsWheelComponent,
+    MatMenuModule,
+    DialogHeaderComponent,
+    ObservationToggleComponent,
+    NoteComponent,
+    CategoryComponent,
+    AnnotationImportComponent,
+    SummaryCalendarComponent,
+    AnnotationResetComponent,
+    CanvasImportComponent
+  ],
 })
 export class SharedModule { }

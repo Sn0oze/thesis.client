@@ -52,4 +52,8 @@ export class AnnotationService {
     const nested = JSON.parse(jsonStr).map(([k, v]) => [k, new Map(v)]);
     return new Map(nested);
   }
+
+  clear(): void {
+    localStorage.removeItem(ANNOTATIONS_KEY);
+  }
 }

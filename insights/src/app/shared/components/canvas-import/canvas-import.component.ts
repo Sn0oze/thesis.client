@@ -1,32 +1,33 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Clipboard} from '@angular/cdk/clipboard';
-import {AnnotationService} from '../../services/annotation.service';
+import {CanvasSessionService} from '../../services/canvas-session.service';
 
 @Component({
-  selector: 'app-annotation-import',
-  templateUrl: './annotation-import.component.html',
-  styleUrls: ['./annotation-import.component.scss']
+  selector: 'app-canvas-import',
+  templateUrl: './canvas-import.component.html',
+  styleUrls: ['./canvas-import.component.scss']
 })
-export class AnnotationImportComponent implements OnInit {
+export class CanvasImportComponent implements OnInit {
   form: FormGroup;
+  hasAnnotations: boolean;
   stringified: string;
 
   constructor(
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
-    private annotations: AnnotationService,
+    private session: CanvasSessionService,
     private clipboard: Clipboard
   ) { }
 
   ngOnInit(): void {
-    this.stringified = this.annotations.loadFromStorage();
+    this.stringified = this.session.export();
+    this.hasAnnotations = !!this.stringified;
     this.form = this.fb.group({
-      json: ['', Validators.required]
+      compressed: ['', Validators.required]
     });
   }
-
   copy(): void {
     this.clipboard.copy(this.stringified);
     this.snackbar.open('Copied to clipboard', 'close');
@@ -34,15 +35,16 @@ export class AnnotationImportComponent implements OnInit {
 
   submit(): void {
     if (this.form.valid) {
-      const stringified = this.annotations.decompress(this.form.value.json);
+      const compressed = this.form.value.compressed;
+      const stringified = this.session.decompress(compressed);
       try {
         JSON.parse(stringified);
-        this.annotations.saveToStorage(stringified);
+        this.session.import(compressed);
         const snackRef = this.snackbar.open('Data imported! ...', 'close');
         snackRef.afterDismissed().subscribe(() => window.location.reload());
       } catch {
         this.form.reset();
-        this.snackbar.open('Annotations couldn\'t be imported', 'close');
+        this.snackbar.open('Sahpes couldn\'t be imported', 'close');
       }
     }
   }

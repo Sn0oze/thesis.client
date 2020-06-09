@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Clipboard} from '@angular/cdk/clipboard';
 import {AnnotationService} from '../../services/annotation.service';
-import {ANNOTATIONS_KEY} from '../../constants';
+import {CanvasSessionService} from '../../services/canvas-session.service';
 
 @Component({
   selector: 'app-annotation-reset',
@@ -12,22 +10,16 @@ import {ANNOTATIONS_KEY} from '../../constants';
 export class AnnotationResetComponent implements OnInit {
 
   constructor(
-    private snackbar: MatSnackBar,
     private annotations: AnnotationService,
-    private clipboard: Clipboard
+    private session: CanvasSessionService
   ) { }
 
   ngOnInit(): void {
   }
 
-  resetAnnotations(): void {
-    const stringified = this.annotations.loadFromStorage();
-    if (stringified) {
-      this.clipboard.copy(stringified);
-    }
-    localStorage.removeItem(ANNOTATIONS_KEY);
-    const snackRef = this.snackbar.open('Annotations cleared! A copy was saved to the clipboard ...', 'close');
-    snackRef.afterDismissed().subscribe(() => window.location.reload());
+  reset(): void {
+    this.annotations.clear();
+    this.session.clear();
+    window.location.reload();
   }
-
 }

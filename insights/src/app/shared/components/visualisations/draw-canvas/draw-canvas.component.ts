@@ -1,23 +1,35 @@
-import {AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef, HostListener,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {DrawCanvas} from '../draw-canvas';
 import {CELL_WIDTH} from '../../../constants';
 import {CanvasSessionService} from '../../../services/canvas-session.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-draw-canvas',
   templateUrl: './draw-canvas.component.html',
   styleUrls: ['./draw-canvas.component.scss']
 })
-export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy, AfterViewChecked {
   @ViewChild('canvasContainer') canvasContainerRef: ElementRef;
   @Input() color: string;
   @Input() width: string;
   @Input() canvasWidth: number;
+  @Input() initialPosition: number;
   canvasContainer: HTMLElement;
   canvas: DrawCanvas;
-  subscription: Subscription;
   max: number;
+  positionSet: boolean;
   readonly cellWidth = CELL_WIDTH;
   readonly min = 0;
 
@@ -33,12 +45,16 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges, On
       this.canvasContainer = this.canvasContainerRef.nativeElement;
       this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width, this.canvasWidth, this.session.current);
       this.max = this.canvasContainer.scrollWidth;
-      this.subscription = this.canvas.changed.subscribe(event => {
-        if (event) {
-          this.session.save(this.canvas.session);
-        }
-      });
     });
+  }
+
+  ngAfterViewChecked() {
+    if (!this.positionSet) {
+      this.zone.runOutsideAngular(() => {
+        this.scrollTo(this.initialPosition);
+        this.positionSet = true;
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -64,7 +80,12 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges, On
       this.canvasContainer.scrollLeft = position * this.cellWidth;
     }
   }
+
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.session.save(this.canvas.session);
+  }
+
+  @HostListener('window:beforeunload', ['$event']) unloadHandler(event: Event) {
+    this.session.save(this.canvas.session);
   }
 }

@@ -28,6 +28,7 @@ import {CategoryService} from '../../shared/services/category.service';
 import {ViewDialogComponent} from './view-dialog/view-dialog.component';
 import {Subscription} from 'rxjs';
 import {SettingsService} from '../../shared/services/settings.service';
+import {CalendarComponent} from '../../shared/components/visualisations/calendar/calendar.component';
 
 @Component({
   selector: 'app-calendar-view',
@@ -37,6 +38,7 @@ import {SettingsService} from '../../shared/services/settings.service';
 
 export class CalendarViewComponent implements OnInit, OnDestroy {
   @ViewChild('canvas') canvas: DrawCanvasComponent;
+  @ViewChild('calendar') calendar: CalendarComponent;
   modes = ['select', 'draw'] as Mode[];
   mode = this.getMode();
   color: string;
@@ -47,6 +49,7 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
   showBars: boolean;
   updatedAt = 0;
   canvasWidth: number;
+  position = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -171,5 +174,13 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
 
   getWidth(): string {
     return localStorage.getItem(PEN_WIDTH_KEY) || PEN_WIDTHS[0];
+  }
+
+  scroll(position: number): void {
+    this.calendar.scrollTo(position);
+    if (this.canvas) {
+      this.canvas.scrollTo(position);
+    }
+    this.position = position;
   }
 }

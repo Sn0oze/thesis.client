@@ -4,7 +4,7 @@
     <app-timeline
       [dataSet]="dataSet"
       [updatedAt]="updatedAt"
-      (selected)="calendar.scrollTo($event.position); canvas?.scrollTo($event.position)"></app-timeline>
+      (selected)="scroll($event.position)"></app-timeline>
     <app-canvas-toolbar
       class="my-2"
       [isOpen]="isDrawMode()"
@@ -31,6 +31,7 @@
           [canvasWidth]="canvasWidth"
           [color]="color"
           [width]="width"
+          [initialPosition]="position"
           *ngIf="isDrawMode()"
           class="draw-canvas"></app-draw-canvas>
       </div>

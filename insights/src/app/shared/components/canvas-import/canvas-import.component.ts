@@ -11,8 +11,6 @@ import {CanvasSessionService} from '../../services/canvas-session.service';
 })
 export class CanvasImportComponent implements OnInit {
   form: FormGroup;
-  hasAnnotations: boolean;
-  stringified: string;
 
   constructor(
     private fb: FormBuilder,
@@ -22,14 +20,12 @@ export class CanvasImportComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.stringified = this.session.export();
-    this.hasAnnotations = !!this.stringified;
     this.form = this.fb.group({
       compressed: ['', Validators.required]
     });
   }
   copy(): void {
-    this.clipboard.copy(this.stringified);
+    this.clipboard.copy(this.session.export());
     this.snackbar.open('Copied to clipboard', 'close');
   }
 
@@ -44,7 +40,7 @@ export class CanvasImportComponent implements OnInit {
         snackRef.afterDismissed().subscribe(() => window.location.reload());
       } catch {
         this.form.reset();
-        this.snackbar.open('Sahpes couldn\'t be imported', 'close');
+        this.snackbar.open('Shspes couldn\'t be imported', 'close');
       }
     }
   }

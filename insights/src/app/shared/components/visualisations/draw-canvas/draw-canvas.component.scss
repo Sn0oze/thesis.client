@@ -1,5 +1,7 @@
+$canvas-spacing-left: 36px;
 :host{
   display: block;
+  padding-left: $canvas-spacing-left;
 }
 
 .draw-canvas-container{

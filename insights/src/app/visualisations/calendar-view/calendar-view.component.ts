@@ -10,7 +10,7 @@ import {
   ObservationsMap
 } from '../../shared/models';
 import {
-  CALENDAR_MODE_KEY,
+  CALENDAR_MODE_KEY, CANVAS_SPACING_LEFT,
   CELL_WIDTH,
   ColorConstants,
   PEN_COLOR_KEY, PEN_WIDTH_KEY,
@@ -62,7 +62,7 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
     this.color = this.getColor();
     this.dataSet = this.route.parent.snapshot.data.dataSet;
     this.settings = this.appSettings.bars.subscribe(value => this.showBars = value);
-    this.canvasWidth  = SPACING_LEFT + SPACING_RIGHT + (this.dataSet.daySpan.length * CELL_WIDTH);
+    this.canvasWidth  = (SPACING_LEFT - CANVAS_SPACING_LEFT) + SPACING_RIGHT + (this.dataSet.daySpan.length * CELL_WIDTH);
   }
 
   ngOnDestroy() {

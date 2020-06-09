@@ -13,7 +13,7 @@ export class DrawCanvas {
   private ptData: Array<any>;
   private path: any;
   private drawing: boolean;
-  public drawn = new BehaviorSubject<CanvasEvent>(null);
+  public changed = new BehaviorSubject<CanvasEvent>(null);
 
   constructor(
     private container: HTMLElement,
@@ -28,7 +28,7 @@ export class DrawCanvas {
   public undo(): void {
     const shape = this.session.pop();
     d3.selectAll('.line').data(this.session).exit().remove();
-    this.drawn.next({shape, action: 'removed'});
+    this.changed.next({shape, action: 'removed'});
   }
 
   public clear(): void {
@@ -110,7 +110,7 @@ export class DrawCanvas {
 
     // redraw the line after simplification
     this.tick();
-    this.drawn.next({shape, action: 'added'});
+    this.changed.next({shape, action: 'added'});
   }
 
   private onmove(data, index, nodes): void {

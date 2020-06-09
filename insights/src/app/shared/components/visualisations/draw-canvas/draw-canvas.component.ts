@@ -33,7 +33,7 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges, On
       this.canvasContainer = this.canvasContainerRef.nativeElement;
       this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width, this.canvasWidth, this.session.current);
       this.max = this.canvasContainer.scrollWidth;
-      this.subscription = this.canvas.drawn.subscribe(event => {
+      this.subscription = this.canvas.changed.subscribe(event => {
         if (event) {
           this.session.save(this.canvas.session);
         }

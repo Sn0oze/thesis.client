@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
 import * as simplify from 'simplify-js';
 import {ColorConstants, PEN_WIDTHS} from '../../constants';
+import {CanvasEvent, Shape} from '../../models';
+import {BehaviorSubject} from 'rxjs';
 
 export class DrawCanvas {
   private svg: any;
@@ -8,23 +10,25 @@ export class DrawCanvas {
   private margin: {top: number, right: number, bottom: number, left: number};
   private width: number;
   private height: number;
-  private ptData: any[];
-  session: any[];
+  private ptData: Array<any>;
   private path: any;
   private drawing: boolean;
+  public drawn = new BehaviorSubject<CanvasEvent>(null);
 
   constructor(
     private container: HTMLElement,
     public color = ColorConstants[0], // 'rgba(50,130,250, .6)'
     public strokeWidth = PEN_WIDTHS[0],
-    public canvasWidth: number
+    public canvasWidth: number,
+    public session = [] as Array<Shape>
   ) {
     this.init();
   }
 
   public undo(): void {
-    this.session.pop();
+    const shape = this.session.pop();
     d3.selectAll('.line').data(this.session).exit().remove();
+    this.drawn.next({shape, action: 'removed'});
   }
 
   public clear(): void {
@@ -48,7 +52,6 @@ export class DrawCanvas {
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     this.ptData = [];
-    this.session = [];
     this.drawing = false;
     this.line = d3.line()
       .x((d: any) => d.x)
@@ -67,6 +70,14 @@ export class DrawCanvas {
 
     this.clear.bind(this);
     this.undo.bind(this);
+    this.session.forEach(shape => {
+      this.path = this.svg.append('path') // start a new line
+        .data([shape.line])
+        .attr('class', 'line')
+        .attr('d', this.line)
+        .style('stroke', shape.color)
+        .style('stroke-width', shape.stroke);
+    });
   }
 
   private listen(): void {
@@ -89,10 +100,17 @@ export class DrawCanvas {
     this.ptData = simplify(this.ptData);
 
     // add newly created line to the drawing session
-    this.session.push(this.ptData);
+    const shape = {
+      line: this.ptData,
+      stroke: this.strokeWidth,
+      color: this.color
+    };
+
+    this.session.push(shape);
 
     // redraw the line after simplification
     this.tick();
+    this.drawn.next({shape, action: 'added'});
   }
 
   private onmove(data, index, nodes): void {

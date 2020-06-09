@@ -32,5 +32,16 @@ export interface CategoryBar {
   height?: string;
 }
 
+export interface Shape {
+  line: Array<{x: number, y: number}>;
+  stroke: string;
+  color: string;
+}
+
+export interface CanvasEvent {
+  shape: Shape;
+  action: 'added' | 'removed';
+}
+
 
 

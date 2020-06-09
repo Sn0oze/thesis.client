@@ -1,31 +1,43 @@
-import {AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {DrawCanvas} from '../draw-canvas';
 import {CELL_WIDTH} from '../../../constants';
+import {CanvasSessionService} from '../../../services/canvas-session.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-draw-canvas',
   templateUrl: './draw-canvas.component.html',
   styleUrls: ['./draw-canvas.component.scss']
 })
-export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
+export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('canvasContainer') canvasContainerRef: ElementRef;
   @Input() color: string;
   @Input() width: string;
   @Input() canvasWidth: number;
   canvasContainer: HTMLElement;
   canvas: DrawCanvas;
+  subscription: Subscription;
   max: number;
   readonly cellWidth = CELL_WIDTH;
   readonly min = 0;
-  constructor( private zone: NgZone) { }
 
-  ngOnInit(): void {
-  }
+  constructor(
+    private zone: NgZone,
+    private session: CanvasSessionService
+  ) { }
+
+  ngOnInit(): void {}
+
   ngAfterViewInit(): void {
     this.zone.runOutsideAngular(() => {
       this.canvasContainer = this.canvasContainerRef.nativeElement;
-      this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width, this.canvasWidth);
+      this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width, this.canvasWidth, this.session.current);
       this.max = this.canvasContainer.scrollWidth;
+      this.subscription = this.canvas.drawn.subscribe(event => {
+        if (event) {
+          this.session.save(this.canvas.session);
+        }
+      });
     });
   }
 
@@ -51,5 +63,8 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
     if ((position >= this.min && position <= this.max)) {
       this.canvasContainer.scrollLeft = position * this.cellWidth;
     }
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

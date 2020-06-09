@@ -16,7 +16,9 @@ export class DrawCanvas {
   constructor(
     private container: HTMLElement,
     public color = ColorConstants[0], // 'rgba(50,130,250, .6)'
-    public strokeWidth = PEN_WIDTHS[0]) {
+    public strokeWidth = PEN_WIDTHS[0],
+    public canvasWidth: number
+  ) {
     this.init();
   }
 
@@ -32,9 +34,11 @@ export class DrawCanvas {
   }
 
   init(): void {
+    const overlayHeight = 638;
     this.margin = {top: 0, right: 0, bottom: 0, left: 0};
     this.width = this.container.offsetWidth - this.margin.left - this.margin.right;
-    this.height = 638 - this.margin.top - this.margin.bottom;
+    this.width = this.canvasWidth;
+    this.height = overlayHeight - this.margin.top - this.margin.bottom;
 
     this.svg = d3.select(this.container).append('svg').attr('class', 'canvas')
       .attr('width', this.width + this.margin.left + this.margin.right)

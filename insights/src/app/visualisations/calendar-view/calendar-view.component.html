@@ -4,13 +4,13 @@
     <app-timeline
       [dataSet]="dataSet"
       [updatedAt]="updatedAt"
-      (selected)="calendar.scrollTo($event.position)"></app-timeline>
+      (selected)="calendar.scrollTo($event.position); canvas.scrollTo($event.position)"></app-timeline>
     <app-canvas-toolbar
       class="my-2"
       [isOpen]="isDrawMode()"
       (undo)="undo()"
-      (opened)="mode = 'draw'"
-      (closed)="mode = 'select'"
+      (opened)="setMode('draw')"
+      (closed)="setMode('select')"
       [(width)]="width"
       [colors]="colors"
       [(color)]="color"></app-canvas-toolbar>
@@ -26,8 +26,13 @@
           (categorize)="categorize($event)"
           (view)="view($event)"
           (filter)="filter($event)"></app-calendar>
-        <app-draw-canvas #canvas [color]="color" [width]="width" *ngIf="isDrawMode()"
-                         class="draw-canvas"></app-draw-canvas>
+        <app-draw-canvas
+          #canvas
+          [canvasWidth]="canvasWidth"
+          [color]="color"
+          [width]="width"
+          *ngIf="isDrawMode()"
+          class="draw-canvas"></app-draw-canvas>
       </div>
     </div>
   </div>

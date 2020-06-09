@@ -9,7 +9,15 @@ import {
   Note,
   ObservationsMap
 } from '../../shared/models';
-import {ColorConstants, PEN_WIDTHS} from '../../shared/constants';
+import {
+  CALENDAR_MODE_KEY,
+  CELL_WIDTH,
+  ColorConstants,
+  PEN_COLOR_KEY, PEN_WIDTH_KEY,
+  PEN_WIDTHS,
+  SPACING_LEFT,
+  SPACING_RIGHT
+} from '../../shared/constants';
 import {DrawCanvasComponent} from '../../shared/components/visualisations/draw-canvas/draw-canvas.component';
 import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
@@ -30,7 +38,7 @@ import {SettingsService} from '../../shared/services/settings.service';
 export class CalendarViewComponent implements OnInit, OnDestroy {
   @ViewChild('canvas') canvas: DrawCanvasComponent;
   modes = ['select', 'draw'] as Mode[];
-  mode = this.modes[0] as Mode;
+  mode = this.getMode();
   color: string;
   colors: Array<string>;
   width: string;
@@ -38,6 +46,7 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
   settings: Subscription;
   showBars: boolean;
   updatedAt = 0;
+  canvasWidth: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,12 +56,13 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.width = PEN_WIDTHS[0];
-    this.color = ColorConstants[0];
+    this.width = this.getWidth();
     this.colors = this.categories.getCategories().map(category => category.color);
-    this.colors.unshift(this.color);
+    this.colors.unshift(ColorConstants[0]);
+    this.color = this.getColor();
     this.dataSet = this.route.parent.snapshot.data.dataSet;
     this.settings = this.appSettings.bars.subscribe(value => this.showBars = value);
+    this.canvasWidth  = SPACING_LEFT + SPACING_RIGHT + (this.dataSet.daySpan.length * CELL_WIDTH);
   }
 
   ngOnDestroy() {
@@ -144,5 +154,22 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
         annotations.set(day, new Map().set(hour, firstAnnotation));
       }
     });
+  }
+
+  setMode(mode: Mode): void {
+    this.mode = mode;
+    localStorage.setItem(CALENDAR_MODE_KEY, mode);
+  }
+
+  getMode(): Mode {
+    return (localStorage.getItem(CALENDAR_MODE_KEY) || this.modes[0]) as Mode;
+  }
+
+  getColor(): string {
+    return localStorage.getItem(PEN_COLOR_KEY) || this.colors[0];
+  }
+
+  getWidth(): string {
+    return localStorage.getItem(PEN_WIDTH_KEY) || PEN_WIDTHS[0];
   }
 }

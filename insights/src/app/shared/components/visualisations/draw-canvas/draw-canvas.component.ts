@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {DrawCanvas} from '../draw-canvas';
+import {CELL_WIDTH} from '../../../constants';
 
 @Component({
   selector: 'app-draw-canvas',
@@ -10,8 +11,12 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('canvasContainer') canvasContainerRef: ElementRef;
   @Input() color: string;
   @Input() width: string;
+  @Input() canvasWidth: number;
   canvasContainer: HTMLElement;
   canvas: DrawCanvas;
+  max: number;
+  readonly cellWidth = CELL_WIDTH;
+  readonly min = 0;
   constructor( private zone: NgZone) { }
 
   ngOnInit(): void {
@@ -19,7 +24,8 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
     this.zone.runOutsideAngular(() => {
       this.canvasContainer = this.canvasContainerRef.nativeElement;
-      this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width);
+      this.canvas = new DrawCanvas(this.canvasContainer, this.color, this.width, this.canvasWidth);
+      this.max = this.canvasContainer.scrollWidth;
     });
   }
 
@@ -39,5 +45,11 @@ export class DrawCanvasComponent implements OnInit, AfterViewInit, OnChanges {
 
   clear(): void {
     this.canvas.clear();
+  }
+
+  scrollTo(position: number): void {
+    if ((position >= this.min && position <= this.max)) {
+      this.canvasContainer.scrollLeft = position * this.cellWidth;
+    }
   }
 }

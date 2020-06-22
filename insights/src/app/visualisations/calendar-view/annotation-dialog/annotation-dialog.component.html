@@ -4,7 +4,7 @@
   </button>
   <div class="fill-height note-container p-2">
     <label>
-      <textarea cdkTrapFocus></textarea>
+      <textarea [(ngModel)]="message" cdkTrapFocus></textarea>
     </label>
     <div class="d-flex justify-content-end align-items-center">
       <button (click)="save()" mat-raised-button color="primary">

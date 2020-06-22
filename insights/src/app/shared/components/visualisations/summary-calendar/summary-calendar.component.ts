@@ -216,7 +216,8 @@ export class SummaryCalendarComponent implements OnInit, AfterViewInit {
   }
 
   bubbleSize(data: BaseSummary, key: number): string {
-    const size = data.values[key] / data.max;
+    const max = data.max > 0 ? data.max : 1;
+    const size = data.values[key] / max;
     return `${size}rem`;
   }
 }

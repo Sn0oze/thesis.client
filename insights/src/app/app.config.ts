@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideServiceWorker } from '@angular/service-worker';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
+import { AppManager } from './app.manager';
 
 const formFieldOptions: MatFormFieldDefaultOptions = {appearance: 'outline'}
 
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    AppManager,
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: formFieldOptions}
   ]
 };

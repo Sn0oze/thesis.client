@@ -1,13 +1,11 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 
 @Injectable()
 export class AppManager {
-  constructor(private iconRegistry: MatIconRegistry) {
-    this.initialize();
-  }
+  private _iconRegistry = inject(MatIconRegistry)
 
   public initialize(): void {
-    this.iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
+    this._iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
   }
 }

@@ -19,7 +19,4 @@ import { ShellNavComponent } from './shell-nav/shell-nav.component';
 })
 export class ShellComponent {
   protected _context = inject(AppContext);
-  public toggle(): void {
-    this._context.toggle();
-  }
 }

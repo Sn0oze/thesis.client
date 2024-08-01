@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AppManager } from './app.manager';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +14,4 @@ import { AppManager } from './app.manager';
   `
 })
 export class AppComponent {
-  private _manager = inject(AppManager);
-
-  constructor() {
-    this._manager.initialize();
-  }
 }

@@ -1,4 +1,9 @@
-import { ApplicationConfig, provideExperimentalZonelessChangeDetection, isDevMode } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideExperimentalZonelessChangeDetection,
+  isDevMode,
+  APP_INITIALIZER
+} from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -6,9 +11,13 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideServiceWorker } from '@angular/service-worker';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
 import { AppContext } from './app.context';
-import { AppManager } from './app.manager';
+import { MatIconRegistry } from '@angular/material/icon';
 
 const formFieldOptions: MatFormFieldDefaultOptions = {appearance: 'outline'}
+
+export function fontSetInitializer(registry: MatIconRegistry): () => void {
+  return () => registry.setDefaultFontSetClass('material-symbols-rounded')
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +28,12 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    AppManager,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: fontSetInitializer,
+      multi: true,
+      deps: [MatIconRegistry],
+    },
     AppContext,
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: formFieldOptions}
   ]

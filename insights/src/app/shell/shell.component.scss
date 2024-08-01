@@ -2,24 +2,11 @@
   display: grid;
   height: 100%;
 
-  &.horizontal {
+  &.landscape {
     grid-template-columns: auto 1fr;
-
-    .toolbar {
-      flex-direction: column;
-    }
   }
 
-  &.vertical {
+  &.portrait {
     grid-template-rows: auto 1fr;
   }
-}
-
-.toolbar {
-  display: flex;
-  gap: 1rem;
-  margin: 1rem;
-  padding: 1rem;
-  border-radius: 2rem;
-  color: white;
 }

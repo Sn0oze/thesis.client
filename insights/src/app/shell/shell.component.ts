@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppContext } from '../app.context';
-import { MatIcon } from '@angular/material/icon';
+import { ShellNavComponent } from './shell-nav/shell-nav.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
   imports: [
     RouterOutlet,
-    MatIcon
+    ShellNavComponent
   ],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',

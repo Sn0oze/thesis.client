@@ -24,16 +24,6 @@ $insights-theme: mat.define-theme((
 @tailwind components;
 @tailwind utilities;
 
-// The Tailwind border-style reset overrides borders in the outlined material form field.
-// The purpose of this reset is to improve ergonomics of the tailwind border utilities
-@layer base {
-  *,
-  ::before,
-  ::after {
-    border-style: none;
-  }
-}
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.

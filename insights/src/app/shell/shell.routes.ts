@@ -14,6 +14,10 @@ export const routes: Routes = [
       {
         path:'profiles',
         loadChildren: () => import('../pages/profiles/profile.routes').then(m => m.routes)
+      },
+      {
+        path:'settings',
+        loadChildren: () => import('../pages/settings/settings.routes').then(m => m.routes)
       }
     ]
   }

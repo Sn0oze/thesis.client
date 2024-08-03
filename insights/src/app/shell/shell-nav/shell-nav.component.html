@@ -1,9 +1,37 @@
 <div class="section-wrapper">
-  <mat-icon>motion_mode</mat-icon>
-  <mat-icon>group</mat-icon>
-  <mat-icon>health_metrics</mat-icon>
-  <mat-icon>space_dashboard</mat-icon>
+  <a
+    mat-icon-button
+    routerLink="profiles"
+    [routerLinkActiveOptions]="_exact"
+    routerLinkActive="active">
+    <mat-icon>motion_mode</mat-icon>
+  </a>
+  <a
+    mat-icon-button
+    [routerLink]="['profiles', 42]"
+    [routerLinkActiveOptions]="_exact"
+    routerLinkActive="active">
+    <mat-icon>group</mat-icon>
+  </a>
+<!--  <a-->
+<!--    mat-icon-button-->
+<!--    routerLink="/"-->
+<!--    routerLinkActive="active">-->
+<!--    <mat-icon>health_metrics</mat-icon>-->
+<!--  </a>-->
+<!--  <a-->
+<!--    mat-icon-button-->
+<!--    routerLink="/"-->
+<!--    routerLinkActive="active">-->
+<!--    <mat-icon>space_dashboard</mat-icon>-->
+<!--  </a>-->
 </div>
 <div class="section-wrapper">
-  <mat-icon>settings</mat-icon>
+  <a
+    mat-icon-button
+    routerLink="settings"
+    [routerLinkActiveOptions]="_exact"
+    routerLinkActive="active">
+    <mat-icon>settings</mat-icon>
+  </a>
 </div>
